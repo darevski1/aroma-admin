@@ -1,6 +1,3 @@
-import { AsyncCompiler } from "sass";
-import Toastify from "toastify-js";
-
 export const getMenu = async () => {
     const url = `/navigation/get`;
     let html = "";
@@ -16,10 +13,26 @@ export const getMenu = async () => {
         data.forEach((element) => {
             html += `
                 <ul class="list-group">
+                    
                     <li class="list-group-item border-0 p-4 mb-2 bg-gray-100 border-radius-lg">
+                       <div class="d-flex align-items-end justify-content-end">
+                            <button type="button" class="btn btn-outline-danger" onclick="deleteItemFromMenu(${element.id})">Delete</button>
+                        </div>
+
                         <div class="d-flex flex-column">
-                            <div class="mb-2">
-                                <strong>${element.name}</strong>
+                            <div class="mb-2" onclick="editMainMenu(${element.id})" style="cursor: pointer;">
+                                <strong id="md-remove_${element.id}">${element.name}</strong>
+                            </div>
+                            <div class="mb-2" style="display: none;" id="editForm_${element.id}">
+                             
+                                    <div>
+                                        <input type="text" id="sub_name_${element.id}" name="sub_name" class="form-control" value="${element.name}" onfocus="focused(this)" onfocusout="defocused(this)">
+                                    </div>
+                                    <div>
+                                        <input type="text" id="sub_slug_${element.id}" name="slug" class="form-control" value="${element.slug}" onfocus="focused(this)" onfocusout="defocused(this)">
+                                    </div>
+                                    <button   class="btn btn-primary" onclick="saveEditMenu(${element.id})">Save</button>
+                                
                             </div>
                           
                             <ul id="submenu_${element.id}" class="ps-3">
@@ -47,6 +60,106 @@ export const getMenu = async () => {
 };
 
 window.getMenu = getMenu;
+
+// delete main menu item
+export const deleteItemFromMenu = async (id) => {
+    if (!confirm("Are you sure you want to delete this menu?" + id)) {
+        return;
+    }
+    // get url
+    let url = `/navigation/delete/${id}`;
+
+    try {
+        let response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content"),
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(
+                "Error deleting menu:",
+                response.statusText,
+                errorData
+            );
+            return;
+        }
+        const data = await response.json();
+        if (data) {
+            getMenuById(id);
+        }
+    } catch (error) {}
+};
+window.deleteItemFromMenu = deleteItemFromMenu;
+// Get Menu by id
+
+export const getMenuById = async (id) => {
+    let url = `/navigation/get/${id}`;
+
+    let response = await fetch(url);
+    if (!response.ok) {
+        console.error("Error fetching menu by ID:", response.statusText);
+        return null;
+    }
+    let data = await response.json();
+    console.log(data);
+
+    let html = `${data.name}`;
+
+    document.getElementById("md-remove_" + id).innerHTML = html;
+};
+window.getMenuById = getMenuById;
+// Edit main menu links
+export const editMainMenu = (id) => {
+    let getName = document.getElementById("md-remove_" + id);
+    let getForm = document.getElementById("editForm_" + id);
+
+    getName.style.display = "none";
+    getForm.style.display = "block";
+};
+window.editMainMenu = editMainMenu;
+
+// save edited main menu
+export const saveEditMenu = async (id) => {
+    let url = `/navigation/update/${id}`;
+    let getNamevalue = document.getElementById("sub_name_" + id).value;
+    let getSlugvalue = document.getElementById("sub_slug_" + id).value;
+
+    try {
+        let response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content"),
+            },
+            body: JSON.stringify({ name: getNamevalue, slug: getSlugvalue }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(
+                "Error updating menu:",
+                response.statusText,
+                errorData
+            );
+            return;
+        }
+        const data = await response.json();
+        if (data) {
+            getMenu();
+        }
+    } catch (error) {}
+};
+window.saveEditMenu = saveEditMenu;
 
 // This file contains JavaScript code to handle dynamic menu and submenu rendering
 export const getSubmenu = async (id) => {

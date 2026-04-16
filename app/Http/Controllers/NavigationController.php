@@ -61,9 +61,15 @@ class NavigationController extends Controller
     {
         $navigation = Navigation::findOrFail($id);
         $navigation->delete();
-        return redirect()->route('navigation')->with('success', 'Navigation deleted successfully.');
+        return response()->json(['message' => 'Navigation deleted successfully.'], 200);
     }
-    // Delete sub-navigation
+    // get navigation by id
+    public function getByid($id)
+    {
+        $nav = Navigation::findOrFail($id);
+        return response()->json($nav, 200);
+    }
+
 
     // json response for sub-navigation
     public function getSubNavigation($id){
@@ -129,5 +135,27 @@ class NavigationController extends Controller
 
         return response()->json(['message' => 'Sub-navigation status updated successfully.'], 200);
     }
+
+
+    public function updateLink($id){
+
+        $nav = Navigation::findOrFail($id);
+        
+        $nav->name = request()->input('name');
+        if (empty(request()->input('slug'))) {
+            $nav->slug = Str::slug(request()->input('name'), '-');
+        } else {
+            $nav->slug = request()->input('slug'); // Use raw input         
+        }
+
+        $nav->save();
+
+        return response()->json(['message' => 'Navigation updated successfully.'], 200);
+
+
+    }
+
+
+
 
 }
