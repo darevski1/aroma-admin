@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\NavigationController;
+use App\Http\Controllers\PublicController;
 
 
 
@@ -46,4 +47,6 @@ Route::get("/", function(){
 
  
  });
-// Get all users
+
+Route::get('/services/cenobots', [PublicController::class, 'cennobots'])->name('cennobots');
+ // Get all users

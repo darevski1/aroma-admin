@@ -11,12 +11,12 @@
           <div class="inline-block">
 
           </div>
-          <h1 class="text-4xl font-bold leading-tight">
+          <h1 class="text-7xl md:text-7xl font-normal">
             <span class="tech-text">
               Комплетни ИТ решенија за вашиот бизнис
             </span>
           </h1>
-          <p class="text-lg md:text-xl mb-8 text-zinc-950">
+          <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
 
             Нудиме целосна ИТ поддршка за компании – од инфраструктура и одржување до софтверски решенија и безбедност.
           </p>
@@ -124,10 +124,10 @@
 
       <!-- Left: Intro Text -->
       <div class="flex flex-col justify-center text-center md:text-left">
-        <h2 class="text-5xl md:text-4xl font-bold text-zinc-950 mb-4">
+        <h2 class="text-5xl md:text-4xl font-normal text-zinc-950 mb-4">
           Наши Услуги
         </h2>
-        <p class="text-lg md:text-lg text-zinc-950 mb-6">
+        <p class="text-lg md:text-lg text-zinc-950 mb-6 font-thin">
           Нудиме широк спектар на професионални ИТ услуги прилагодени на вашите потреби.
           Од консалтинг и инсталации до одржување и поддршка откријте што можеме да направиме за вас.
         </p>
@@ -138,7 +138,7 @@
 
         <!-- Item 1 -->
         <details class="border border-zinc-300 rounded-lg p-4 group">
-          <summary class="cursor-pointer font-normal text-zinc-800">
+          <summary class="cursor-pointer font-thin text-zinc-800">
             Мрежни инсталации и одржување на мрежи
           </summary>
           <p class="mt-2 text-gray-600">
@@ -151,7 +151,7 @@
 
         <!-- Item 2 -->
         <details class="border border-zinc-300 rounded-lg p-4 group">
-          <summary class="cursor-pointer font-normal text-zinc-800">
+          <summary class="cursor-pointer font-thin text-zinc-800">
             Одржување на компјутерски системи
           </summary>
           <p class="mt-2 text-gray-600">
@@ -164,7 +164,7 @@
 
         <!-- Item 3 -->
         <details class="border border-zinc-300 rounded-lg p-4 group">
-          <summary class="cursor-pointer font-normal text-zinc-800">
+          <summary class="cursor-pointer font-thin text-zinc-800">
             Видео надзор и контрола на пристап
           </summary>
           <p class="mt-2 text-gray-600">
@@ -177,7 +177,7 @@
 
         <!-- Item 4 -->
         <details class="border border-zinc-300 rounded-lg p-4 group">
-          <summary class="cursor-pointer font-normal text-zinc-800">
+          <summary class="cursor-pointer font-thin text-zinc-800">
             Сервис и продажба на принтери
           </summary>
           <p class="mt-2 text-gray-600">
@@ -190,7 +190,7 @@
 
         <!-- Item 5 -->
         <details class="border border-zinc-300 rounded-lg p-4 group">
-          <summary class="cursor-pointer font-normal text-zinc-800">
+          <summary class="cursor-pointer font-thin text-zinc-800">
             Развој на софтверски решенија
           </summary>
           <p class="mt-2 text-gray-600">
@@ -206,40 +206,40 @@
 
   </div>
 </section>
-<section class="bg-gray-50 py-18">
+<section class="bg-gray-70 py-18 cenobot-section">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
     <div class="grid lg:grid-cols-2 gap-10 items-center">
 
       <!-- LEFT CONTENT -->
       <div>
-        <h2 class="text-5xl md:text-4xl font-bold text-zinc-950 mb-4">
-          Cenobots – Индустриски решенија
+        <img src="{{asset(" ./../assets/images/logo/logocenotbot.png")}}" alt="icon" class="w-160 height-auto" />
+          <h2 class="text-5xl md:text-4xl font-normal text-zinc-950 mb-4">
+          Cenobots  Индустриски решенија за чистење
         </h2>
 
-        <p class="text-lg md:text-lg   text-zinc-950  mb-6">
+        <p class="text-lg md:text-lg  font-thin text-zinc-950  mb-6">
           Нудиме продажба и изнајмување на индустриски роботи (Cenobots) за автоматизација на производствени процеси.
           Зголемете ја продуктивноста, намалете ги трошоците и оптимизирајте ја вашата работа со модерни роботски
           решенија.
         </p>
 
         <ul class="space-y-3 mb-6 text-zinc-800">
-          <li class="flex items-center gap-2"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
+          <li class="flex items-center gap-2 font-thin"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
               class="w-5 h-5" /> Продажба на индустриски
             роботи</li>
-          <li class="flex items-center gap-2"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
+          <li class="flex items-center gap-2 font-thin"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
               class="w-5 h-5" /> Изнајмување на краток и долг рок</li>
-          <li class="flex items-center gap-2"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
+          <li class="flex items-center gap-2 font-thin"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
               class="w-5 h-5" /> Инсталација и поддршка</li>
-          <li class="flex items-center gap-2"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
+          <li class="flex items-center gap-2 font-thin"> <img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
               class="w-5 h-5" /> Прилагодени решенија</li>
         </ul>
 
         <div class="flex flex-wrap gap-4">
-          <a href="#more"
-            class="border border-gray-300 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition">
-            Дознај повеќе
-          </a>
+              <a href="/services/cenobots" class="inline-block mt-6 px-8 py-4 int-btn transition">
+        Дознај повеќе
+      </a>
         </div>
       </div>
 
@@ -261,7 +261,7 @@
 
     <!-- LEFT: Заглавија и Опис -->
     <div class="space-y-6">
-      <h2 class="text-4xl md:text-4xl font-semibold text-zinc-950">
+      <h2 class="text-4xl md:text-4xl font-normal text-zinc-950">
         Изнајмување, продажба и сервис на печатачи
       </h2>
       <p class="text-lg md:text-lg   text-zinc-950">
@@ -272,17 +272,19 @@
       <!-- Услуги -->
       <div class="space-y-4">
         <div>
-          <h3 class="font-semibold md:text-lg   text-zinc-950">Сервис на печатачи</h3>
-          <p class="md:text-lg   text-zinc-950 text-sm">Брза и професионална поправка на сите типови на печатачи.</p>
+          <h3 class="font-normal md:text-lg   text-zinc-950"><img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
+              class="w-5 h-5" />Сервис на печатачи</h3>
+          <p class="md:text-lg  font-thin text-zinc-950 text-sm">Брза и професионална поправка на сите типови на печатачи.</p>
         </div>
         <div>
-          <h3 class="font-semibold md:text-lg   text-zinc-950">Продажба на печатачи</h3>
-          <p class="md:text-lg   text-zinc-950 text-sm">Продажба на нови и реновирани печатачи за вашата канцеларија.
+          <h3 class="font-normal md:text-lg   text-zinc-950"><img src="{{asset(" ./../assets/images/icons/check.svg")}}" alt="icon"
+              class="w-5 h-5" />Продажба на печатачи</h3>
+          <p class="md:text-lg  font-thin text-zinc-950 text-sm">Продажба на нови и реновирани печатачи за вашата канцеларија.
           </p>
         </div>
         <div>
-          <h3 class="font-semibold md:text-lg   text-zinc-950">Снабдување со тонер</h3>
-          <p class="md:text-lg   text-zinc-950 text-sm">Квалитетен тонер за непречено работење на вашите печатачи.</p>
+          <h3 class="font-normal md:text-lg   text-zinc-950">Снабдување со тонер</h3>
+          <p class="md:text-lg  font-thin text-zinc-950 text-sm">Квалитетен тонер за непречено работење на вашите печатачи.</p>
         </div>
       </div>
 
@@ -311,24 +313,28 @@
       class="w-full h-full object-contain object-center transition-transform duration-200" />
   </div>
 </section>
+
+
 <section
   class="relative py-[70px] px-4 md:px-8 min-h-[200px] flex items-center justify-center overflow-hidden bg-white">
   <div class="relative z-10 max-w-5xl w-full text-center text-zinc-950">
-    <h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight mt-10">
-      Истражи со Garmin
+    <h2 class="text-8xl md:text-8xl font-bold mb-6 leading-tight mt-10">
+      Истражи со
     </h2>
+    <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin" class="mx-auto mb-6 w-202 h-auto" />   
 
 
-    <p class="font-medium md:text-2xl mb-9 text-zinc-950">
+    <p class="font-normal md:text-3xl mb-9 text-zinc-950 mt-10">
       Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
     </p>
 
-    <div class="flex justify-center mt-7">
-      <a href="/garmin"
+    <div class="flex justify-center mt-9">
+      <a href="https://exploregarmin.mk/" target="_blank"
         class="flex items-center px-6 py-3 rounded-full text-lg bg-gray-100  text-black font-medium hover:bg-gray-200 transition gap-2">
         <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="icon" />
       </a>
     </div>
+
   </div>
 </section>
 
@@ -336,29 +342,4 @@
 
 
 
-<!-- Scroll Zoom In/Out Script -->
-<script>
-  const heroImage = document.getElementById('hero-image');
-  const heroSection = document.getElementById('hero-section');
-
-  window.addEventListener('scroll', () => {
-    const rect = heroSection.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-
-    // Calculate percentage the section is in view
-    let visible = 1 - (rect.top / windowHeight);
-    visible = Math.min(Math.max(visible, 0), 4); // clamp 0–1
-
-    // Zoom from 1 -> 1.2 -> 1 depending on scroll
-    let scale = 1 + Math.sin(visible * Math.PI) * 0.4 // zoom in then out
-    heroImage.style.transform = `scale(${scale})`;
-  });
-</script>
-
-
-
 @endsection
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-  new Swiper('.swiper',{loop:true,autoplay:{delay:0,disableOnInteraction:false},speed:3000,slidesPerView:'auto',spaceBetween:24,allowTouchMove:true,freeMode:true});
-</script>
