@@ -257,14 +257,13 @@
 </section>
 
 <section class="py-16 px-4 md:px-8 ct">
-  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
+  <div class="max-w-7xl   px-6 lg:px-8 mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
     <!-- LEFT: Заглавија и Опис -->
     <div class="space-y-6">
       <h2 class="text-4xl md:text-4xl font-normal text-zinc-950">
         Изнајмување, продажба и сервис на печатачи
       </h2>
-      <p class="text-lg md:text-lg   text-zinc-950">
+      <p class="text-lg md:text-lg  font-thin text-zinc-950  mb-6">
         Одржете го вашето печатење непречено со нашите професионални решенија за печатачи.
         Нудиме комплетни услуги — од поправка и одржување до продажба и снабдување со тонер.
       </p>

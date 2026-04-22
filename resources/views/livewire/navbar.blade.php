@@ -13,7 +13,7 @@
       <div class="hidden md:flex items-center space-x-1">
         @foreach ($navItems as $nav)
         <div class="relative">
-          <button
+          <a href="{{ url($nav->slug) }}"
             class="flex items-center text-taupe-900 hover:text-zinc-900 px-3 py-2 focus:outline-none desktop-dropdown-toggle font-semibold cursor-pointer"
             type="button">
             {{ $nav->name }}
@@ -23,7 +23,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
             @endif
-          </button>
+          </a>
 
           @if ($nav->subNavigations->count())
           <div class="absolute left-0 mt-2 hidden bg-white shadow-lg rounded-lg min-w-[180px] z-50 desktop-dropdown">
@@ -31,7 +31,7 @@
               @foreach ($nav->subNavigations as $sub)
               <li>
                 <a href="{{ url($nav->slug . '/' . $sub->slug) }}"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-blue-600">
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-blue-600 font-size-xs transition-colors duration-200">
                   {{ $sub->sub_name }}
                 </a>
               </li>

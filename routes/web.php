@@ -49,4 +49,11 @@ Route::get("/", function(){
  });
 
 Route::get('/services/cenobots', [PublicController::class, 'cennobots'])->name('cennobots');
+ 
  // Get all users
+
+Route::get('{parent}/{child}', function ($parent, $child) {
+    return view('pages.main', compact('parent', 'child'));
+});
+
+Route::get('{parent}', [PublicController::class, 'parent'])->name('parent');
