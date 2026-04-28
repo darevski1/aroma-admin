@@ -14,7 +14,7 @@
         @foreach ($navItems as $nav)
         <div class="relative">
           <a href="{{ url($nav->slug) }}"
-            class="flex items-center text-taupe-900 hover:text-zinc-900 px-3 py-2 focus:outline-none desktop-dropdown-toggle font-semibold cursor-pointer"
+            class="flex items-center text-taupe-900 hover:text-zinc-900 px-3 py-2 focus:outline-none desktop-dropdown-toggle font-normal cursor-pointer"
             type="button">
             {{ $nav->name }}
             @if ($nav->subNavigations->count())

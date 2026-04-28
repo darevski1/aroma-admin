@@ -19,7 +19,4 @@ class PublicController extends Controller
         return view("pages.{$parent}", compact('parent'));
     }
 
-
-
-
 }
