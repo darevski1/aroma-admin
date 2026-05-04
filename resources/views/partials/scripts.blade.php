@@ -1,5 +1,5 @@
 <script src="https://unpkg.com/@studio-freight/lenis@1.0.14/bundled/lenis.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 <!-- Scroll Zoom In/Out Script -->
 <script>
   const heroImage = document.getElementById('hero-image');
@@ -28,7 +28,7 @@
 </script>
 
 <script>
-    const navbar = document.getElementById('navbar');
+  const navbar = document.getElementById('navbar');
 
   window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
@@ -40,5 +40,3 @@
 
    
 </script>
-
- 

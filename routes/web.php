@@ -50,10 +50,11 @@ Route::get("/", function(){
 
 Route::get('/services/cenobots', [PublicController::class, 'cennobots'])->name('cennobots');
  
- // Get all users
+ 
 
-Route::get('{parent}/{child}', function ($parent, $child) {
-    return view('pages.main', compact('parent', 'child'));
-});
 
-Route::get('{parent}', [PublicController::class, 'parent'])->name('parent');
+Route::get('uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi', [PublicController::class, 'computerNetwork'])->name('mrezni-instalacii-i-odrzuvanje-na-mrezi');  
+Route::get('uslugi/odrzuvanje-na-kompjuterski-sistemi', [PublicController::class, 'computerWorld'])->name('odrzuvanje-na-kompjuterski-sistemi');  
+Route::get('uslugi/video-nadzor-i-kontrola-na-pristap', [PublicController::class, 'accessControl'])->name('video-nadzor-i-kontrola-na-pristap');  
+Route::get('uslugi/servis-i-prodazba-na-printeri', [PublicController::class, 'printerWorld'])->name('servis-i-prodazba-na-printeri');  
+Route::get('za-nas', [PublicController::class, 'about'])->name('za-nas');  

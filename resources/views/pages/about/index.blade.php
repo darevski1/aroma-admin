@@ -1,126 +1,102 @@
 @extends('layouts.app')
 <livewire:navbar />
 @section('content')
-<!DOCTYPE html>
-<html lang="mk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>За Нас</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
 
-  <!-- Hero Section -->
-  <section class="bg-blue-600 text-white py-20">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">За Нашата Компанија</h1>
-      <p class="text-lg md:text-xl max-w-2xl mx-auto">
-        Креираме иновативни дигитални решенија кои им помагаат на бизнисите да растат и да успеат во брзо менувачкиот свет.
+<!-- Hero -->
+<section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">За Нас</h1>
+    <p class="text-lg md:text-xl max-w-2xl mx-auto">
+      Професионални ИТ решенија за модерни бизниси. Ние ја градиме вашата дигитална иднина.
+    </p>
+  </div>
+</section>
+
+<!-- About -->
+<section class="py-16">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+
+    <div>
+      <h2 class="text-3xl font-bold mb-4">Кои сме ние?</h2>
+      <p class="mb-4 text-gray-600">
+        Ние сме ИТ компанија специјализирана за развој на веб апликации, мрежни решенија и ИТ одржување.
+        Со долгогодишно искуство и тим од експерти, нудиме сигурни и скалабилни решенија.
+      </p>
+      <p class="text-gray-600">
+        Работиме со технологии како Laravel, Tailwind CSS, MikroTik, Cisco и cloud инфраструктури
+        за да им помогнеме на нашите клиенти да растат и да бидат конкурентни.
       </p>
     </div>
-  </section>
 
-  <!-- About Section -->
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-      <div>
-        <h2 class="text-3xl font-bold mb-4">Кои сме ние</h2>
-        <p class="text-gray-600 mb-4">
-          Ние сме тим од посветени програмери, дизајнери и ИТ специјалисти кои нудат квалитетни софтверски решенија. 
-          Нашето искуство опфаќа веб развој, cloud инфраструктура и enterprise апликации.
-        </p>
+    <div>
+      <img src="https://images.unsplash.com/photo-1552664730-d307ca884978" class="rounded-2xl shadow-lg" alt="Team">
+    </div>
+
+  </div>
+</section>
+
+<!-- Services -->
+<section class="bg-white py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-12">Наши Услуги</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <div class="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2">Веб Развој</h3>
         <p class="text-gray-600">
-          Со долгогодишно искуство им помагаме на стартапи и компании да ги претворат своите идеи во моќни дигитални производи.
+          Креирање модерни веб страни и апликации со најнови технологии.
         </p>
       </div>
-      <div>
-        <img src="https://via.placeholder.com/500x350" alt="Тим" class="rounded-2xl shadow-lg">
-      </div>
-    </div>
-  </section>
 
-  <!-- Mission & Vision -->
-  <section class="bg-gray-100 py-16">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
-      <div class="bg-white p-8 rounded-2xl shadow">
-        <h3 class="text-2xl font-semibold mb-3">Нашата мисија</h3>
+      <div class="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2">Мрежни Решенија</h3>
         <p class="text-gray-600">
-          Да им помогнеме на бизнисите преку технологија со развој на скалабилни, безбедни и иновативни ИТ решенија.
+          Дизајн и конфигурација на мрежи (MikroTik, Cisco, Ubiquiti).
         </p>
       </div>
-      <div class="bg-white p-8 rounded-2xl shadow">
-        <h3 class="text-2xl font-semibold mb-3">Нашата визија</h3>
+
+      <div class="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2">ИТ Одржување</h3>
         <p class="text-gray-600">
-          Да станеме лидер во дигиталната трансформација и да им помогнеме на компаниите да успеат во дигиталната ера.
+          Поддршка, мониторинг и безбедност за вашата ИТ инфраструктура.
         </p>
       </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Stats -->
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-      <div>
-        <h4 class="text-3xl font-bold text-blue-600">10+</h4>
-        <p class="text-gray-600">Години искуство</p>
-      </div>
-      <div>
-        <h4 class="text-3xl font-bold text-blue-600">200+</h4>
-        <p class="text-gray-600">Реализирани проекти</p>
-      </div>
-      <div>
-        <h4 class="text-3xl font-bold text-blue-600">50+</h4>
-        <p class="text-gray-600">Членови на тимот</p>
-      </div>
-      <div>
-        <h4 class="text-3xl font-bold text-blue-600">100%</h4>
-        <p class="text-gray-600">Задоволни клиенти</p>
-      </div>
+<!-- Stats -->
+<section class="py-16 bg-gray-100">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-8 text-center">
+    <div>
+      <h3 class="text-3xl font-bold text-blue-600">100+</h3>
+      <p class="text-gray-600">Проекти</p>
     </div>
-  </section>
-
-  <!-- Team Section -->
-  <section class="bg-gray-100 py-16">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <h2 class="text-3xl font-bold mb-10">Нашиот тим</h2>
-      <div class="grid md:grid-cols-3 gap-8">
-        
-        <div class="bg-white p-6 rounded-2xl shadow">
-          <img src="https://via.placeholder.com/120" class="mx-auto rounded-full mb-4">
-          <h4 class="text-lg font-semibold">Име Презиме</h4>
-          <p class="text-gray-500">CEO & Основач</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow">
-          <img src="https://via.placeholder.com/120" class="mx-auto rounded-full mb-4">
-          <h4 class="text-lg font-semibold">Име Презиме</h4>
-          <p class="text-gray-500">Lead Developer</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow">
-          <img src="https://via.placeholder.com/120" class="mx-auto rounded-full mb-4">
-          <h4 class="text-lg font-semibold">Име Презиме</h4>
-          <p class="text-gray-500">UI/UX Designer</p>
-        </div>
-
-      </div>
+    <div>
+      <h3 class="text-3xl font-bold text-blue-600">50+</h3>
+      <p class="text-gray-600">Клиенти</p>
     </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="py-16 text-center">
-    <div class="max-w-3xl mx-auto px-6">
-      <h2 class="text-3xl font-bold mb-4">Да соработуваме</h2>
-      <p class="text-gray-600 mb-6">
-        Подготвени сте за нов проект? Контактирајте нè уште денес.
-      </p>
-      <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">
-        Контакт
-      </a>
+    <div>
+      <h3 class="text-3xl font-bold text-blue-600">10+</h3>
+      <p class="text-gray-600">Години искуство</p>
     </div>
-  </section>
+    <div>
+      <h3 class="text-3xl font-bold text-blue-600">24/7</h3>
+      <p class="text-gray-600">Поддршка</p>
+    </div>
+  </div>
+</section>
 
-</body>
-</html>
+<!-- CTA -->
+<section class="py-20 bg-indigo-700 text-white text-center">
+  <h2 class="text-3xl font-bold mb-4">Подготвени за соработка?</h2>
+  <p class="mb-6">Контактирајте не и започнете го вашиот следен проект со нас.</p>
+  <a href="#contact" class="bg-white text-indigo-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
+    Контакт
+  </a>
+</section>
+
+
 @endsection

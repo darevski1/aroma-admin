@@ -7,81 +7,51 @@
 
 
 <section class="pt-32 pb-20 intro-header bg">
-  <!-- Hero -->
-  <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Grid -->
-    <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
-      <div>
-        <h1 class="block text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tight"> Комплетни ИТ
-          решенија за вашиот бизнис</h1>
-        <p class="mt-3 text-lg text-foreground">Нудиме целосна ИТ поддршка за компании – од инфраструктура и одржување
-          до
-          софтверски решенија и безбедност. .</p>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="space-y-10">
+        <div class="space-y-6">
+          <div class="inline-block">
 
-        <!-- Buttons -->
-        <div class="mt-7 grid gap-3 w-full sm:inline-flex mt-10">
+          </div>
+          <h1 class="text-7xl md:text-7xl font-normal">
+            <span class="tech-text">
+              Комплетни ИТ решенија за вашиот бизнис
+            </span>
+          </h1>
+          <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
+
+            Нудиме целосна ИТ поддршка за компании – од инфраструктура и одржување до софтверски решенија и безбедност.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-6">
+
           <a href="#learn" class="flex items-center px-6 py-3 rounded-full text-lg int-btn transition gap-2">
             <img src="{{asset(" ./../assets/images/logo_button.svg")}}" alt="icon" class="w-9 h-9 spin" />
-            Дознај повеќе
+            Learn More
           </a>
-          <a href="#contact" class="flex items-center px-6 py-3 rounded-full text-lg int-btn-black-outline gap-2">
-
-            <!-- Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 8l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-
-            Контактирај не
-          </a>
-
-
         </div>
-        <!-- End Buttons -->
-
 
       </div>
-      <!-- End Col -->
+      <div class="relative">
+        <div class="relative overflow-hidden rounded-3xl shadow-2xl">
+          <img alt="TechTonic Solutions" class="w-full h-96 object-cover" src="/assets/hero-software-us1PMivG.jpg" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent">
+          </div>
+          <div class="absolute bottom-6 left-6">
+            <div class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg">
+              <div class="flex items-center space-x-2 br">
 
-      <div class="relative ms-4">
-        <img class="w-full rounded-md"
-          src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=700&h=800&q=80"
-          alt="Hero Image">
-        <div
-          class="absolute inset-0 -z-1 bg-linear-to-tr from-surface-1 via-transparent to-travia-transparent size-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6">
+                <span class="font-medium text-foreground">
+                  Expert Solutions
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- SVG-->
-        <div class="absolute bottom-0 start-0">
-          <svg class="w-2/3 ms-auto h-auto text-white dark:text-neutral-900" width="630" height="451"
-            viewBox="0 0 630 451" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="531" y="352" width="99" height="99" fill="currentColor" />
-            <rect x="140" y="352" width="106" height="99" fill="currentColor" />
-            <rect x="482" y="402" width="64" height="49" fill="currentColor" />
-            <rect x="433" y="402" width="63" height="49" fill="currentColor" />
-            <rect x="384" y="352" width="49" height="50" fill="currentColor" />
-            <rect x="531" y="328" width="50" height="50" fill="currentColor" />
-            <rect x="99" y="303" width="49" height="58" fill="currentColor" />
-            <rect x="99" y="352" width="49" height="50" fill="currentColor" />
-            <rect x="99" y="392" width="49" height="59" fill="currentColor" />
-            <rect x="44" y="402" width="66" height="49" fill="currentColor" />
-            <rect x="234" y="402" width="62" height="49" fill="currentColor" />
-            <rect x="334" y="303" width="50" height="49" fill="currentColor" />
-            <rect x="581" width="49" height="49" fill="currentColor" />
-            <rect x="581" width="49" height="64" fill="currentColor" />
-            <rect x="482" y="123" width="49" height="49" fill="currentColor" />
-            <rect x="507" y="124" width="49" height="24" fill="currentColor" />
-            <rect x="531" y="49" width="99" height="99" fill="currentColor" />
-          </svg>
-        </div>
-        <!-- End SVG-->
       </div>
-      <!-- End Col -->
     </div>
-    <!-- End Grid -->
   </div>
-  <!-- End Hero -->
 </section>
 <!-- You need something to scroll to -->
 
@@ -244,13 +214,12 @@
     <!-- ✏️ LEFT CONTENT -->
     <div class="space-y-6 opacity-0 translate-y-10 animate-fadeIn">
 
-      <h1 class="block font-medium text-foreground-inverse text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+      <h1 class="text-4xl md:text-4xl font-normal leading-tight">
         Ceno<span class="text-[#5c59f5]">BOTS</span> Индустриски решенија за чистење
       </h1>
 
       <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950 mb-6">
-        Нудиме продажба и изнајмување на индустриски роботи <b>(Cenobots) </b> за автоматизација на производствени
-        процеси.
+        Нудиме продажба и изнајмување на индустриски роботи (Cenobots) за автоматизација на производствени процеси.
         Зголемете ја продуктивноста, намалете ги трошоците и оптимизирајте ја вашата работа со модерни роботски
         решенија.
       </p>
@@ -282,60 +251,76 @@
   </div>
 </section>
 
-<!-- Hero -->
-<div class="relative overflow-hidden">
-  <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="max-w-2xl text-center mx-auto">
-      <h1 class="block font-medium text-foreground-inverse text-3xl sm:text-4xl md:text-5xl lg:text-6xl"> Изнајмување,
-        продажба и сервис на
-        печатачи </h1>
 
-      <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950 mt-8">
-        Нудиме продажба и изнајмување на индустриски роботи <b>(Cenobots) </b> за автоматизација на производствени
-        процеси.
-        Зголемете ја продуктивноста, намалете ги трошоците и оптимизирајте ја вашата работа со модерни роботски
-        решенија.
+<section class="p-4   ct bgcolor">
+  <div class="max-w-7xl  px-6 lg:px-8 mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <!-- LEFT: Заглавија и Опис -->
+    <div class="space-y-6">
+      <h2 class="text-4xl md:text-4xl font-normal text-zinc-950">
+        Изнајмување, продажба и сервис на печатачи
+      </h2>
+      <p class="text-lg md:text-lg  font-thin text-zinc-950  mb-6">
+        Одржете го вашето печатење непречено со нашите професионални решенија за печатачи.
+        Нудиме комплетни услуги — од поправка и одржување до продажба и снабдување со тонер.
       </p>
 
-    </div>
-
-    <div class="mt-10 relative max-w-5xl mx-auto">
-      <div
-        class="w-full object-cover h-96 sm:h-120 bg-[url('https://images.unsplash.com/photo-1606868306217-dbf5046868d2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1020&q=80')] bg-no-repeat bg-center bg-cover rounded-xl">
-      </div>
-
-      <div class="absolute inset-0 size-full">
-        <div class="flex flex-col justify-center items-center size-full">
-          <a href="#learn" class="flex items-center px-6 py-3 rounded-full text-lg int-btn transition gap-2">
-            <img src="{{asset(" ./../assets/images/logo_button.svg")}}" alt="icon" class="w-9 h-9 spin" />
-            Дознај повеќе
-          </a>
+      <!-- Услуги -->
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-normal md:text-lg   text-zinc-950">Сервис на печатачи</h3>
+          <p class="md:text-lg  font-thin text-zinc-950 text-sm">Брза и професионална поправка на сите типови на
+            печатачи.</p>
+        </div>
+        <div>
+          <h3 class="font-normal md:text-lg   text-zinc-950">Продажба на печатачи</h3>
+          <p class="md:text-lg  font-thin text-zinc-950 text-sm">Продажба на нови и реновирани печатачи за вашата
+            канцеларија.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-normal md:text-lg   text-zinc-950">Снабдување со тонер</h3>
+          <p class="md:text-lg  font-thin text-zinc-950 text-sm">Квалитетен тонер за непречено работење на вашите
+            печатачи.</p>
         </div>
       </div>
 
-      <div
-        class="absolute bottom-12 -start-20 -z-1 size-48 bg-linear-to-b from-orange-500 to-transparent p-px rounded-lg">
-        <div class="bg-background size-48 rounded-lg"></div>
-      </div>
+      <!-- CTA копче -->
+      <a href="/services/printers" class="inline-block mt-6 px-8 py-4 int-btn transition">
+        Дознај повеќе
+      </a>
 
-      <div class="absolute -top-12 -end-20 -z-1 size-48 bg-linear-to-t from-primary to-cyan-400 p-px rounded-full">
-        <div class="bg-background size-48 rounded-full"></div>
-      </div>
     </div>
+
+    <!-- RIGHT: Слика -->
+    <div class="flex justify-center lg:justify-end">
+      <img src="{{ asset('assets/images/printer1.png') }}" alt="Копирни уреди"
+        class="rounded-xl   w-full max-w-lg lg:max-w-xl object-cover">
+    </div>
+
   </div>
-</div>
-<!-- End Hero -->
+</section>
+<!-- Section 1: Hero Image with zoom in/out on scroll -->
+<section
+  class="relative pt-[50px] pb-[70px] px-4 md:px-8 min-h-[900px] flex items-center justify-center overflow-hidden"
+  id="hero-section">
+
+  <div class="absolute inset-0 overflow-hidden br">
+    <img src="{{ asset('./assets/images/fenix-serija-2048x582.webp') }}" alt="Garmin" id="hero-image"
+      class="w-full h-full object-cover object-center transition-transform duration-200" />
+  </div>
+</section>
 
 
 
-<section class="p-4  bgpacebot bg">
+
+<section class="p-4 pb-20  bgpacebot bg br">
   <div class="wl32">
     <div class="mls flex items-center justify-center min-h-screen p-4">
       <div class="relative z-10 max-w-5xl w-full text-center text-zinc-950">
         <h2 class="text-3xl md:text-3xl font-thin mb-6 leading-tight mt-10">
-          explore
+          Истражи со
         </h2>
-        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin" class="mx-auto mb-6 w-100 h-auto" />
+        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin" class="mx-auto mb-6 w-120 h-auto" />
 
 
         <p class="font-normal md:text-3xl mb-9 text-zinc-950 mt-10">
@@ -344,8 +329,8 @@
 
         <div class="flex justify-center mt-9">
           <a href="https://exploregarmin.mk/" target="_blank"
-            class="flex items-center px-9 py-5 rounded-full text-lg bg-gray-200  text-black font-medium hover:bg-gray-200 transition gap-2">
-            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin" />
+            class="flex items-center px-6 py-3 rounded-full text-lg bg-gray-100  text-black font-medium hover:bg-gray-200 transition gap-2">
+            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="icon" />
           </a>
         </div>
 
@@ -353,11 +338,11 @@
     </div>
     <div class="mls">
 
-
+      <img src="{{ asset('./assets/images/garmin.png') }}" alt="icon"
+        class="mx-auto object-cover object-center transition-transform duration-200" />
     </div>
   </div>
 </section>
-
 
 
 @endsection

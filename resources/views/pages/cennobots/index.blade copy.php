@@ -3,35 +3,9 @@
 @section('content')
 
 <div>
-  <!-- Announcement Banner -->
-  <div class="bg-linear-to-r from-red-500 via-purple-400 to-primary">
-    <div class="max-w-[85rem] px-4 py-4 sm:px-6 lg:px-8 mx-auto">
-      <!-- Grid -->
-      <div class="grid justify-center md:grid-cols-2 md:justify-between md:items-center gap-2">
-        <div class="text-center md:text-start">
-          <p class="text-xs text-white/80 uppercase">
-            Preview of Preline
-          </p>
-          <p class="mt-1 text-white font-medium">
-            Sign up to get unlimited updates. No credit card required.
-          </p>
-        </div>
-        <!-- End Col -->
 
-        <div class="mt-3 text-center md:text-start md:flex md:justify-end md:items-center">
-          <a class="py-2 px-3 md:py-3 md:px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-full bg-layer border border-layer-line text-layer-foreground shadow-2xs hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus disabled:opacity-50 disabled:pointer-events-none"
-            href="#">
-            Sign up free
-          </a>
-        </div>
-        <!-- End Col -->
-      </div>
-      <!-- End Grid -->
-    </div>
-  </div>
-  <!-- End Announcement Banner -->
   <!-- ── HERO ─────────────────────────────────────────── -->
-  <section class="snap-section bg-gray-100 relative overflow-hidden" id="hero-section">
+  <section class="snap-section bg-gray-100 relative overflow-hidden  ">
 
     <!-- Decorative blobs (pointer-events:none so they don't block clicks) -->
     <div class="blob absolute w-72 h-72 bg-blue-200/60 rounded-full blur-3xl top-20 left-10 pointer-events-none"></div>
@@ -142,7 +116,7 @@
 
       <!-- Copy -->
       <div class="md:w-1/2 space-y-6">
-        <h2 class="text-6xl md:text-6xl font-normal leading-snug tracking-tighter ">
+        <h2 class="text-3xl md:text-5xl font-normal leading-snug">
           Паметна контрола на чистењето во ваши раце
         </h2>
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
@@ -444,6 +418,7 @@
   </section>
   <section class="snap-section br xl  py-20 section-scroll-top" id="sp50">
     <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
       <!-- LEFT SIDE -->
       <div class="space-y-6" br>
         <h2 class="text-7xl md:text-7xl font-normal">
@@ -568,4 +543,24 @@
 
 
 
+
+
 @endsection
+
+<script>
+  const sections = document.querySelectorAll('.section-hidden');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('section-show');
+    }
+  });
+}, {
+  threshold: 0.2
+});
+
+sections.forEach(section => {
+  observer.observe(section);
+});
+</script>
