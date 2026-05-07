@@ -64,30 +64,30 @@
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-wrap gap-4">
         <a href="#l3"
-          class="px-5 py-2 border border-black rounded-full text-md hover:bg-black hover:text-white transition">
+          class="px-5 py-2 border text-white border-white rounded-full text-md hover:bg-black hover:text-white transition">
           Cenobot L3
         </a>
         <a href="#l50"
-          class="px-5 py-2 border border-black rounded-full text-md hover:bg-black hover:text-white transition">
+          class="px-5 py-2 border text-white border-white rounded-full text-md hover:bg-black hover:text-white transition">
           Cenobot L50
         </a>
         <a href="#l4"
-          class="px-5 py-2 border border-black rounded-full text-md hover:bg-black hover:text-white transition">
+          class="px-5 py-2 border text-white border-white rounded-full text-md hover:bg-black hover:text-white transition">
           Cenobot L4
         </a>
 
         <a href="#sp50"
-          class="px-5 py-2 border border-black rounded-full text-md hover:bg-black hover:text-white transition">
+          class="px-5 py-2 border text-white border-white rounded-full text-md hover:bg-black hover:text-white transition">
           Cenobot SP50
         </a>
 
         <a href="#tehnologija"
-          class="px-5 py-2 border border-black rounded-full text-md hover:bg-black hover:text-white transition">
+          class="px-5 py-2 border text-white border-white rounded-full text-md hover:bg-black hover:text-white transition">
           Технологија
         </a>
 
         <a href="#resenija"
-          class="px-5 py-2 border border-black rounded-full text-md hover:bg-black hover:text-white transition">
+          class="px-5 py-2 border text-white border-white rounded-full text-md hover:bg-black hover:text-white transition">
           Решенија
         </a>
 

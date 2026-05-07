@@ -285,6 +285,8 @@
 <!-- Hero -->
 <div class="relative overflow-hidden">
   <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="absolute w-72 h-72 bg-blue-200/50 rounded-full blur-3xl top-20 left-10 animate-pulse"></div>
+    <div class="absolute w-96 h-96 bg-blue-100/40 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
     <div class="max-w-2xl text-center mx-auto">
       <h1 class="block font-medium text-foreground-inverse text-3xl sm:text-4xl md:text-5xl lg:text-6xl"> Изнајмување,
         продажба и сервис на
@@ -300,8 +302,8 @@
     </div>
 
     <div class="mt-10 relative max-w-5xl mx-auto">
-      <div
-        class="w-full object-cover h-96 sm:h-120 bg-[url('https://images.unsplash.com/photo-1606868306217-dbf5046868d2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1020&q=80')] bg-no-repeat bg-center bg-cover rounded-xl">
+      <div class="w-full h-96 sm:h-[480px] bg-center bg-cover bg-no-repeat rounded-xl"
+        style="background-image: url('/assets/images/printer-hero.jpg');">
       </div>
 
       <div class="absolute inset-0 size-full">
@@ -314,11 +316,12 @@
       </div>
 
       <div
-        class="absolute bottom-12 -start-20 -z-1 size-48 bg-linear-to-b from-orange-500 to-transparent p-px rounded-lg">
+        class="absolute bottom-12 -start-20 -z-1 size-48 bg-linear-to-b blur-xl opacity-50 from-red-500 to-transparent p-px rounded-lg">
         <div class="bg-background size-48 rounded-lg"></div>
       </div>
 
-      <div class="absolute -top-12 -end-20 -z-1 size-48 bg-linear-to-t from-primary to-cyan-400 p-px rounded-full">
+      <div
+        class="absolute -top-12 -end-20 -z-1 size-68 bg-linear-to-t from-primary opacity-80 blur-xxl to-cyan-400 p-px rounded-full">
         <div class="bg-background size-48 rounded-full"></div>
       </div>
     </div>

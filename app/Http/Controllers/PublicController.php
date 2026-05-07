@@ -15,7 +15,6 @@ class PublicController extends Controller
     public function about(){
         return view("pages.about.index");
     }
- 
     // computerNetwork
     public function computerNetwork(){
         return view("pages.computer_network.index");
