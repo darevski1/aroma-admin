@@ -1,5 +1,9 @@
 @extends('layouts.app')
 <livewire:navbar />
+
+<?php $title = 'Комплетни ИТ решенија за вашиот бизнис'; ?>
+
+
 @section('content')
 
 
@@ -144,7 +148,7 @@
   </div>
 </div>
 
-<section class="w-full py-16 br">
+<section class="w-full py-16 mlss">
   <div class="max-w-7xl mx-auto px-4">
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -164,46 +168,49 @@
       <div class="space-y-4">
 
         <!-- Item 1 -->
-        <details class="border border-zinc-300 rounded-lg p-4 group">
+        <details class="bg-s2  rounded-lg p-4 group">
           <summary class="cursor-pointer font-thin text-zinc-800">
             Мрежни инсталации и одржување на мрежи
           </summary>
           <p class="mt-2 text-gray-600">
             Планирање, инсталација и одржување на LAN/Wi-Fi мрежи за стабилна и сигурна инфраструктура.
           </p>
-          <a href="/services/network" class="inline-block mt-2 text-blue-600 font-medium hover:underline">
+          <a href="/uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi"
+            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
             Прочитај повеќе →
           </a>
         </details>
 
         <!-- Item 2 -->
-        <details class="border border-zinc-300 rounded-lg p-4 group">
+        <details class="bg-s2  rounded-lg p-4 group">
           <summary class="cursor-pointer font-thin text-zinc-800">
             Одржување на компјутерски системи
           </summary>
           <p class="mt-2 text-gray-600">
             Редовен сервис и поддршка за компјутери, сервери и ИТ опрема.
           </p>
-          <a href="/services/it-support" class="inline-block mt-2 text-blue-600 font-medium hover:underline">
+          <a href="/uslugi/odrzuvanje-na-kompjuterski-sistemi"
+            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
             Прочитај повеќе →
           </a>
         </details>
 
         <!-- Item 3 -->
-        <details class="border border-zinc-300 rounded-lg p-4 group">
+        <details class="bg-s2  rounded-lg p-4 group">
           <summary class="cursor-pointer font-thin text-zinc-800">
             Видео надзор и контрола на пристап
           </summary>
           <p class="mt-2 text-gray-600">
             Инсталација на CCTV системи и решенија за безбедност.
           </p>
-          <a href="/services/security" class="inline-block mt-2 text-blue-600 font-medium hover:underline">
+          <a href="/uslugi/video-nadzor-i-kontrola-na-pristap"
+            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
             Прочитај повеќе →
           </a>
         </details>
 
         <!-- Item 4 -->
-        <details class="border border-zinc-300 rounded-lg p-4 group">
+        <details class="bg-s2  rounded-lg p-4 group">
           <summary class="cursor-pointer font-thin text-zinc-800">
             Сервис и продажба на принтери
           </summary>
@@ -216,14 +223,15 @@
         </details>
 
         <!-- Item 5 -->
-        <details class="border border-zinc-300 rounded-lg p-4 group">
+        <details class="bg-s2  rounded-lg p-4 group">
           <summary class="cursor-pointer font-thin text-zinc-800">
             Развој на софтверски решенија
           </summary>
           <p class="mt-2 text-gray-600">
             Custom веб и софтверски решенија според вашите потреби.
           </p>
-          <a href="/services/software" class="inline-block mt-2 text-blue-600 font-medium hover:underline">
+          <a href="uslugi/servis-i-prodazba-na-printeri"
+            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
             Прочитај повеќе →
           </a>
         </details>
@@ -293,10 +301,8 @@
         печатачи </h1>
 
       <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950 mt-8">
-        Нудиме продажба и изнајмување на индустриски роботи <b>(Cenobots) </b> за автоматизација на производствени
-        процеси.
-        Зголемете ја продуктивноста, намалете ги трошоците и оптимизирајте ја вашата работа со модерни роботски
-        решенија.
+        Современи и сигурни решенија за печатење прилагодени на потребите на вашиот бизнис – од професионални печатачи и
+        редовен сервис, до флексибилно изнајмување со целосна техничка поддршка и брза интервенција.
       </p>
 
     </div>
@@ -309,7 +315,6 @@
       <div class="absolute inset-0 size-full">
         <div class="flex flex-col justify-center items-center size-full">
           <a href="#learn" class="flex items-center px-6 py-3 rounded-full text-lg int-btn transition gap-2">
-            <img src="{{asset(" ./../assets/images/logo_button.svg")}}" alt="icon" class="w-9 h-9 spin" />
             Дознај повеќе
           </a>
         </div>
@@ -329,6 +334,134 @@
 </div>
 <!-- End Hero -->
 
+<section class="bg-grayt p-10 overflow-hidden">
+  <div class="container mx-auto px-4">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+
+      <span
+        class="inline-flex items-center px-5 py-2  rounded-full text-lg bg-gray-200  text-black font-medium hover:bg-gray-200 transition gap-2">
+        Доверба и соработка
+      </span>
+
+
+      <h2 class="font-medium text-foreground-inverse text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-10">
+        Наши Клиенти
+      </h2>
+
+      <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950 mt-8">
+        Компании кои ни веруваат за професионални ИТ решенија,
+        мрежна инфраструктура, видео надзор и печатарски услуги.
+      </p>
+    </div>
+
+    <!-- Slider -->
+    <div class="swiper clientsSwiper p-5">
+      <div class="swiper-wrapper items-center ">
+
+        <!-- Item -->
+        <div class="swiper-slide p-5">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/erak-group-300x69.png') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
+            <img src="{{ asset('./../assets/images/clients/logo_arka-300x300.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
+            <img src="{{ asset('./../assets/images/clients/logo_delight.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
+            <img src="{{ asset('./../assets/images/clients/logo_biomedika.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
+            <img src="{{ asset('./../assets/images/clients/logo_digital.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_doma.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_eurofast.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_fresh_farm.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_majorel.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_pivara.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_premium.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_tehnoguma.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_total_comunikacii.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/logo_trend.jpg') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
+            <img src="{{ asset('./../assets/images/clients/Vato-Logo.png') }}" alt="Client"
+              class="max-h-100 object-contain opacity-70 ">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
 
 
 <section class="p-4  bgpacebot bg">
@@ -376,4 +509,27 @@ window.addEventListener('scroll', () => {
 
   robot.style.transform = `scale(${scale})`;
 });
+</script>
+
+<script>
+  new Swiper(".clientsSwiper", {
+        loop: true,
+        speed: 4000,
+        spaceBetween: 24,
+        autoplay: {
+            delay: 0,
+            disableOnInteraction: false,
+        },
+        breakpoints: {
+            0: {
+                slidesPerView: 2,
+            },
+            640: {
+                slidesPerView: 3,
+            },
+            1024: {
+                slidesPerView: 5,
+            },
+        },
+    });
 </script>

@@ -46,7 +46,10 @@ body {
 
   transition: all 0.3s ease-in-out;
 }
-
+.bg-grayt {
+  background-color: #f9fafc;
+  border-top: 1px solid #ebedf1;
+}
 .my-navbar::after {
   content: "";
   position: absolute;
@@ -57,7 +60,9 @@ body {
   /* background: linear-gradient(10deg, #fde9e7, #9145cf, #e04534); */
   border-radius: 2px;
 }
-
+.clientsSwiper {
+  height: 350px;
+}
 .my-navbar a {
   font-family: "Montserrat", sans-serif;
   color: #382c2c;
@@ -875,12 +880,21 @@ body {
 
   height: 100vh;
 }
-
+.bg-s2 {
+  border: 1px solid #ebedf1;
+}
 .mls {
   flex: 1; /* cleaner than width:50% */
   height: 100%;
   background: #fff;
-  border: 1px solid #f3f3f3;
+  border: 1px solid #ebedf1;
+}
+.mlss {
+  background: #fff;
+  border: 1px solid #ebedf1;
+}
+.hgs-footer {
+  border-top: 1px solid #ebedf1;
 }
 .bgpacebot {
   background: #f9fafc;

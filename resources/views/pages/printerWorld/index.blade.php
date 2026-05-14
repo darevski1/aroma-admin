@@ -18,7 +18,6 @@
                 <h1 class="block text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tight">
                     Продажба,
                     Изнајмување
-                    и Сервис на
                     <span class="main-red">
                         Принтери
                     </span>
