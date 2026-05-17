@@ -469,35 +469,12 @@
 
     <div class="mls flex items-center justify-center min-h-screen p-4">
 
-      <div class="relative z-10 max-w-5xl w-full text-center text-zinc-950">
-
-        <h2 class="text-3xl md:text-3xl font-thin mb-6 leading-tight mt-10">
-          explore
-        </h2>
-
-        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin"
-          class="mx-auto mb-6 w-64 md:w-100 h-auto" />
-
-        <p class="font-normal text-lg md:text-3xl mb-9 text-zinc-950 mt-10 px-2 md:px-0">
-          Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
-        </p>
-
-        <div class="flex justify-center mt-9">
-          <a href="https://exploregarmin.mk/" target="_blank"
-            class="flex items-center px-6 md:px-9 py-4 md:py-5 rounded-full text-base md:text-lg bg-gray-200 text-black font-medium hover:bg-gray-200 transition gap-2">
-
-            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin"
-              class="h-6 md:h-auto w-auto" />
-
-          </a>
-        </div>
-
-      </div>
+      yuka banner za promocija druga
 
     </div>
 
     <div class="mls">
-      {{-- create section with swiperjs roating images with garmin watches --}}
+      tuka moze promocija nekoj za renta na printer
 
     </div>
 
