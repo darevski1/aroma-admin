@@ -478,9 +478,8 @@
 
     </div>
 
-  </div>
 </section>
-<section class="p-4 bgpacebot bg">
+<section class="bgpacebot bg">
   <div class="wl32">
 
     <div class="mls flex items-center justify-center min-h-screen p-4">
@@ -495,7 +494,9 @@
           class="mx-auto mb-6 w-64 md:w-100 h-auto" />
 
 
-
+        <p class="font-normal text-lg md:text-3xl mb-9 text-zinc-950 mt-10 px-2 md:px-0">
+          Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
+        </p>
         <div class="flex justify-center mt-9">
           <a href="https://exploregarmin.mk/" target="_blank"
             class="flex items-center px-6 md:px-9 py-4 md:py-5 rounded-full text-base md:text-lg bg-gray-200 text-black font-medium hover:bg-gray-200 transition gap-2">
@@ -505,9 +506,7 @@
 
           </a>
         </div>
-        <p class="font-normal text-lg md:text-3xl mb-9 text-zinc-950 mt-10 px-2 md:px-0">
-          Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
-        </p>
+
 
         <!-- SWIPER -->
         <div class="max-w-4xl mx-auto mt-10">
@@ -517,24 +516,35 @@
             <div class="swiper-wrapper">
 
               <div class="swiper-slide flex justify-center">
-                <img src="{{ asset('./assets/images/garmin/fenix.webp') }}" class="h-64 md:h-80 object-contain" />
+                <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank">
+                  <img src="{{ asset('./assets/images/garmin/fenix.webp') }}" class="h-64 md:h-80 object-contain" />
+                </a>
+              </div>
+              <div class="swiper-slide flex justify-center">
+                <a href="https://exploregarmin.mk/shop/swoof/series-forerunner/#products-archive" target="_blank">
+                  <img src="{{ asset('./assets/images/garmin/forerunner.webp') }}"
+                    class="h-64 md:h-80 object-contain" />
+                </a>
+              </div>
+              <div class="swiper-slide flex justify-center">
+                <a href="https://exploregarmin.mk/shop/swoof/series-venu/#products-archive" target="_blank">
+                  <img src="{{ asset('./assets/images/garmin/venu.avif') }}" class="h-64 md:h-80 object-contain" />
+                </a>
+              </div>
+              <div class="swiper-slide flex justify-center">
+                <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank">
+                  <img src="{{ asset('./assets/images/garmin/fenix2.webp') }}" class="h-64 md:h-80 object-contain" />
+                </a>
+              </div>
+              <div class="swiper-slide flex justify-center">
+                <a href="https://exploregarmin.mk/shop/swoof/series-vivoactive/#products-archive" target="_blank">
+                  <img src="{{ asset('./assets/images/garmin/vivoactive.webp') }}"
+                    class="h-64 md:h-80 object-contain" />
+                </a>
               </div>
 
-              <div class="swiper-slide flex justify-center">
-                <img src="{{ asset('./assets/images/garmin/forerunner.webp') }}" class="h-64 md:h-80 object-contain" />
-              </div>
 
-              <div class="swiper-slide flex justify-center">
-                <img src="{{ asset('./assets/images/garmin/fenix2.webp') }}" class="h-64 md:h-80 object-contain" />
-              </div>
 
-              <div class="swiper-slide flex justify-center">
-                <img src="{{ asset('./assets/images/garmin/venu.avif') }}" class="h-64 md:h-80 object-contain" />
-              </div>
-
-              <div class="swiper-slide flex justify-center">
-                <img src="{{ asset('./assets/images/garmin/vivoactive.webp') }}" class="h-64 md:h-80 object-contain" />
-              </div>
 
             </div>
 
