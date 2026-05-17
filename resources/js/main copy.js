@@ -14,28 +14,15 @@ export const getMenu = async () => {
             html += `
                 <ul class="list-group br mb-1">
                     
-                    <li class="list-group-item border-0  bg-teal-100 border-radius-lg">
-                        <div class="d-flex align-items-end justify-content-end">
-                          
+                    <li class="list-group-item border-0 p-4 mb-2 bg-gray-100 border-radius-lg">
+                       <div class="d-flex align-items-end justify-content-end">
+                            <button type="button" class="btn btn-outline-danger" onclick="deleteItemFromMenu(${element.id})">Delete</button>
                         </div>
 
                         <div class="d-flex flex-column">
-
-                            <div class="d-flex align-items-end justify-content-between"
-                                onclick="editMainMenu(${element.id})"
-                                style="cursor: pointer;">
-                                
-                                <strong id="md-remove_${element.id}">
-                                    ${element.name}
-                                </strong>
-
-                                <button type="button"
-                                        class="btn-outline-danger"
-                                        onclick="deleteItemFromMenu(${element.id})">
-                                    Delete
-                                </button>
+                            <div class="mb-2" onclick="editMainMenu(${element.id})" style="cursor: pointer;">
+                                <strong id="md-remove_${element.id}">${element.name}</strong>
                             </div>
-
                             <div class="mb-2" style="display: none;" id="editForm_${element.id}">
                              
                                     <div>
@@ -190,28 +177,30 @@ export const getSubmenu = async (id) => {
         html += `
           <li id="submenus_${
               element.id
-          }" class="submenu-item mb-2 animate__animated animate__fadeIn border-0  bg-gray-100 border-radius-lg">
-          <span class="text-muted d-inline-block me-2 text-sm p-3 ">
-             ${element.sub_name} 
+          }" class="submenu-item mb-2 animate__animated animate__fadeIn">
+          <span class="text-muted d-inline-block me-2   p-3">
+            <strong>${element.sub_name}</strong>
           </span>
-        <span class="text-muted d-inline-block mr-3">
-            <select class="form-select form-select-sm rounded-3"
-                    id="get_navigation_${element.id}">
-                <option selected disabled>${element.sub_name}</option>
+          <span class="text-muted d-inline-block me-2 p-3"> 
+            <select class="form-control" id="get_navigation_${element.id}">
+              <option selected disabled>${element.sub_name}</option>
             </select>
-        </span>
-        <span class="form-check form-switch d-inline-flex align-items-center gap-1">
-            <input class="form-check-input mr-2.5"
-                    type="checkbox"
-                    role="switch"
-                    id="switch_${element.id}"
-                    ${element.published == true ? "checked" : ""}
-                    onchange="updateSubNavigation(${element.id}, this.checked ? 1 : 0)">
-
-            <small class="text-muted ml-3" id="label_${element.id}">
-                ${element.published == true ? " Published " : " Unpublished "}
-            </small>
-        </span>
+          </span>
+          <span class="text-muted d-inline-block me-2 p-3">
+            <a class="btn btn-danger" onclick="deleteSubMenu(${element.id})">
+              <i class="fas fa-trash"></i>
+            </a>
+            </span>
+            <span class="text-muted d-inline-block me-2 p-3">
+            <div class="form-check">
+           <input class="form-check-input" type="checkbox" value="3244"
+  ${element.published == true ? "checked" : ""}
+  onchange="updateSubNavigation(${element.id}, this.checked ? 1 : 0)">
+                <label class="form-check-label">
+                   ${element.published == true ? "published" : "unpublish"} 
+                </label>
+            </div>
+            </span>
         </li>
         `;
 
@@ -240,7 +229,7 @@ window.getSubmenu = getSubmenu;
 
 export const getNavigation = async (id) => {
     let url = `/get-nav`;
-    let html = "<option selected disabled>Избери мени</option>";
+    let html = "<option selected disabled>Choose a menu</option>";
 
     let response = await fetch(url);
     if (!response.ok) {

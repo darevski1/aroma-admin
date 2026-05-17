@@ -28,5 +28,14 @@ class PublicController extends Controller
     public function printerWorld(){
         return view("pages.printerWorld.index");
     }
+    public function uslugi(){
+        return view("pages.uslugi.index");
+    }
+    public function portfolio(){
+        return view("pages.portfolio.index");
+    }
+    public function kontakt(){
+        return view("pages.kontakt.index");
+    }
  
 }

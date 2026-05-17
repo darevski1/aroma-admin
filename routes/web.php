@@ -58,3 +58,6 @@ Route::get('uslugi/odrzuvanje-na-kompjuterski-sistemi', [PublicController::class
 Route::get('uslugi/video-nadzor-i-kontrola-na-pristap', [PublicController::class, 'accessControl'])->name('video-nadzor-i-kontrola-na-pristap');  
 Route::get('uslugi/servis-i-prodazba-na-printeri', [PublicController::class, 'printerWorld'])->name('servis-i-prodazba-na-printeri');  
 Route::get('za-nas', [PublicController::class, 'about'])->name('za-nas');  
+Route::get('uslugi', [PublicController::class, 'uslugi'])->name('uslugi');  
+Route::get('portfolio', [PublicController::class, 'portfolio'])->name('portfolio');  
+Route::get('kontakt', [PublicController::class, 'kontakt'])->name('kontakt');  

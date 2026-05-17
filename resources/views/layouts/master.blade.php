@@ -8,12 +8,12 @@
     @include('admin_partials.navbar')
     <!-- End Navbar -->
     <div class="container-fluid py-2">
-        @yield('content')
-        @include('admin_partials.footer')
+      @yield('content')
+      @include('admin_partials.footer')
     </div>
   </main>
   @include('admin_partials.configurator')
-    @include('admin_partials.scripts')
+  @include('admin_partials.scripts')
 </body>
 
 </html>

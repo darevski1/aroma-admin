@@ -86,8 +86,8 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12 mt-4">
+  <div class="row  mt-5">
+    <div class="col-md-12 mt-4 p-0">
       <div class="card">
         <div class="card-header pb-0 px-3">
           <h6 class="mb-0">Navigation</h6>

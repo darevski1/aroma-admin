@@ -566,6 +566,47 @@
 </div><!-- /snap-wrapper -->
 
 
+<!-- CTA SECTION -->
+<section class="py-20 bg-zinc-900">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
+    <div class="bg-zinc-800 rounded-3xl p-10 md:p-16 text-center shadow-2xl">
+
+      <!-- Title -->
+      <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">
+        Потребна ви е професионална ИТ поддршка?
+      </h2>
+
+      <!-- Description -->
+      <p class="mt-6 text-lg md:text-xl text-zinc-300 max-w-3xl mx-auto leading-relaxed">
+        Контактирајте не за понуда, консултација или техничка поддршка.
+        Нудиме решенија за мрежи, видео надзор, сервисирање и комплетна ИТ инфраструктура.
+      </p>
+
+      <!-- Buttons -->
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+
+        <!-- Contact -->
+        <a href="/kontakt"
+          class="inline-flex items-center justify-center px-8 py-4 rounded-full bg-white text-zinc-900 font-semibold hover:bg-zinc-200 transition duration-300">
+
+          Побарај Понуда
+
+        </a>
+
+        <!-- Phone -->
+        <a href="tel:+38970000000"
+          class="inline-flex items-center justify-center px-8 py-4 rounded-full border border-zinc-600 text-white font-semibold hover:bg-zinc-700 transition duration-300">
+
+          +389 70 000 000
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
 
 @endsection

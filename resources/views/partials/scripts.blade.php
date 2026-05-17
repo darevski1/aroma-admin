@@ -1,7 +1,7 @@
 <script src="https://unpkg.com/@studio-freight/lenis@1.0.14/bundled/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 <!-- Scroll Zoom In/Out Script -->
-<script>
+{{-- <script>
   const heroImage = document.getElementById('hero-image');
   const heroSection = document.getElementById('hero-section');
 
@@ -17,7 +17,7 @@
     let scale = 1 + Math.sin(visible * Math.PI) * 0.4 // zoom in then out
     heroImage.style.transform = `scale(${scale})`;
   });
-</script>
+</script> --}}
 
 
 
@@ -39,4 +39,21 @@
   });
 
    
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  // Create map
+    const map = L.map('map').setView([41.9981, 21.4254], 15);
+
+    // OpenStreetMap layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Marker
+    L.marker([41.9981, 21.4254])
+        .addTo(map)
+        .bindPopup('Бул: 11 Октомври 86 - 3/8, Скопје')
+        .openPopup();
 </script>

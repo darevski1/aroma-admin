@@ -464,42 +464,152 @@
 </section>
 
 
-<section class="p-4  bgpacebot bg">
+<section class="p-4 bgpacebot bg">
   <div class="wl32">
+
     <div class="mls flex items-center justify-center min-h-screen p-4">
+
       <div class="relative z-10 max-w-5xl w-full text-center text-zinc-950">
+
         <h2 class="text-3xl md:text-3xl font-thin mb-6 leading-tight mt-10">
           explore
         </h2>
-        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin" class="mx-auto mb-6 w-100 h-auto" />
 
+        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin"
+          class="mx-auto mb-6 w-64 md:w-100 h-auto" />
 
-        <p class="font-normal md:text-3xl mb-9 text-zinc-950 mt-10">
+        <p class="font-normal text-lg md:text-3xl mb-9 text-zinc-950 mt-10 px-2 md:px-0">
           Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
         </p>
 
         <div class="flex justify-center mt-9">
           <a href="https://exploregarmin.mk/" target="_blank"
-            class="flex items-center px-9 py-5 rounded-full text-lg bg-gray-200  text-black font-medium hover:bg-gray-200 transition gap-2">
-            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin" />
+            class="flex items-center px-6 md:px-9 py-4 md:py-5 rounded-full text-base md:text-lg bg-gray-200 text-black font-medium hover:bg-gray-200 transition gap-2">
+
+            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin"
+              class="h-6 md:h-auto w-auto" />
+
           </a>
         </div>
 
       </div>
+
     </div>
+
     <div class="mls">
-
+      {{-- create section with swiperjs roating images with garmin watches --}}
 
     </div>
+
   </div>
 </section>
+<section class="p-4 bgpacebot bg">
+  <div class="wl32">
+
+    <div class="mls flex items-center justify-center min-h-screen p-4">
+
+      <div class="relative z-10 max-w-5xl w-full text-center text-zinc-950">
+
+        <h2 class="text-3xl md:text-3xl font-thin mb-6 leading-tight mt-10">
+          explore
+        </h2>
+
+        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin"
+          class="mx-auto mb-6 w-64 md:w-100 h-auto" />
 
 
 
-@endsection
+        <div class="flex justify-center mt-9">
+          <a href="https://exploregarmin.mk/" target="_blank"
+            class="flex items-center px-6 md:px-9 py-4 md:py-5 rounded-full text-base md:text-lg bg-gray-200 text-black font-medium hover:bg-gray-200 transition gap-2">
 
-<script>
-  const robot = document.getElementById('heroRobot');
+            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin"
+              class="h-6 md:h-auto w-auto" />
+
+          </a>
+        </div>
+        <p class="font-normal text-lg md:text-3xl mb-9 text-zinc-950 mt-10 px-2 md:px-0">
+          Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
+        </p>
+
+        <!-- SWIPER -->
+        <div class="max-w-4xl mx-auto mt-10">
+
+          <div class="swiper mySwiper">
+
+            <div class="swiper-wrapper">
+
+              <div class="swiper-slide flex justify-center">
+                <img src="{{ asset('./assets/images/garmin/fenix.webp') }}" class="h-64 md:h-80 object-contain" />
+              </div>
+
+              <div class="swiper-slide flex justify-center">
+                <img src="{{ asset('./assets/images/garmin/forerunner.webp') }}" class="h-64 md:h-80 object-contain" />
+              </div>
+
+              <div class="swiper-slide flex justify-center">
+                <img src="{{ asset('./assets/images/garmin/fenix2.webp') }}" class="h-64 md:h-80 object-contain" />
+              </div>
+
+              <div class="swiper-slide flex justify-center">
+                <img src="{{ asset('./assets/images/garmin/venu.avif') }}" class="h-64 md:h-80 object-contain" />
+              </div>
+
+              <div class="swiper-slide flex justify-center">
+                <img src="{{ asset('./assets/images/garmin/vivoactive.webp') }}" class="h-64 md:h-80 object-contain" />
+              </div>
+
+            </div>
+
+            <div class="swiper-pagination"></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <!-- CTA SECTION -->
+  <section class="py-16 bg-zinc-100">
+    <div class="max-w-5xl mx-auto px-6">
+
+      <div class="bg-white rounded-3xl shadow-lg p-10 md:p-14 text-center">
+
+        <h2 class="text-2xl md:text-4xl font-thin text-zinc-900">
+          Побарајте понуда
+        </h2>
+
+        <p class="mt-4 text-zinc-600 text-base md:text-lg max-w-2xl mx-auto">
+          Контактирајте не за повеќе информации околу нашите услуги и добијте понуда според вашите потреби.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+
+          <a href="/kontakt"
+            class="px-8 py-4 rounded-full bg-zinc-900 text-white font-medium hover:bg-zinc-800 transition">
+            Контакт
+          </a>
+
+          <a href="tel:+38970000000"
+            class="px-8 py-4 rounded-full border border-zinc-300 text-zinc-800 font-medium hover:bg-zinc-100 transition">
+            +389 70 000 000
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  @endsection
+
+  <script>
+    const robot = document.getElementById('heroRobot');
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
@@ -509,10 +619,10 @@ window.addEventListener('scroll', () => {
 
   robot.style.transform = `scale(${scale})`;
 });
-</script>
+  </script>
 
-<script>
-  new Swiper(".clientsSwiper", {
+  <script>
+    new Swiper(".clientsSwiper", {
         loop: true,
         speed: 4000,
         spaceBetween: 24,
@@ -532,4 +642,4 @@ window.addEventListener('scroll', () => {
             },
         },
     });
-</script>
+  </script>
