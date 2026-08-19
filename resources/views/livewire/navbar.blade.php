@@ -1,5 +1,5 @@
-<nav id="navbar" class="bg-transparent backdrop-blur-none shadow-none sticky top-0 z-50 transition-all duration-300">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+<nav id="navbar" class="site-navbar bg-transparent backdrop-blur-none shadow-none sticky top-0 z-50 transition-all duration-300">
+  <div class="site-navbar__inner max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
     <!-- Logo -->
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -8,7 +8,7 @@
 
     <!-- Mobile Button -->
     <button data-collapse-toggle="navbar-dropdown" type="button"
-      class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base md:hidden hover:bg-neutral-secondary-soft hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary"
+      class="site-navbar__mobile-toggle inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-base md:hidden"
       aria-controls="navbar-dropdown" aria-expanded="false">
 
       <span class="sr-only">Open main menu</span>
@@ -19,40 +19,46 @@
     </button>
 
     <!-- Navigation -->
-    <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
+    <div class="site-navbar__menu hidden w-full md:block md:w-auto" id="navbar-dropdown">
 
       <ul
-        class="flex flex-col font-medium p-4 md:p-0 mt-4   bg-neutral-secondary-soft md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-neutral-primary">
+        class="site-navbar__list flex flex-col p-4 md:p-0 mt-4 md:flex-row md:mt-0 md:border-0">
 
         @foreach ($navItems as $nav)
 
         <!-- ITEM -->
-        <li class="relative group">
+        <li class="site-navbar__item relative {{ $nav->subNavigations->count() ? 'has-dropdown' : '' }}">
 
           @if ($nav->subNavigations->count())
 
           <!-- Parent With Dropdown -->
-          <button type="button"
-            class="flex items-center justify-between w-full py-2 px-3 text-heading hover:text-fg-brand md:hover:bg-transparent md:border-0 md:p-0 dropdown-toggle">
+          <div class="site-navbar__parent">
+            <a href="{{ url($nav->slug) }}" class="site-navbar__link site-navbar__link--dropdown">
+              <span>{{ $nav->name }}</span>
+              <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="m1 1 4 4 4-4" />
+              </svg>
+            </a>
 
-            {{ $nav->name }}
-
-            <svg class="w-2.5 h-2.5 ms-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m1 1 4 4 4-4" />
-            </svg>
-          </button>
+            <button type="button" class="site-navbar__dropdown-toggle md:hidden" aria-expanded="false" aria-label="Отвори подмени за {{ $nav->name }}">
+              <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="m1 1 4 4 4-4" />
+              </svg>
+            </button>
+          </div>
 
           <!-- Dropdown -->
           <div
-            class="hidden absolute left-0 z-10 mt-2 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-56 dropdown-menu">
+            class="site-navbar__dropdown absolute left-0 z-10 mt-2 font-normal bg-white w-64 dropdown-menu">
 
-            <ul class="py-2 text-sm text-gray-700">
+            <ul class="site-navbar__dropdown-list py-2 text-sm text-gray-700">
 
               @foreach ($nav->subNavigations as $sub)
 
               <li>
-                <a href="{{ url($nav->slug . '/' . $sub->slug) }}" class="block px-4 py-2 hover:bg-gray-100">
+                <a href="{{ url($nav->slug . '/' . $sub->slug) }}" class="site-navbar__dropdown-link block">
                   {{ $sub->sub_name }}
                 </a>
               </li>
@@ -67,7 +73,7 @@
 
           <!-- Normal Link -->
           <a href="{{ url($nav->slug) }}"
-            class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0">
+            class="site-navbar__link block">
 
             {{ $nav->name }}
 
@@ -90,35 +96,18 @@
     const mobileButton = document.querySelector('[data-collapse-toggle]');
     const mobileMenu = document.getElementById('navbar-dropdown');
 
-    mobileButton.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
+    mobileButton?.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('is-open');
+        mobileMenu.classList.toggle('hidden', !isOpen);
+        mobileButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
-    // DROPDOWNS
-    document.querySelectorAll('.dropdown-toggle').forEach(button => {
-
-        button.addEventListener('click', function(e) {
-
-            e.stopPropagation();
-
-            const menu = this.nextElementSibling;
-
-            // close others
-            document.querySelectorAll('.dropdown-menu').forEach(drop => {
-                if (drop !== menu) {
-                    drop.classList.add('hidden');
-                }
-            });
-
-            menu.classList.toggle('hidden');
-        });
-
-    });
-
-    // close dropdowns outside click
-    document.addEventListener('click', () => {
-        document.querySelectorAll('.dropdown-menu').forEach(drop => {
-            drop.classList.add('hidden');
+    // MOBILE DROPDOWNS ONLY. Parent links remain normal links.
+    document.querySelectorAll('.site-navbar__dropdown-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const item = this.closest('.site-navbar__item');
+            const isOpen = item.classList.toggle('is-open');
+            this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
     });
 </script>

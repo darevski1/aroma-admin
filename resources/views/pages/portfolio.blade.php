@@ -1,5 +1,7 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | Company Profile')
+@section('meta_description', 'Company profile page for ITPlus technology services, mission, experience and contact information.')
 @section('content')
 
 

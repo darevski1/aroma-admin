@@ -1,37 +1,12 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | CenoBots')
+@section('meta_description', 'AI автономни роботи за чистење CenoBots: модерни роботски решенија за компании, хотели, трговски центри и јавни објекти.')
 @section('content')
 
-<div>
-  <!-- Announcement Banner -->
-  <div class="bg-linear-to-r from-red-500 via-purple-400 to-primary">
-    <div class="max-w-[85rem] px-4 py-4 sm:px-6 lg:px-8 mx-auto">
-      <!-- Grid -->
-      <div class="grid justify-center md:grid-cols-2 md:justify-between md:items-center gap-2">
-        <div class="text-center md:text-start">
-          <p class="text-xs text-white/80 uppercase">
-            Preview of Preline
-          </p>
-          <p class="mt-1 text-white font-medium">
-            Sign up to get unlimited updates. No credit card required.
-          </p>
-        </div>
-        <!-- End Col -->
-
-        <div class="mt-3 text-center md:text-start md:flex md:justify-end md:items-center">
-          <a class="py-2 px-3 md:py-3 md:px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-full bg-layer border border-layer-line text-layer-foreground shadow-2xs hover:bg-layer-hover focus:outline-hidden focus:bg-layer-focus disabled:opacity-50 disabled:pointer-events-none"
-            href="#">
-            Sign up free
-          </a>
-        </div>
-        <!-- End Col -->
-      </div>
-      <!-- End Grid -->
-    </div>
-  </div>
-  <!-- End Announcement Banner -->
+<div class="cenobots-page">
   <!-- ── HERO ─────────────────────────────────────────── -->
-  <section class="snap-section bg-gray-100 relative overflow-hidden" id="hero-section">
+  <section class="cenobots-hero snap-section bg-gray-100 relative overflow-hidden" id="hero-section">
 
     <!-- Decorative blobs (pointer-events:none so they don't block clicks) -->
     <div class="blob absolute w-72 h-72 bg-blue-200/60 rounded-full blur-3xl top-20 left-10 pointer-events-none"></div>
@@ -39,7 +14,7 @@
       class="blob-delay absolute w-80 h-80 bg-blue-100/50 rounded-full blur-3xl bottom-10 left-1/3 pointer-events-none">
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 pt-20">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
 
       <!-- Copy -->
       <div class="md:w-1/2 space-y-6 z-10">
@@ -48,7 +23,7 @@
           AI-автономни роботи за чистење. Паметно, ефикасно и еколошко решение за секој комерцијален простор.
         </p>
         <a href="#l3"
-          class="px-6 py-3 mt-5 rounded-full bg-[#5c59f5] text-white font-md transition-colors duration-300 hover:bg-black">
+          class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
           Дознајте повеќе
         </a>
       </div>
@@ -60,6 +35,30 @@
       </div>
     </div>
   </section>
+
+  <section class="cenobots-solutions" id="resenija">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="cenobots-solutions__card">
+        <div>
+          <span class="cenobots-eyebrow">Решенија</span>
+          <h2>Индустриски машини за професионално чистење</h2>
+        </div>
+        <div class="cenobots-solutions__content">
+          <p>
+            Cenobots се индустриски машини за чистење наменети за ефикасно, безбедно и автоматизирано
+            одржување на големи комерцијални и индустриски простори. Тие помагаат во намалување на
+            трошоците, зголемување на продуктивноста и обезбедување постојано висок квалитет на чистење.
+          </p>
+          <div class="cenobots-solutions__actions">
+            <a href="#l3" class="cenobots-btn cenobots-btn--primary">Погледни модели</a>
+            <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank" download="cenobots-brochure.pdf"
+              class="cenobots-btn cenobots-btn--ghost">Преземи брошура</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="bg-[#ff6d63] sticky-section_navbar br" id="navbar_sticky">
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-wrap gap-4">
@@ -261,10 +260,11 @@
 
           <div class="flex gap-4 pt-2">
             <a href="#l3"
-              class="px-6 py-3 mt-5 rounded-full bg-[#5c59f5] text-white font-md transition-colors duration-300 hover:bg-black">
+              class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
               Дознајте повеќе
             </a>
-            <a href="#l3"
+            <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
+              download="cenobots-brochure.pdf"
               class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
               Брошура
             </a>
@@ -341,10 +341,11 @@
 
             <div class="flex gap-4 pt-2">
               <a href="#l50"
-                class="px-6 py-3 mt-5 rounded-full bg-[#5c59f5] text-white font-md transition-colors duration-300 hover:bg-black">
+                class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
                 Дознајте повеќе
               </a>
-              <a href="#l50"
+              <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
+                download="cenobots-brochure.pdf"
                 class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
                 Брошура
               </a>
@@ -427,10 +428,11 @@
 
             <div class="flex gap-4 pt-2">
               <a href="#l4"
-                class="px-6 py-3 mt-5 rounded-full bg-[#5c59f5] text-white font-md transition-colors duration-300 hover:bg-black">
+                class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
                 Дознајте повеќе
               </a>
-              <a href="#l4"
+              <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
+                download="cenobots-brochure.pdf"
                 class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
                 Брошура
               </a>
@@ -545,10 +547,11 @@
 
             <div class="flex gap-4 pt-2">
               <a href="#sp50"
-                class="px-6 py-3 mt-5 rounded-full bg-[#5c59f5] text-white font-md transition-colors duration-300 hover:bg-black">
+                class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
                 Дознајте повеќе
               </a>
-              <a href="#sp50"
+              <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
+                download="cenobots-brochure.pdf"
                 class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
                 Брошура
               </a>

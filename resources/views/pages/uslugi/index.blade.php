@@ -1,133 +1,157 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | Услуги')
+@section('meta_description', 'Професионални ИТ услуги од ITPlus: мрежни инсталации, компјутерско одржување, видео надзор, контрола на пристап и принтери.')
+
 @section('content')
-<!-- SERVICES SECTION -->
-<section class="bg-white py-20">
-  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+@php
+  $services = [
+    [
+      'title' => 'Мрежни инсталации и одржување на мрежи',
+      'description' => 'Комплетни решенија за LAN/Wi-Fi мрежи, конфигурација на рутери, switch уреди и стабилна мрежна инфраструктура.',
+      'href' => '/uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi',
+      'label' => 'Инфраструктура',
+      'icon' => 'network',
+    ],
+    [
+      'title' => 'Одржување на компјутерски системи',
+      'description' => 'Редовно сервисирање, оптимизација и техничка поддршка за компјутери, сервери и деловни ИТ системи.',
+      'href' => '/uslugi/odrzuvanje-na-kompjuterski-sistemi',
+      'label' => 'ИТ поддршка',
+      'icon' => 'support',
+    ],
+    [
+      'title' => 'Видео надзор и контрола на пристап',
+      'description' => 'Инсталација на CCTV системи, IP камери и безбедносни решенија за професионална заштита на домови и компании.',
+      'href' => '/uslugi/video-nadzor-i-kontrola-na-pristap',
+      'label' => 'Безбедност',
+      'icon' => 'security',
+    ],
+    [
+      'title' => 'Сервис и продажба на принтери',
+      'description' => 'Продажба, сервисирање и одржување на ласерски и inkjet принтери, тонери и резервни делови.',
+      'href' => '/uslugi/servis-i-prodazba-na-printeri',
+      'label' => 'Печатење',
+      'icon' => 'printer',
+    ],
+  ];
+@endphp
 
-    <!-- Section Title -->
-    <div class="text-center mb-16">
-      <h2 class="block text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tight">
-        Наши Услуги
-      </h2>
+<main class="services-page">
+  <section class="services-hero" aria-labelledby="services-hero-title">
+    <div class="services-shell services-hero__grid">
+      <div class="services-hero__content">
+        <span class="services-eyebrow">Професионални ИТ услуги</span>
+        <h1 id="services-hero-title">Стабилна технологија за сигурен бизнис.</h1>
+        <p>
+          Нудиме професионални ИТ решенија за компании и физички лица, со брза поддршка,
+          сигурност и современа технологија прилагодена на вашата работа.
+        </p>
+        <div class="services-hero__actions">
+          <a href="#services-grid" class="services-btn services-btn--primary">Погледни услуги</a>
+          <a href="/kontakt" class="services-btn services-btn--ghost">Побарај понуда</a>
+        </div>
+      </div>
 
-      <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-        Нудиме професионални ИТ решенија за компании и физички лица,
-        со брза поддршка, сигурност и современа технологија.
-      </p>
+      <div class="services-hero__panel" aria-label="ITPlus service highlights">
+        <div class="services-hero__panel-top">
+          <span>ITPlus Care</span>
+          <strong>360°</strong>
+          <p>Поддршка за инфраструктура, безбедност, уреди и секојдневно работење.</p>
+        </div>
+        <div class="services-hero__mini-grid">
+          <div>
+            <strong>24/7</strong>
+            <span>поддршка</span>
+          </div>
+          <div>
+            <strong>4</strong>
+            <span>клучни услуги</span>
+          </div>
+          <div>
+            <strong>Pro</strong>
+            <span>пристап</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Services Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-      <!-- Service 1 -->
-      <div class="bg-gray-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
-        <div class="mb-6">
-          <div class="w-16 h-16 rounded-xl bg-blue-100 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 9h8M8 13h6m-9 8h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </div>
-        </div>
-
-        <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-          Мрежни инсталации и одржување на мрежи
-        </h3>
-
-        <p class="text-gray-600 leading-relaxed mb-6">
-          Комплетни решенија за LAN/WiFi мрежи, конфигурација,
-          поставување на рутери, switch уреди и професионално
-          одржување на мрежна инфраструктура.
+  <section class="services-overview" id="services-grid" aria-labelledby="services-grid-title">
+    <div class="services-shell">
+      <div class="services-section-head">
+        <span class="services-eyebrow">Што покриваме</span>
+        <h2 id="services-grid-title">Услуги организирани околу реалните потреби на вашиот бизнис.</h2>
+        <p>
+          Од мрежа и опрема до безбедност и печатење, секоја услуга е поставена за стабилност,
+          брза реакција и долгорочна вредност.
         </p>
-
-        <a href="#" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-800 transition">
-          Дознај повеќе
-        </a>
       </div>
 
-      <!-- Service 2 -->
-      <div class="bg-gray-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
-        <div class="mb-6">
-          <div class="w-16 h-16 rounded-xl bg-green-100 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L15 12l-5.25-5" />
-            </svg>
-          </div>
-        </div>
-
-        <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-          Одржување на компјутерски системи
-        </h3>
-
-        <p class="text-gray-600 leading-relaxed mb-6">
-          Редовно сервисирање, оптимизација и техничка поддршка
-          за компјутери, сервери и деловни ИТ системи.
-        </p>
-
-        <a href="#" class="inline-flex items-center text-green-600 font-semibold hover:text-green-800 transition">
-          Дознај повеќе
-        </a>
+      <div class="services-grid">
+        @foreach ($services as $service)
+          <article class="services-card">
+            <div class="services-card__top">
+              <div class="services-card__icon" aria-hidden="true">
+                @if ($service['icon'] === 'network')
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M4 7h16M7 12h10M9 17h6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                @elseif ($service['icon'] === 'support')
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M5 12a7 7 0 0114 0v3a3 3 0 01-3 3h-2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M6 15H5a2 2 0 01-2-2v-1a2 2 0 012-2h1m12 5h1a2 2 0 002-2v-1a2 2 0 00-2-2h-1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                @elseif ($service['icon'] === 'security')
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 3l7 3v5c0 4.4-2.8 8.4-7 10-4.2-1.6-7-5.6-7-10V6l7-3z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M9.5 12l1.8 1.8 3.5-4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                @else
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M7 8V4h10v4M6 17H5a2 2 0 01-2-2v-3a3 3 0 013-3h12a3 3 0 013 3v3a2 2 0 01-2 2h-1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M7 14h10v6H7z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                @endif
+              </div>
+              <span>{{ $service['label'] }}</span>
+            </div>
+            <h3>{{ $service['title'] }}</h3>
+            <p>{{ $service['description'] }}</p>
+            <a href="{{ $service['href'] }}" class="services-card__link">
+              Дознај повеќе
+              <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        @endforeach
       </div>
-
-      <!-- Service 3 -->
-      <div class="bg-gray-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
-        <div class="mb-6">
-          <div class="w-16 h-16 rounded-xl bg-red-100 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z" />
-            </svg>
-          </div>
-        </div>
-
-        <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-          Видео надзор и контрола на пристап
-        </h3>
-
-        <p class="text-gray-600 leading-relaxed mb-6">
-          Инсталација на CCTV системи, IP камери, системи за
-          контрола на пристап и безбедносни решенија за домови
-          и компании.
-        </p>
-
-        <a href="#" class="inline-flex items-center text-red-600 font-semibold hover:text-red-800 transition">
-          Дознај повеќе
-        </a>
-      </div>
-
-      <!-- Service 4 -->
-      <div class="bg-gray-50 rounded-2xl p-8 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
-        <div class="mb-6">
-          <div class="w-16 h-16 rounded-xl bg-yellow-100 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-yellow-600" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14v10H5z" />
-            </svg>
-          </div>
-        </div>
-
-        <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-          Сервис и продажба на принтери
-        </h3>
-
-        <p class="text-gray-600 leading-relaxed mb-6">
-          Продажба, сервисирање и одржување на ласерски и inkjet
-          принтери, како и набавка на тонери и резервни делови.
-        </p>
-
-        <a href="#" class="inline-flex items-center text-yellow-600 font-semibold hover:text-yellow-800 transition">
-          Дознај повеќе
-        </a>
-      </div>
-
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="services-process" aria-labelledby="services-process-title">
+    <div class="services-shell services-process__grid">
+      <div>
+        <span class="services-eyebrow">Како работиме</span>
+        <h2 id="services-process-title">Јасен процес, брза реализација и поддршка после имплементација.</h2>
+      </div>
+      <div class="services-process__steps">
+        <div><strong>01</strong><span>Анализа на потреби и постоечка инфраструктура.</span></div>
+        <div><strong>02</strong><span>Предлог решение со јасен обем, рокови и приоритети.</span></div>
+        <div><strong>03</strong><span>Имплементација, тестирање и континуирана техничка поддршка.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-cta" aria-label="Контакт за ИТ услуги">
+    <div class="services-shell">
+      <div class="services-cta__box">
+        <div>
+          <span class="services-eyebrow">Подготвени за подобра ИТ основа?</span>
+          <h2>Да направиме систем што работи тивко, стабилно и сигурно.</h2>
+        </div>
+        <a href="/kontakt" class="services-btn services-btn--primary">Контактирај не</a>
+      </div>
+    </div>
+  </section>
+</main>
 @endsection

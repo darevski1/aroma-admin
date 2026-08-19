@@ -1,5 +1,7 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | За нас')
+@section('meta_description', 'Информации за ITPlus, нашето искуство, пристап и професионални ИТ решенија.')
 @section('content')
 
 

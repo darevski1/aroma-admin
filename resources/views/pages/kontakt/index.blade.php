@@ -1,5 +1,7 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | Контакт')
+@section('meta_description', 'Контактирајте го ITPlus за понуда, техничка поддршка, ИТ услуги, мрежна инфраструктура, видео надзор и сервис.')
 @section('content')
 <!-- CONTACT PAGE -->
 <section class="bg-white py-20">

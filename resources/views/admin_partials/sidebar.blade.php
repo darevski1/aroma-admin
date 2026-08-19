@@ -31,6 +31,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link text-dark" href="{{ route('health-check') }}">
+          <i class="material-symbols-rounded opacity-5">monitor_heart</i>
+          <span class="nav-link-text ms-1">Health Check</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link text-dark" href="../pages/virtual-reality.html">
           <i class="material-symbols-rounded opacity-5">view_in_ar</i>
           <span class="nav-link-text ms-1">Virtual Reality</span>

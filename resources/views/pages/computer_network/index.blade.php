@@ -1,5 +1,7 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | Мрежни инсталации')
+@section('meta_description', 'Мрежни инсталации и одржување на мрежи од ITPlus: LAN, WiFi, стабилна инфраструктура и професионална техничка поддршка.')
 @section('content')
 <section class="bg-white py-20">
     <div class="container mx-auto px-6">

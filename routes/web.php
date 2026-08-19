@@ -45,7 +45,8 @@ Route::get("/", function(){
     Route::patch('/change-submenu/{id}', [NavigationController::class, 'changeSubNavigation'])->name('navigation.change'); // Json response for sub-navigation
     Route::get('get-nav', [NavigationController::class, 'getNavigationjson'])->name('navigation.nav'); // Json response for sub-navigation
 
- 
+    Route::get('/health', [\App\Http\Controllers\HealthController::class, 'index'])->name('health-check');
+
  });
 
 Route::get('/services/cenobots', [PublicController::class, 'cennobots'])->name('cennobots');

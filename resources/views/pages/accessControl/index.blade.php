@@ -1,5 +1,7 @@
 @extends('layouts.app')
 <livewire:navbar />
+@section('title', 'ITPlus | Видео надзор и пристап')
+@section('meta_description', 'Видео надзор и контрола на пристап од ITPlus: CCTV системи, IP камери, NVR, smart access и безбедносни решенија.')
 @section('content')
 <section class="bg-white py-20">
     <div class="container mx-auto px-6">

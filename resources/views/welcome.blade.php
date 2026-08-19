@@ -1,7 +1,8 @@
 @extends('layouts.app')
 <livewire:navbar />
 
-<?php $title = 'Комплетни ИТ решенија за вашиот бизнис'; ?>
+@section('title', 'ITPlus | Почетна')
+@section('meta_description', 'Комплетни ИТ решенија за вашиот бизнис: инфраструктура, одржување, софтверски решенија, безбедност, принтери и техничка поддршка.')
 
 
 @section('content')
@@ -10,12 +11,12 @@
 
 
 
-<section class="pt-32 pb-20 intro-header bg">
+<section class="intro-header home-hero bg">
   <!-- Hero -->
-  <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="home-hero__container max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Grid -->
-    <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
-      <div>
+    <div class="home-hero__grid grid md:grid-cols-2">
+      <div class="home-hero__content">
         <h1 class="block text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tight"> Комплетни ИТ
           решенија за вашиот бизнис</h1>
         <p class="mt-3 text-lg text-foreground">Нудиме целосна ИТ поддршка за компании – од инфраструктура и одржување
@@ -23,7 +24,7 @@
           софтверски решенија и безбедност. .</p>
 
         <!-- Buttons -->
-        <div class="mt-7 grid gap-3 w-full sm:inline-flex mt-10">
+        <div class="home-hero__actions grid gap-3 w-full sm:inline-flex">
           <a href="#learn" class="flex items-center px-6 py-3 rounded-full text-lg int-btn transition gap-2">
             <img src="{{asset(" ./../assets/images/logo_button.svg")}}" alt="icon" class="w-9 h-9 spin" />
             Дознај повеќе
@@ -48,8 +49,8 @@
       </div>
       <!-- End Col -->
 
-      <div class="relative ms-4">
-        <img class="w-full rounded-md"
+      <div class="home-hero__media relative">
+        <img class="home-hero__image rounded-md"
           src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=700&h=800&q=80"
           alt="Hero Image">
         <div
@@ -98,147 +99,137 @@
   </div>
 </section>
 
-<div class="container mx-auto max-h-[300px] flex items-center overflow-hidden">
-  <div class="swiper w-full h-full">
-    <div class="swiper-wrapper h-full flex items-center">
+@php
+  $brandLogos = [
+    ['src' => './../assets/images/logo/HP_Logo_0.svg', 'alt' => 'HP'],
+    ['src' => './../assets/images/logo/Dell_Logo_Alternative_0.svg', 'alt' => 'Dell'],
+    ['src' => './../assets/images/logo/Lenovo_idDXuX8rvi_0.svg', 'alt' => 'Lenovo'],
+    ['src' => './../assets/images/logo/Ricoh_Australia_Logo_0.svg', 'alt' => 'Ricoh'],
+    ['src' => './../assets/images/logo/Canon_ide_p-tcLS_0.svg', 'alt' => 'Canon'],
+    ['src' => './../assets/images/logo/MikroTik_idAi6_gbXf_1.svg', 'alt' => 'MikroTik'],
+    ['src' => './../assets/images/logo/Fortinet_idZhbQEBqi_0.svg', 'alt' => 'Fortinet'],
+  ];
+@endphp
 
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/HP_Logo_0.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
+<section class="brand-marquee" aria-label="Компании и брендови со кои работиме">
+  <div class="brand-marquee__track">
+    @for ($i = 0; $i < 2; $i++)
+      <div class="brand-marquee__group" aria-hidden="{{ $i === 1 ? 'true' : 'false' }}">
+        @foreach ($brandLogos as $logo)
+          <div class="brand-marquee__item">
+            <div class="logo-box">
+              <img src="{{ asset($logo['src']) }}" alt="{{ $logo['alt'] }}" loading="lazy" />
+            </div>
+          </div>
+        @endforeach
       </div>
-
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/Dell_Logo_Alternative_0.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
-      </div>
-
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/Lenovo_idDXuX8rvi_0.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
-      </div>
-
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/Ricoh_Australia_Logo_0.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
-      </div>
-
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/Canon_ide_p-tcLS_0.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
-      </div>
-
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/MikroTik_idAi6_gbXf_1.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
-      </div>
-
-      <div class="swiper-slide flex items-center justify-center">
-        <div class="logo-box">
-          <img src="{{ asset('./../assets/images/logo/Fortinet_idZhbQEBqi_0.svg') }}" alt="icon" class="w-22 h-22" />
-        </div>
-      </div>
-
-    </div>
+    @endfor
   </div>
-</div>
+</section>
 
-<section class="w-full py-16 mlss">
-  <div class="max-w-7xl mx-auto px-4">
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-      <!-- Left: Intro Text -->
-      <div class="flex flex-col justify-center text-center md:text-left">
-        <h2 class="text-6xl md:text-6xl font-normal mb-4">
-          Наши Услуги
-        </h2>
-        <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
+<section class="home-services mlss" id="learn">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="home-services__layout">
+      <div class="home-services__intro">
+        <span class="home-services__eyebrow">Наши Услуги</span>
+        <h2>Професионални ИТ решенија за стабилен бизнис</h2>
+        <p>
           Нудиме широк спектар на професионални ИТ услуги прилагодени на вашите потреби.
           Од консалтинг и инсталации до одржување и поддршка откријте што можеме да направиме за вас.
         </p>
+
+        <div class="home-services__actions">
+          <a href="/uslugi" class="home-services__primary">Сите услуги</a>
+          <a href="/kontakt" class="home-services__secondary">Побарај понуда</a>
+        </div>
+
+        <div class="home-services__metrics" aria-label="ITPlus service highlights">
+          <div>
+            <strong>24/7</strong>
+            <span>поддршка</span>
+          </div>
+          <div>
+            <strong>360°</strong>
+            <span>ИТ покриеност</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Right: Accordion -->
-      <div class="space-y-4">
+      <div class="home-services__showcase">
+        <div class="home-services__accent-card">
+          <span>Managed IT</span>
+          <p>Една точка за мрежи, опрема, безбедност, инфраструктура и поддршка.</p>
+        </div>
 
-        <!-- Item 1 -->
-        <details class="bg-s2  rounded-lg p-4 group">
-          <summary class="cursor-pointer font-thin text-zinc-800">
-            Мрежни инсталации и одржување на мрежи
-          </summary>
-          <p class="mt-2 text-gray-600">
-            Планирање, инсталација и одржување на LAN/Wi-Fi мрежи за стабилна и сигурна инфраструктура.
-          </p>
-          <a href="/uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi"
-            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
-            Прочитај повеќе →
-          </a>
-        </details>
+        <div class="home-services__grid">
+          <article class="home-service-card">
+            <div class="home-service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17v-5h6v5M5 21h14M7 12l5-8 5 8" />
+              </svg>
+            </div>
+            <h3>ИТ поддршка</h3>
+            <p>Редовен сервис и поддршка за компјутери, сервери и ИТ опрема.</p>
+            <a href="/uslugi/odrzuvanje-na-kompjuterski-sistemi">Повеќе</a>
+          </article>
 
-        <!-- Item 2 -->
-        <details class="bg-s2  rounded-lg p-4 group">
-          <summary class="cursor-pointer font-thin text-zinc-800">
-            Одржување на компјутерски системи
-          </summary>
-          <p class="mt-2 text-gray-600">
-            Редовен сервис и поддршка за компјутери, сервери и ИТ опрема.
-          </p>
-          <a href="/uslugi/odrzuvanje-na-kompjuterski-sistemi"
-            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
-            Прочитај повеќе →
-          </a>
-        </details>
+          <article class="home-service-card">
+            <div class="home-service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M7 12h10M9 17h6" />
+              </svg>
+            </div>
+            <h3>Мрежни решенија</h3>
+            <p>LAN/Wi-Fi инсталации и одржување за стабилна инфраструктура.</p>
+            <a href="/uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi">Повеќе</a>
+          </article>
 
-        <!-- Item 3 -->
-        <details class="bg-s2  rounded-lg p-4 group">
-          <summary class="cursor-pointer font-thin text-zinc-800">
-            Видео надзор и контрола на пристап
-          </summary>
-          <p class="mt-2 text-gray-600">
-            Инсталација на CCTV системи и решенија за безбедност.
-          </p>
-          <a href="/uslugi/video-nadzor-i-kontrola-na-pristap"
-            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
-            Прочитај повеќе →
-          </a>
-        </details>
+          <article class="home-service-card">
+            <div class="home-service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.55-2.28A1 1 0 0121 8.62v6.76a1 1 0 01-1.45.9L15 14M4 7h9a2 2 0 012 2v6a2 2 0 01-2 2H4z" />
+              </svg>
+            </div>
+            <h3>Безбедност</h3>
+            <p>CCTV системи и контрола на пристап за деловни простори.</p>
+            <a href="/uslugi/video-nadzor-i-kontrola-na-pristap">Повеќе</a>
+          </article>
 
-        <!-- Item 4 -->
-        <details class="bg-s2  rounded-lg p-4 group">
-          <summary class="cursor-pointer font-thin text-zinc-800">
-            Сервис и продажба на принтери
-          </summary>
-          <p class="mt-2 text-gray-600">
-            Продажба, сервис и изнајмување на принтери и мултифункционални уреди.
-          </p>
-          <a href="/services/printers" class="inline-block mt-2 text-blue-600 font-medium hover:underline">
-            Прочитај повеќе →
-          </a>
-        </details>
+          <article class="home-service-card">
+            <div class="home-service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 19V5a2 2 0 012-2h8a2 2 0 012 2v14M9 7h6M9 11h6M9 15h6" />
+              </svg>
+            </div>
+            <h3>Сервери и инфраструктура</h3>
+            <p>Планирање и поддршка за сигурни деловни системи.</p>
+            <a href="/uslugi">Повеќе</a>
+          </article>
 
-        <!-- Item 5 -->
-        <details class="bg-s2  rounded-lg p-4 group">
-          <summary class="cursor-pointer font-thin text-zinc-800">
-            Развој на софтверски решенија
-          </summary>
-          <p class="mt-2 text-gray-600">
-            Custom веб и софтверски решенија според вашите потреби.
-          </p>
-          <a href="uslugi/servis-i-prodazba-na-printeri"
-            class="inline-block mt-2 text-blue-600 font-medium hover:underline">
-            Прочитај повеќе →
-          </a>
-        </details>
+          <article class="home-service-card">
+            <div class="home-service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01.88-7.9A5.5 5.5 0 0118.4 10.1 3.5 3.5 0 1118 17H8" />
+              </svg>
+            </div>
+            <h3>Cloud / Backup решенија</h3>
+            <p>Решенија за достапност, заштита и континуитет на податоци.</p>
+            <a href="/uslugi">Повеќе</a>
+          </article>
 
+          <article class="home-service-card">
+            <div class="home-service-card__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 8V4h10v4M6 17H5a2 2 0 01-2-2v-3a3 3 0 013-3h12a3 3 0 013 3v3a2 2 0 01-2 2h-1M7 14h10v6H7z" />
+              </svg>
+            </div>
+            <h3>Принтери и сервис</h3>
+            <p>Продажба, сервис и изнајмување на принтери и уреди.</p>
+            <a href="/uslugi/servis-i-prodazba-na-printeri">Повеќе</a>
+          </article>
+        </div>
       </div>
     </div>
-
   </div>
 </section>
 <section class="relative min-h-screen flex items-center bg-gray-100 overflow-hidden">
@@ -334,129 +325,58 @@
 </div>
 <!-- End Hero -->
 
-<section class="bg-grayt p-10 overflow-hidden">
-  <div class="container mx-auto px-4">
+<section class="home-clients" aria-labelledby="home-clients-title">
+  <div class="home-clients__inner">
 
     <!-- Header -->
-    <div class="text-center mb-12">
+    <div class="home-clients__header">
 
-      <span
-        class="inline-flex items-center px-5 py-2  rounded-full text-lg bg-gray-200  text-black font-medium hover:bg-gray-200 transition gap-2">
+      <span class="home-clients__eyebrow">
         Доверба и соработка
       </span>
 
 
-      <h2 class="font-medium text-foreground-inverse text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-10">
+      <h2 id="home-clients-title">
         Наши Клиенти
       </h2>
 
-      <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950 mt-8">
-        Компании кои ни веруваат за професионални ИТ решенија,
-        мрежна инфраструктура, видео надзор и печатарски услуги.
+      <p>
+        Компании кои ни веруваат за професионални ИТ решенија, мрежна инфраструктура,
+        видео надзор и печатарски услуги.
       </p>
     </div>
 
-    <!-- Slider -->
-    <div class="swiper clientsSwiper p-5">
-      <div class="swiper-wrapper items-center ">
+    @php
+      $clientLogos = [
+        ['./../assets/images/clients/erak-group-300x69.png', 'Erak Group'],
+        ['./../assets/images/clients/logo_arka-300x300.jpg', 'Arka'],
+        ['./../assets/images/clients/logo_delight.jpg', 'Delight'],
+        ['./../assets/images/clients/logo_biomedika.jpg', 'Biomedika'],
+        ['./../assets/images/clients/logo_digital.jpg', 'Digital'],
+        ['./../assets/images/clients/logo_doma.jpg', 'Doma'],
+        ['./../assets/images/clients/logo_eurofast.jpg', 'Eurofast'],
+        ['./../assets/images/clients/logo_fresh_farm.jpg', 'Fresh Farm'],
+        ['./../assets/images/clients/logo_majorel.jpg', 'Majorel'],
+        ['./../assets/images/clients/logo_pivara.jpg', 'Pivara'],
+        ['./../assets/images/clients/logo_premium.jpg', 'Premium'],
+        ['./../assets/images/clients/logo_tehnoguma.jpg', 'Tehnoguma'],
+        ['./../assets/images/clients/logo_total_comunikacii.jpg', 'Total Komunikacii'],
+        ['./../assets/images/clients/logo_trend.jpg', 'Trend'],
+        ['./../assets/images/clients/Vato-Logo.png', 'Vato'],
+      ];
+    @endphp
 
-        <!-- Item -->
-        <div class="swiper-slide p-5">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/erak-group-300x69.png') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
+    <div class="client-marquee" aria-label="Логоа на наши клиенти">
+      <div class="client-marquee__track">
+        @for ($i = 0; $i < 2; $i++)
+          <div class="client-marquee__group" aria-hidden="{{ $i === 1 ? 'true' : 'false' }}">
+            @foreach ($clientLogos as [$src, $alt])
+              <div class="client-marquee__item">
+                <img src="{{ asset($src) }}" alt="{{ $alt }}" loading="lazy">
+              </div>
+            @endforeach
           </div>
-        </div>
-
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
-            <img src="{{ asset('./../assets/images/clients/logo_arka-300x300.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
-            <img src="{{ asset('./../assets/images/clients/logo_delight.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
-            <img src="{{ asset('./../assets/images/clients/logo_biomedika.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6  ">
-            <img src="{{ asset('./../assets/images/clients/logo_digital.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_doma.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_eurofast.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_fresh_farm.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_majorel.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_pivara.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_premium.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_tehnoguma.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_total_comunikacii.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/logo_trend.jpg') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="h-100 bg-white rounded-2xl flex items-center justify-center p-6 ">
-            <img src="{{ asset('./../assets/images/clients/Vato-Logo.png') }}" alt="Client"
-              class="max-h-100 object-contain opacity-70 ">
-          </div>
-        </div>
-
+        @endfor
       </div>
     </div>
 
@@ -479,85 +399,113 @@
     </div>
 
 </section>
-<section class="bgpacebot bg">
-  <div class="wl32">
+<section class="garmin-showcase bgpacebot bg" aria-labelledby="garmin-showcase-title">
+  <div class="garmin-showcase__inner">
+    <div class="garmin-showcase__header">
+      <span class="garmin-showcase__eyebrow">explore</span>
 
-    <div class="mls flex items-center justify-center min-h-screen p-4">
+      <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin" class="garmin-showcase__logo" />
 
-      <div class="relative z-10 max-w-5xl w-full text-center text-zinc-950">
+      <h2 id="garmin-showcase-title" class="garmin-showcase__title">
+        Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
+      </h2>
 
-        <h2 class="text-3xl md:text-3xl font-thin mb-6 leading-tight mt-10">
-          explore
-        </h2>
-
-        <img src="{{ asset('./assets/images/logo/garmin.svg') }}" alt="Garmin"
-          class="mx-auto mb-6 w-64 md:w-100 h-auto" />
-
-
-        <p class="font-normal text-lg md:text-3xl mb-9 text-zinc-950 mt-10 px-2 md:px-0">
-          Паметни часовници и GPS уреди дизајнирани за авантура, спорт и секојдневие.
-        </p>
-        <div class="flex justify-center mt-9">
-          <a href="https://exploregarmin.mk/" target="_blank"
-            class="flex items-center px-6 md:px-9 py-4 md:py-5 rounded-full text-base md:text-lg bg-gray-200 text-black font-medium hover:bg-gray-200 transition gap-2">
-
-            <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin"
-              class="h-6 md:h-auto w-auto" />
-
-          </a>
-        </div>
-
-
-        <!-- SWIPER -->
-        <div class="max-w-4xl mx-auto mt-10">
-
-          <div class="swiper mySwiper">
-
-            <div class="swiper-wrapper">
-
-              <div class="swiper-slide flex justify-center">
-                <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank">
-                  <img src="{{ asset('./assets/images/garmin/fenix.webp') }}" class="h-64 md:h-80 object-contain" />
-                </a>
-              </div>
-              <div class="swiper-slide flex justify-center">
-                <a href="https://exploregarmin.mk/shop/swoof/series-forerunner/#products-archive" target="_blank">
-                  <img src="{{ asset('./assets/images/garmin/forerunner.webp') }}"
-                    class="h-64 md:h-80 object-contain" />
-                </a>
-              </div>
-              <div class="swiper-slide flex justify-center">
-                <a href="https://exploregarmin.mk/shop/swoof/series-venu/#products-archive" target="_blank">
-                  <img src="{{ asset('./assets/images/garmin/venu.avif') }}" class="h-64 md:h-80 object-contain" />
-                </a>
-              </div>
-              <div class="swiper-slide flex justify-center">
-                <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank">
-                  <img src="{{ asset('./assets/images/garmin/fenix2.webp') }}" class="h-64 md:h-80 object-contain" />
-                </a>
-              </div>
-              <div class="swiper-slide flex justify-center">
-                <a href="https://exploregarmin.mk/shop/swoof/series-vivoactive/#products-archive" target="_blank">
-                  <img src="{{ asset('./assets/images/garmin/vivoactive.webp') }}"
-                    class="h-64 md:h-80 object-contain" />
-                </a>
-              </div>
-
-
-
-
-            </div>
-
-            <div class="swiper-pagination"></div>
-
-          </div>
-
-        </div>
-
-      </div>
-
+      <a href="https://exploregarmin.mk/" target="_blank" rel="noopener"
+        class="garmin-showcase__brand-link" aria-label="Отвори Explore Garmin">
+        <img src="{{ asset('./assets/images/explore_garmin.png') }}" alt="explore garmin" />
+      </a>
     </div>
 
+    <div class="garmin-showcase__slider-wrap">
+      <div class="garmin-showcase__nav">
+        <button class="garmin-showcase__arrow garmin-showcase__arrow--prev" type="button" aria-label="Претходен Garmin производ">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <button class="garmin-showcase__arrow garmin-showcase__arrow--next" type="button" aria-label="Следен Garmin производ">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="swiper garminSwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide garmin-showcase__slide">
+            <article class="garmin-card">
+              <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank" rel="noopener" class="garmin-card__image-link">
+                <img src="{{ asset('./assets/images/garmin/fenix.webp') }}" alt="Garmin Fenix серија" class="garmin-card__image" loading="lazy" />
+              </a>
+              <div class="garmin-card__body">
+                <p class="garmin-card__label">Adventure GPS</p>
+                <h3>Garmin Fenix</h3>
+                <p>Премиум часовник за авантура и тренинг.</p>
+                <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank" rel="noopener" class="garmin-card__cta">Погледни серија</a>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide garmin-showcase__slide">
+            <article class="garmin-card">
+              <a href="https://exploregarmin.mk/shop/swoof/series-forerunner/#products-archive" target="_blank" rel="noopener" class="garmin-card__image-link">
+                <img src="{{ asset('./assets/images/garmin/forerunner.webp') }}" alt="Garmin Forerunner серија" class="garmin-card__image" loading="lazy" />
+              </a>
+              <div class="garmin-card__body">
+                <p class="garmin-card__label">Running Performance</p>
+                <h3>Garmin Forerunner</h3>
+                <p>Создаден за трчање, подготовка и прогрес.</p>
+                <a href="https://exploregarmin.mk/shop/swoof/series-forerunner/#products-archive" target="_blank" rel="noopener" class="garmin-card__cta">Погледни серија</a>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide garmin-showcase__slide">
+            <article class="garmin-card">
+              <a href="https://exploregarmin.mk/shop/swoof/series-venu/#products-archive" target="_blank" rel="noopener" class="garmin-card__image-link">
+                <img src="{{ asset('./assets/images/garmin/venu.avif') }}" alt="Garmin Venu серија" class="garmin-card__image" loading="lazy" />
+              </a>
+              <div class="garmin-card__body">
+                <p class="garmin-card__label">Wellness Smartwatch</p>
+                <h3>Garmin Venu</h3>
+                <p>AMOLED стил, здравје и фитнес во едно.</p>
+                <a href="https://exploregarmin.mk/shop/swoof/series-venu/#products-archive" target="_blank" rel="noopener" class="garmin-card__cta">Погледни серија</a>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide garmin-showcase__slide">
+            <article class="garmin-card">
+              <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank" rel="noopener" class="garmin-card__image-link">
+                <img src="{{ asset('./assets/images/garmin/fenix2.webp') }}" alt="Garmin Fenix промо модел" class="garmin-card__image" loading="lazy" />
+              </a>
+              <div class="garmin-card__body">
+                <p class="garmin-card__label">Premium Outdoor</p>
+                <h3>Fenix Collection</h3>
+                <p>Издржлива колекција за секој предизвик.</p>
+                <a href="https://exploregarmin.mk/shop/swoof/series-fenix/" target="_blank" rel="noopener" class="garmin-card__cta">Истражи модели</a>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide garmin-showcase__slide">
+            <article class="garmin-card">
+              <a href="https://exploregarmin.mk/shop/swoof/series-vivoactive/#products-archive" target="_blank" rel="noopener" class="garmin-card__image-link">
+                <img src="{{ asset('./assets/images/garmin/vivoactive.webp') }}" alt="Garmin Vivoactive серија" class="garmin-card__image" loading="lazy" />
+              </a>
+              <div class="garmin-card__body">
+                <p class="garmin-card__label">Everyday Fitness</p>
+                <h3>Garmin Vivoactive</h3>
+                <p>Фитнес, здравје и паметни функции секој ден.</p>
+                <a href="https://exploregarmin.mk/shop/swoof/series-vivoactive/#products-archive" target="_blank" rel="noopener" class="garmin-card__cta">Погледни серија</a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="garmin-showcase__pagination swiper-pagination"></div>
+      </div>
+    </div>
   </div>
   <!-- CTA SECTION -->
   <section class="py-16 bg-zinc-100">
@@ -606,27 +554,4 @@ window.addEventListener('scroll', () => {
 
   robot.style.transform = `scale(${scale})`;
 });
-  </script>
-
-  <script>
-    new Swiper(".clientsSwiper", {
-        loop: true,
-        speed: 4000,
-        spaceBetween: 24,
-        autoplay: {
-            delay: 0,
-            disableOnInteraction: false,
-        },
-        breakpoints: {
-            0: {
-                slidesPerView: 2,
-            },
-            640: {
-                slidesPerView: 3,
-            },
-            1024: {
-                slidesPerView: 5,
-            },
-        },
-    });
   </script>
