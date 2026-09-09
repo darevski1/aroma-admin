@@ -14,6 +14,7 @@
   </main>
   @include('admin_partials.configurator')
   @include('admin_partials.scripts')
+  @stack('scripts')
 </body>
 
 </html>

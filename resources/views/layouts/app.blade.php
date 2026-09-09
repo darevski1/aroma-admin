@@ -24,6 +24,9 @@
 
 <body class="min-h-screen">
 
+    {{-- Navigation --}}
+    <livewire:navbar />
+
     {{-- Page Content --}}
     <main class="mx-auto w-full ">
         @yield('content')
@@ -35,6 +38,11 @@
     {{-- Footer --}}
     @include('partials.footer')
     @livewireScripts
+
+    {{-- ── Full Page Editor mode ────────────────────────────────── --}}
+    @if(request('editor'))
+        <script type="module" src="{{ Vite::asset('resources/js/page-editor.js') }}"></script>
+    @endif
 </body>
 
 </html>

@@ -1,12 +1,13 @@
 @extends('layouts.app')
-<livewire:navbar />
 
 @section('title', 'ITPlus | Портфолио')
 @section('meta_description', 'Погледнете дел од реализираните ITPlus проекти за мрежна инфраструктура, видео надзор, сервери, принтери и контрола на пристап.')
 
 @section('content')
 @php
-  $projects = [
+  $s = $page->settings ?? [];
+
+  $defaultProjects = [
     [
       'title' => 'Инсталација на корпоративна мрежа',
       'category' => 'Мрежни Решенија',
@@ -69,7 +70,9 @@
     ],
   ];
 
-  $filters = [
+  $projects = $s['projects'] ?? $defaultProjects;
+
+  $defaultFilters = [
     'all' => 'Сите',
     'network' => 'Мрежи',
     'security' => 'Безбедност',
@@ -77,6 +80,8 @@
     'printers' => 'Принтери',
     'servers' => 'Сервери',
   ];
+
+  $filters = $s['filters'] ?? $defaultFilters;
 @endphp
 
 <section class="portfolio-page">
@@ -84,11 +89,10 @@
     <div class="portfolio-hero__bg" aria-hidden="true"></div>
     <div class="portfolio-shell portfolio-hero__grid">
       <div class="portfolio-reveal">
-        <span class="portfolio-eyebrow">Портфолио</span>
-        <h1>Проекти што ја прават технологијата сигурна, брза и видлива.</h1>
+        <span class="portfolio-eyebrow">{{ $s['hero_eyebrow'] ?? 'Портфолио' }}</span>
+        <h1>{{ $s['hero_heading'] ?? 'Проекти што ја прават технологијата сигурна, брза и видлива.' }}</h1>
         <p>
-          Дел од проектите и решенијата кои успешно ги реализиравме за компании,
-          институции и приватни клиенти.
+          {{ $s['hero_description'] ?? 'Дел од проектите и решенијата кои успешно ги реализиравме за компании, институции и приватни клиенти.' }}
         </p>
         <div class="portfolio-hero__actions">
           <a href="#portfolio-projects" class="portfolio-btn portfolio-btn--primary">Погледни проекти</a>
@@ -113,9 +117,9 @@
   <section class="portfolio-featured" aria-labelledby="featured-projects-title">
     <div class="portfolio-shell">
       <div class="portfolio-section-head portfolio-reveal">
-        <span class="portfolio-eyebrow">Featured work</span>
-        <h2 id="featured-projects-title">Избрани реализации</h2>
-        <p>Поголеми инфраструктурни и безбедносни проекти со јасен фокус на стабилност, контрола и долгорочна вредност.</p>
+        <span class="portfolio-eyebrow">{{ $s['featured_eyebrow'] ?? 'Featured work' }}</span>
+        <h2 id="featured-projects-title">{{ $s['featured_heading'] ?? 'Избрани реализации' }}</h2>
+        <p>{{ $s['featured_paragraph'] ?? 'Поголеми инфраструктурни и безбедносни проекти со јасен фокус на стабилност, контрола и долгорочна вредност.' }}</p>
       </div>
 
       <div class="portfolio-featured__grid">
@@ -140,8 +144,8 @@
     <div class="portfolio-shell">
       <div class="portfolio-projects__top portfolio-reveal">
         <div>
-          <span class="portfolio-eyebrow">Project library</span>
-          <h2 id="portfolio-projects-title">Сите проекти</h2>
+          <span class="portfolio-eyebrow">{{ $s['projects_eyebrow'] ?? 'Project library' }}</span>
+          <h2 id="portfolio-projects-title">{{ $s['projects_heading'] ?? 'Сите проекти' }}</h2>
         </div>
 
         <div class="portfolio-filters" role="list" aria-label="Филтрирај портфолио категории">
@@ -174,20 +178,20 @@
   <section class="portfolio-stats" aria-label="Portfolio statistics">
     <div class="portfolio-shell portfolio-stats__grid">
       <div class="portfolio-stat portfolio-reveal">
-        <strong data-count="200">0</strong>
-        <span>Реализирани проекти</span>
+        <strong data-count="{{ $s['stat_1_value'] ?? 200 }}">0</strong>
+        <span>{{ $s['stat_1_label'] ?? 'Реализирани проекти' }}</span>
       </div>
       <div class="portfolio-stat portfolio-reveal">
-        <strong data-count="100">0</strong>
-        <span>Активни клиенти</span>
+        <strong data-count="{{ $s['stat_2_value'] ?? 100 }}">0</strong>
+        <span>{{ $s['stat_2_label'] ?? 'Активни клиенти' }}</span>
       </div>
       <div class="portfolio-stat portfolio-reveal">
-        <strong data-count="10">0</strong>
-        <span>Години искуство</span>
+        <strong data-count="{{ $s['stat_3_value'] ?? 10 }}">0</strong>
+        <span>{{ $s['stat_3_label'] ?? 'Години искуство' }}</span>
       </div>
       <div class="portfolio-stat portfolio-reveal">
-        <strong data-count="24">0</strong>
-        <span>Поддршка и сервис</span>
+        <strong data-count="{{ $s['stat_4_value'] ?? 24 }}">0</strong>
+        <span>{{ $s['stat_4_label'] ?? 'Поддршка и сервис' }}</span>
       </div>
     </div>
   </section>
@@ -195,30 +199,28 @@
   <section class="portfolio-testimonials" aria-labelledby="portfolio-testimonials-title">
     <div class="portfolio-shell">
       <div class="portfolio-section-head portfolio-reveal">
-        <span class="portfolio-eyebrow">Client voice</span>
-        <h2 id="portfolio-testimonials-title">Што добиваат клиентите</h2>
+        <span class="portfolio-eyebrow">{{ $s['testimonials_eyebrow'] ?? 'Client voice' }}</span>
+        <h2 id="portfolio-testimonials-title">{{ $s['testimonials_heading'] ?? 'Што добиваат клиентите' }}</h2>
       </div>
 
+      @php
+        $defaultTestimonials = [
+          ['quote' => '„Стабилна мрежа, брза имплементација и јасна комуникација во секоја фаза од проектот."', 'author' => 'Корпоративен клиент', 'tag' => 'Мрежни решенија'],
+          ['quote' => '„Видео надзорот и контролата на пристап ни дадоа многу подобра прегледност и сигурност."', 'author' => 'Деловен простор', 'tag' => 'Безбедносни системи'],
+          ['quote' => '„Одржувањето е организирано, навремено и без непотребни прекини во секојдневната работа."', 'author' => 'Приватна компанија', 'tag' => 'ИТ поддршка'],
+        ];
+        $testimonials = $s['testimonials'] ?? $defaultTestimonials;
+      @endphp
       <div class="swiper portfolioTestimonials portfolio-reveal">
         <div class="swiper-wrapper">
+          @foreach($testimonials as $t)
           <div class="swiper-slide">
             <blockquote class="portfolio-testimonial">
-              <p>„Стабилна мрежа, брза имплементација и јасна комуникација во секоја фаза од проектот.“</p>
-              <footer>Корпоративен клиент <span>Мрежни решенија</span></footer>
+              <p>{{ $t['quote'] ?? '' }}</p>
+              <footer>{{ $t['author'] ?? '' }} <span>{{ $t['tag'] ?? '' }}</span></footer>
             </blockquote>
           </div>
-          <div class="swiper-slide">
-            <blockquote class="portfolio-testimonial">
-              <p>„Видео надзорот и контролата на пристап ни дадоа многу подобра прегледност и сигурност.“</p>
-              <footer>Деловен простор <span>Безбедносни системи</span></footer>
-            </blockquote>
-          </div>
-          <div class="swiper-slide">
-            <blockquote class="portfolio-testimonial">
-              <p>„Одржувањето е организирано, навремено и без непотребни прекини во секојдневната работа.“</p>
-              <footer>Приватна компанија <span>ИТ поддршка</span></footer>
-            </blockquote>
-          </div>
+          @endforeach
         </div>
         <div class="portfolio-testimonials__pagination swiper-pagination"></div>
       </div>
@@ -228,9 +230,9 @@
   <section class="portfolio-cta">
     <div class="portfolio-shell">
       <div class="portfolio-cta__box portfolio-reveal">
-        <span class="portfolio-eyebrow">Next project</span>
-        <h2>Подготвени сте за подобра ИТ инфраструктура?</h2>
-        <p>Кажете ни што ви треба, а ние ќе предложиме јасно, стабилно и скалабилно решение.</p>
+        <span class="portfolio-eyebrow">{{ $s['cta_eyebrow'] ?? 'Next project' }}</span>
+        <h2>{{ $s['cta_heading'] ?? 'Подготвени сте за подобра ИТ инфраструктура?' }}</h2>
+        <p>{{ $s['cta_paragraph'] ?? 'Кажете ни што ви треба, а ние ќе предложиме јасно, стабилно и скалабилно решение.' }}</p>
         <a href="{{ route('kontakt') }}" class="portfolio-btn portfolio-btn--primary">Контактирајте не</a>
       </div>
     </div>

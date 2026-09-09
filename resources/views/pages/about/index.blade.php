@@ -1,10 +1,12 @@
 @extends('layouts.app')
-<livewire:navbar />
 
 @section('title', 'ITPlus | За нас')
 @section('meta_description', 'Запознајте го ITPlus, тим за професионални ИТ решенија, инфраструктура, сервис и поддршка за компании и приватни клиенти.')
 
 @section('content')
+@php
+    $s = $page->settings ?? [];
+@endphp
 <section class="bg-white py-24 overflow-hidden">
   <div class="max-w-7xl mx-auto px-6 lg:px-12">
 
@@ -15,18 +17,16 @@
       <div>
 
         <span class="text-gray-500 uppercase tracking-[4px] text-sm font-semibold">
-          За Нас
+          {{ $s['hero_eyebrow'] ?? 'За Нас' }}
         </span>
 
         <h1 class="block text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tight">
-          Креираме Модерни
-          <span class="text-gray-600">ИКТ Решенија</span>
+          {{ $s['hero_heading_line_1'] ?? 'Креираме Модерни' }}
+          <span class="text-gray-600">{{ $s['hero_heading_line_2'] ?? 'ИКТ Решенија' }}</span>
         </h1>
 
         <p class="text-gray-600 text-lg leading-8 mt-8">
-          Нашата приказна започнува во 2018 година со тим од искусни и
-          амбициозни инженери, посветени на развој на современи софтверски
-          и ИКТ решенија за компании ширум светот.
+          {{ $s['hero_description'] ?? 'Нашата приказна започнува во 2018 година со тим од искусни и амбициозни инженери, посветени на развој на современи софтверски и ИКТ решенија за компании ширум светот.' }}
         </p>
 
         <div class="flex flex-wrap gap-4 mt-10">
@@ -55,32 +55,32 @@
         <div class="grid grid-cols-2 gap-6">
 
           <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-lg transition">
-            <h3 class="text-4xl font-bold text-gray-900">15+</h3>
+            <h3 class="text-4xl font-bold text-gray-900">{{ $s['stat_1_value'] ?? '15+' }}</h3>
             <p class="text-gray-600 mt-3">
-              Години Искуство
+              {{ $s['stat_1_label'] ?? 'Години Искуство' }}
             </p>
           </div>
 
           <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-lg transition">
-            <h3 class="text-4xl font-bold text-gray-900">24/7</h3>
+            <h3 class="text-4xl font-bold text-gray-900">{{ $s['stat_2_value'] ?? '24/7' }}</h3>
             <p class="text-gray-600 mt-3">
-              Техничка Поддршка
+              {{ $s['stat_2_label'] ?? 'Техничка Поддршка' }}
             </p>
           </div>
 
           <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-lg transition">
-            <h3 class="text-4xl font-bold text-gray-900">100+</h3>
+            <h3 class="text-4xl font-bold text-gray-900">{{ $s['stat_3_value'] ?? '100+' }}</h3>
             <p class="text-gray-600 mt-3">
-              Реализирани Проекти
+              {{ $s['stat_3_label'] ?? 'Реализирани Проекти' }}
             </p>
           </div>
 
           <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-lg transition">
             <h3 class="text-3xl font-bold text-gray-900">
-              Worldwide
+              {{ $s['stat_4_value'] ?? 'Worldwide' }}
             </h3>
             <p class="text-gray-600 mt-3">
-              Клиенти Низ Светот
+              {{ $s['stat_4_label'] ?? 'Клиенти Низ Светот' }}
             </p>
           </div>
 
@@ -96,12 +96,12 @@
       <div>
 
         <span class="text-gray-500 uppercase tracking-[4px] text-sm font-thin">
-          Нашата Приказна
+          {{ $s['story_eyebrow'] ?? 'Нашата Приказна' }}
         </span>
 
         <h2 class="text-5xl font-thin text-gray-900 mt-6 leading-tight">
-          Технологијата е Нашата
-          Инспирација
+          {{ $s['story_heading_line_1'] ?? 'Технологијата е Нашата' }}
+          {{ $s['story_heading_line_2'] ?? 'Инспирација' }}
         </h2>
 
       </div>
@@ -109,16 +109,11 @@
       <div>
 
         <p class="text-gray-600 text-lg leading-8">
-          Денес сме брзорастечка софтверска и ИКТ компанија која
-          нуди иновативни решенија, професионални услуги и долгорочна
-          поддршка за своите клиенти.
+          {{ $s['story_paragraph_1'] ?? 'Денес сме брзорастечка софтверска и ИКТ компанија која нуди иновативни решенија, професионални услуги и долгорочна поддршка за своите клиенти.' }}
         </p>
 
         <p class="text-gray-600 text-lg leading-8 mt-6">
-          Нашиот тим постојано инвестира во нови технологии и знаење,
-          со цел да обезбедиме сигурни, модерни и ефикасни решенија
-          кои го подобруваат работењето и дигиталната трансформација
-          на компаниите.
+          {{ $s['story_paragraph_2'] ?? 'Нашиот тим постојано инвестира во нови технологии и знаење, со цел да обезбедиме сигурни, модерни и ефикасни решенија кои го подобруваат работењето и дигиталната трансформација на компаниите.' }}
         </p>
 
       </div>

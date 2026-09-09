@@ -1,51 +1,52 @@
 @extends('layouts.app')
-<livewire:navbar />
+
+
 @section('title', 'ITPlus | Услуги')
 @section('meta_description', 'Професионални ИТ услуги од ITPlus: мрежни инсталации, компјутерско одржување, видео надзор, контрола на пристап и принтери.')
 
 @section('content')
 @php
-  $services = [
-    [
-      'title' => 'Мрежни инсталации и одржување на мрежи',
-      'description' => 'Комплетни решенија за LAN/Wi-Fi мрежи, конфигурација на рутери, switch уреди и стабилна мрежна инфраструктура.',
-      'href' => '/uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi',
-      'label' => 'Инфраструктура',
-      'icon' => 'network',
-    ],
-    [
-      'title' => 'Одржување на компјутерски системи',
-      'description' => 'Редовно сервисирање, оптимизација и техничка поддршка за компјутери, сервери и деловни ИТ системи.',
-      'href' => '/uslugi/odrzuvanje-na-kompjuterski-sistemi',
-      'label' => 'ИТ поддршка',
-      'icon' => 'support',
-    ],
-    [
-      'title' => 'Видео надзор и контрола на пристап',
-      'description' => 'Инсталација на CCTV системи, IP камери и безбедносни решенија за професионална заштита на домови и компании.',
-      'href' => '/uslugi/video-nadzor-i-kontrola-na-pristap',
-      'label' => 'Безбедност',
-      'icon' => 'security',
-    ],
-    [
-      'title' => 'Сервис и продажба на принтери',
-      'description' => 'Продажба, сервисирање и одржување на ласерски и inkjet принтери, тонери и резервни делови.',
-      'href' => '/uslugi/servis-i-prodazba-na-printeri',
-      'label' => 'Печатење',
-      'icon' => 'printer',
-    ],
-  ];
+    $s = $page->settings ?? [];
+    $services = [
+        [
+            'title' => $s['service_1_title'] ?? 'Мрежни инсталации и одржување на мрежи',
+            'description' => $s['service_1_description'] ?? 'Комплетни решенија за LAN/Wi-Fi мрежи, конфигурација на рутери, switch уреди и стабилна мрежна инфраструктура.',
+            'href' => '/uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi',
+            'label' => 'Инфраструктура',
+            'icon' => 'network',
+        ],
+        [
+            'title' => $s['service_2_title'] ?? 'Одржување на компјутерски системи',
+            'description' => $s['service_2_description'] ?? 'Редовно сервисирање, оптимизација и техничка поддршка за компјутери, сервери и деловни ИТ системи.',
+            'href' => '/uslugi/odrzuvanje-na-kompjuterski-sistemi',
+            'label' => 'ИТ поддршка',
+            'icon' => 'support',
+        ],
+        [
+            'title' => $s['service_3_title'] ?? 'Видео надзор и контрола на пристап',
+            'description' => $s['service_3_description'] ?? 'Инсталација на CCTV системи, IP камери и безбедносни решенија за професионална заштита на домови и компании.',
+            'href' => '/uslugi/video-nadzor-i-kontrola-na-pristap',
+            'label' => 'Безбедност',
+            'icon' => 'security',
+        ],
+        [
+            'title' => $s['service_4_title'] ?? 'Сервис и продажба на принтери',
+            'description' => $s['service_4_description'] ?? 'Продажба, сервисирање и одржување на ласерски и inkjet принтери, тонери и резервни делови.',
+            'href' => '/uslugi/servis-i-prodazba-na-printeri',
+            'label' => 'Печатење',
+            'icon' => 'printer',
+        ],
+    ];
 @endphp
 
 <main class="services-page">
   <section class="services-hero" aria-labelledby="services-hero-title">
     <div class="services-shell services-hero__grid">
       <div class="services-hero__content">
-        <span class="services-eyebrow">Професионални ИТ услуги</span>
-        <h1 id="services-hero-title">Стабилна технологија за сигурен бизнис.</h1>
+        <span class="services-eyebrow">{{ $s['hero_eyebrow'] ?? 'Професионални ИТ услуги' }}</span>
+        <h1 id="services-hero-title">{{ $s['hero_heading'] ?? 'Стабилна технологија за сигурен бизнис.' }}</h1>
         <p>
-          Нудиме професионални ИТ решенија за компании и физички лица, со брза поддршка,
-          сигурност и современа технологија прилагодена на вашата работа.
+          {{ $s['hero_description'] ?? 'Нудиме професионални ИТ решенија за компании и физички лица, со брза поддршка, сигурност и современа технологија прилагодена на вашата работа.' }}
         </p>
         <div class="services-hero__actions">
           <a href="#services-grid" class="services-btn services-btn--primary">Погледни услуги</a>
@@ -80,11 +81,10 @@
   <section class="services-overview" id="services-grid" aria-labelledby="services-grid-title">
     <div class="services-shell">
       <div class="services-section-head">
-        <span class="services-eyebrow">Што покриваме</span>
-        <h2 id="services-grid-title">Услуги организирани околу реалните потреби на вашиот бизнис.</h2>
+        <span class="services-eyebrow">{{ $s['overview_eyebrow'] ?? 'Што покриваме' }}</span>
+        <h2 id="services-grid-title">{{ $s['overview_heading'] ?? 'Услуги организирани околу реалните потреби на вашиот бизнис.' }}</h2>
         <p>
-          Од мрежа и опрема до безбедност и печатење, секоја услуга е поставена за стабилност,
-          брза реакција и долгорочна вредност.
+          {{ $s['overview_paragraph'] ?? 'Од мрежа и опрема до безбедност и печатење, секоја услуга е поставена за стабилност, брза реакција и долгорочна вредност.' }}
         </p>
       </div>
 
@@ -131,13 +131,13 @@
   <section class="services-process" aria-labelledby="services-process-title">
     <div class="services-shell services-process__grid">
       <div>
-        <span class="services-eyebrow">Како работиме</span>
-        <h2 id="services-process-title">Јасен процес, брза реализација и поддршка после имплементација.</h2>
+        <span class="services-eyebrow">{{ $s['process_eyebrow'] ?? 'Како работиме' }}</span>
+        <h2 id="services-process-title">{{ $s['process_heading'] ?? 'Јасен процес, брза реализација и поддршка после имплементација.' }}</h2>
       </div>
       <div class="services-process__steps">
-        <div><strong>01</strong><span>Анализа на потреби и постоечка инфраструктура.</span></div>
-        <div><strong>02</strong><span>Предлог решение со јасен обем, рокови и приоритети.</span></div>
-        <div><strong>03</strong><span>Имплементација, тестирање и континуирана техничка поддршка.</span></div>
+        <div><strong>01</strong><span>{{ $s['process_step_1'] ?? 'Анализа на потреби и постоечка инфраструктура.' }}</span></div>
+        <div><strong>02</strong><span>{{ $s['process_step_2'] ?? 'Предлог решение со јасен обем, рокови и приоритети.' }}</span></div>
+        <div><strong>03</strong><span>{{ $s['process_step_3'] ?? 'Имплементација, тестирање и континуирана техничка поддршка.' }}</span></div>
       </div>
     </div>
   </section>

@@ -10,9 +10,12 @@ class Navbar extends Component
     public function render()
     {
        return view('livewire.navbar', [
-            'navItems' => Navigation::with(['subNavigations' => function ($query) {
-                $query->where('published', 1);
-            }])->get(),
+            'navItems' => Navigation::where('published', true)
+                ->with(['subNavigations' => function ($query) {
+                    $query->where('published', true)->orderBy('position');
+                }])
+                ->orderBy('position')
+                ->get(),
         ]);
     }
 }

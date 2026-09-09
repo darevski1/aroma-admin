@@ -1,10 +1,13 @@
 @extends('layouts.app')
-<livewire:navbar />
+
 
 @section('title', 'ITPlus | Одржување на компјутери')
 @section('meta_description', 'Одржување на компјутерски системи од ITPlus: техничка поддршка, оптимизација, сервис и стабилна ИТ инфраструктура.')
 
 @section('content')
+@php
+    $s = $page->settings ?? [];
+@endphp
 <section class="bg-white py-24">
     <div class="max-w-7xl mx-auto px-6 lg:px-12">
 
@@ -15,19 +18,17 @@
             <div>
 
                 <span class="inline-block px-5 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
-                    Server Infrastructure
+                    {{ $s['hero_eyebrow'] ?? 'Server Infrastructure' }}
                 </span>
 
                 <h1 class="text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tigh">
-                    Сервери,
-                    Виртуелизација
-                    и <span class="main-red">ИТ Инфраструктура</span>
+                    {{ $s['hero_heading_1'] ?? 'Сервери,' }}
+                    {{ $s['hero_heading_2'] ?? 'Виртуелизација' }}
+                    и <span class="main-red">{{ $s['hero_heading_3'] ?? 'ИТ Инфраструктура' }}</span>
                 </h1>
 
                 <p class="text-lg text-gray-600 leading-8 mt-8 max-w-2xl">
-                    Обезбедуваме комплетни серверски решенија за компании – од
-                    инсталација и конфигурација до одржување, мониторинг и
-                    24/7 поддршка за критични системи.
+                    {{ $s['hero_description'] ?? 'Обезбедуваме комплетни серверски решенија за компании – од инсталација и конфигурација до одржување, мониторинг и 24/7 поддршка за критични системи.' }}
                 </p>
 
                 <div class="flex flex-wrap gap-4 mt-10">
@@ -48,18 +49,18 @@
                 <div class="grid grid-cols-3 gap-6 mt-14">
 
                     <div>
-                        <h3 class="text-3xl font-bold text-gray-900">24/7</h3>
-                        <p class="text-gray-600 mt-2">Мониторинг</p>
+                        <h3 class="text-3xl font-bold text-gray-900">{{ $s['stat_1_value'] ?? '24/7' }}</h3>
+                        <p class="text-gray-600 mt-2">{{ $s['stat_1_label'] ?? 'Мониторинг' }}</p>
                     </div>
 
                     <div>
-                        <h3 class="text-3xl font-bold text-gray-900">99.9%</h3>
-                        <p class="text-gray-600 mt-2">Uptime</p>
+                        <h3 class="text-3xl font-bold text-gray-900">{{ $s['stat_2_value'] ?? '99.9%' }}</h3>
+                        <p class="text-gray-600 mt-2">{{ $s['stat_2_label'] ?? 'Uptime' }}</p>
                     </div>
 
                     <div>
-                        <h3 class="text-3xl font-bold text-gray-900">15+</h3>
-                        <p class="text-gray-600 mt-2">Години Искуство</p>
+                        <h3 class="text-3xl font-bold text-gray-900">{{ $s['stat_3_value'] ?? '15+' }}</h3>
+                        <p class="text-gray-600 mt-2">{{ $s['stat_3_label'] ?? 'Години Искуство' }}</p>
                     </div>
 
                 </div>
@@ -74,7 +75,7 @@
 
                 <!-- Image -->
                 <div class="relative rounded-[40px] overflow-hidden shadow-2xl">
-                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1400&auto=format&fit=crop"
+                    <img src="{{ $s['hero_image'] ?? 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1400&auto=format&fit=crop' }}"
                         class="w-full h-[650px] object-cover" alt="Server Room">
                 </div>
 
@@ -112,16 +113,15 @@
             <div class="text-center max-w-3xl mx-auto">
 
                 <span class="text-sm uppercase tracking-[4px] text-gray-500 font-semibold">
-                    Server Services
+                    {{ $s['services_eyebrow'] ?? 'Server Services' }}
                 </span>
 
                 <h2 class="text-5xl font-bold text-gray-900 mt-6">
-                    Комплетни Серверски Решенија
+                    {{ $s['services_heading'] ?? 'Комплетни Серверски Решенија' }}
                 </h2>
 
                 <p class="text-lg text-gray-600 mt-6 leading-8">
-                    Дизајн, имплементација и одржување на сигурна ИТ инфраструктура
-                    за мали, средни и големи компании.
+                    {{ $s['services_paragraph'] ?? 'Дизајн, имплементација и одржување на сигурна ИТ инфраструктура за мали, средни и големи компании.' }}
                 </p>
 
             </div>
@@ -129,44 +129,41 @@
             <!-- CARDS -->
             <div class="grid md:grid-cols-3 gap-8 mt-20">
 
-                <!-- CARD -->
+                <!-- CARD 1 -->
                 <div class="bg-gray-50 border border-gray-100 rounded-[32px] p-10 hover:shadow-xl transition">
 
                     <h3 class="text-2xl font-bold text-gray-900">
-                        Windows / Linux Server
+                        {{ $s['service_card_1_title'] ?? 'Windows / Linux Server' }}
                     </h3>
 
                     <p class="text-gray-600 mt-5 leading-7">
-                        Инсталација, конфигурација и одржување на Windows Server и Linux
-                        системи за стабилна работа на вашата компанија.
+                        {{ $s['service_card_1_description'] ?? 'Инсталација, конфигурација и одржување на Windows Server и Linux системи за стабилна работа на вашата компанија.' }}
                     </p>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- CARD 2 -->
                 <div class="bg-gray-50 border border-gray-100 rounded-[32px] p-10 hover:shadow-xl transition">
 
                     <h3 class="text-2xl font-bold text-gray-900">
-                        Virtualization
+                        {{ $s['service_card_2_title'] ?? 'Virtualization' }}
                     </h3>
 
                     <p class="text-gray-600 mt-5 leading-7">
-                        VMware и Hyper-V решенија за оптимизација на ресурси,
-                        backup и висока достапност.
+                        {{ $s['service_card_2_description'] ?? 'VMware и Hyper-V решенија за оптимизација на ресурси, backup и висока достапност.' }}
                     </p>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- CARD 3 -->
                 <div class="bg-gray-50 border border-gray-100 rounded-[32px] p-10 hover:shadow-xl transition">
 
                     <h3 class="text-2xl font-bold text-gray-900">
-                        Backup & Security
+                        {{ $s['service_card_3_title'] ?? 'Backup & Security' }}
                     </h3>
 
                     <p class="text-gray-600 mt-5 leading-7">
-                        Напредни backup системи, disaster recovery и заштита
-                        на вашите критични податоци.
+                        {{ $s['service_card_3_description'] ?? 'Напредни backup системи, disaster recovery и заштита на вашите критични податоци.' }}
                     </p>
 
                 </div>

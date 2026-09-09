@@ -43,17 +43,20 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-  // Create map
-    const map = L.map('map').setView([41.9981, 21.4254], 15);
+  // Create map only if #map element exists (contact page)
+    const mapEl = document.getElementById('map');
+    if (mapEl) {
+        const map = L.map('map').setView([41.9981, 21.4254], 15);
 
-    // OpenStreetMap layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+        // OpenStreetMap layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-    // Marker
-    L.marker([41.9981, 21.4254])
-        .addTo(map)
-        .bindPopup('Бул: 11 Октомври 86 - 3/8, Скопје')
-        .openPopup();
+        // Marker
+        L.marker([41.9981, 21.4254])
+            .addTo(map)
+            .bindPopup('Бул: 11 Октомври 86 - 3/8, Скопје')
+            .openPopup();
+    }
 </script>

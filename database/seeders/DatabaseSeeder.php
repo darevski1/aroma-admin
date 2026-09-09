@@ -13,11 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Roles must exist first: users.user_role has an FK to roles.id.
+        $this->call(RolesSeeder::class);
 
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        $this->call([
+            AdminUserSeeder::class,
+            NavigationSeeder::class,
+            SubNavigationSeeder::class,
+            PageSeeder::class,
+            HomepageSectionSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,19 @@
+# PATCH_SpatieModelTypeNull_v1
+# Fix: Spatie Media Library crashes on nullable model_type in PHP 8.3
+# class_exists() requires a string argument but Arr::morphMap() can return
+# null/other when model_type is null (global/unattached media).
+# Reported upstream: https://github.com/spatie/laravel-medialibrary/issues/XXXX
+#
+# SEARCH:
+        $modelName = Arr::get(Relation::morphMap(), $media->model_type, $media->model_type);
+
+        if (! class_exists($modelName)) {
+            return;
+        }
+# ===
+# REPLACE:
+        $modelName = Arr::get(Relation::morphMap(), $media->model_type, $media->model_type);
+
+        if (! is_string($modelName) || ! class_exists($modelName)) {
+            return;
+        }

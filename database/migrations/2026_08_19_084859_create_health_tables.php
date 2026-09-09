@@ -12,7 +12,11 @@ return new class extends Migration
     {
         $connection = (new HealthCheckResultHistoryItem)->getConnectionName();
         $tableName = EloquentHealthResultStore::getHistoryItemInstance()->getTable();
-    
+
+        if (Schema::connection($connection)->hasTable($tableName)) {
+            return;
+        }
+
         Schema::connection($connection)->create($tableName, function (Blueprint $table) {
             $table->id();
 
@@ -32,5 +36,13 @@ return new class extends Migration
             $table->index('created_at');
             $table->index('batch');
         });
+    }
+
+    public function down()
+    {
+        $connection = (new HealthCheckResultHistoryItem)->getConnectionName();
+        $tableName = EloquentHealthResultStore::getHistoryItemInstance()->getTable();
+
+        Schema::connection($connection)->dropIfExists($tableName);
     }
 };

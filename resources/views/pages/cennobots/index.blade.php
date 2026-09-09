@@ -1,8 +1,12 @@
 @extends('layouts.app')
-<livewire:navbar />
+
+
 @section('title', 'ITPlus | CenoBots')
 @section('meta_description', 'AI автономни роботи за чистење CenoBots: модерни роботски решенија за компании, хотели, трговски центри и јавни објекти.')
 @section('content')
+@php
+    $s = $page->settings ?? [];
+@endphp
 
 <div class="cenobots-page">
   <!-- ── HERO ─────────────────────────────────────────── -->
@@ -18,19 +22,19 @@
 
       <!-- Copy -->
       <div class="md:w-1/2 space-y-6 z-10">
-        <h1 class="text-7xl md:text-7xl font-normal">CENOBOTS</h1>
+        <h1 class="text-7xl md:text-7xl font-normal">{{ $s['hero_heading'] ?? 'CENOBOTS' }}</h1>
         <p class="text-xl md:text-2xl font-light text-gray-700 leading-relaxed">
-          AI-автономни роботи за чистење. Паметно, ефикасно и еколошко решение за секој комерцијален простор.
+          {{ $s['hero_description'] ?? 'AI-автономни роботи за чистење. Паметно, ефикасно и еколошко решение за секој комерцијален простор.' }}
         </p>
         <a href="#l3"
           class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
-          Дознајте повеќе
+          {{ $s['hero_cta'] ?? 'Дознајте повеќе' }}
         </a>
       </div>
 
       <!-- Robot image -->
       <div class="md:w-1/2 flex justify-center z-10">
-        <img id="hero-image" src="{{ asset('./../assets/images/cenobot.png') }}" alt="Cenobot робот"
+        <img id="hero-image" src="{{ $s['hero_image'] ?? asset('./../assets/images/cenobot.png') }}" alt="{{ $s['hero_image_alt'] ?? 'Cenobot робот' }}"
           class="hero-image max-h-[60vh] object-contain transition-transform duration-200 will-change-transform">
       </div>
     </div>
@@ -40,19 +44,17 @@
     <div class="max-w-7xl mx-auto px-6">
       <div class="cenobots-solutions__card">
         <div>
-          <span class="cenobots-eyebrow">Решенија</span>
-          <h2>Индустриски машини за професионално чистење</h2>
+          <span class="cenobots-eyebrow">{{ $s['solutions_eyebrow'] ?? 'Решенија' }}</span>
+          <h2>{{ $s['solutions_heading'] ?? 'Индустриски машини за професионално чистење' }}</h2>
         </div>
         <div class="cenobots-solutions__content">
           <p>
-            Cenobots се индустриски машини за чистење наменети за ефикасно, безбедно и автоматизирано
-            одржување на големи комерцијални и индустриски простори. Тие помагаат во намалување на
-            трошоците, зголемување на продуктивноста и обезбедување постојано висок квалитет на чистење.
+            {{ $s['solutions_description'] ?? 'Cenobots се индустриски машини за чистење наменети за ефикасно, безбедно и автоматизирано одржување на големи комерцијални и индустриски простори. Тие помагаат во намалување на трошоците, зголемување на продуктивноста и обезбедување постојано висок квалитет на чистење.' }}
           </p>
           <div class="cenobots-solutions__actions">
-            <a href="#l3" class="cenobots-btn cenobots-btn--primary">Погледни модели</a>
+            <a href="#l3" class="cenobots-btn cenobots-btn--primary">{{ $s['solutions_btn_1'] ?? 'Погледни модели' }}</a>
             <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank" download="cenobots-brochure.pdf"
-              class="cenobots-btn cenobots-btn--ghost">Преземи брошура</a>
+              class="cenobots-btn cenobots-btn--ghost">{{ $s['solutions_btn_2'] ?? 'Преземи брошура' }}</a>
           </div>
         </div>
       </div>
@@ -99,38 +101,30 @@
 
       <div class="text-center mb-12">
         <h2 class="text-6xl md:text-6xl font-normal mb-4">
-          Области на <span class="colorBlue">Примена</span>
+          {{ $s['areas_heading_1'] ?? 'Области на' }} <span class="colorBlue">{{ $s['areas_heading_2'] ?? 'Примена' }}</span>
         </h2>
         <p class="text-xl md:text-2xl font-light text-gray-700 leading-relaxed">
-          Од лобија до ходници — нашите роботи се прилагодуваат на секоја комерцијална средина.
+          {{ $s['areas_description'] ?? 'Од лобија до ходници — нашите роботи се прилагодуваат на секоја комерцијална средина.' }}
         </p>
       </div>
 
+      @php
+        $defaultAreas = [
+          ['image' => './../assets/images/retail.jpg', 'alt' => 'Трговски Центри', 'title' => 'Трговски Центри'],
+          ['image' => './../assets/images/hotel.jpg', 'alt' => 'Хотели', 'title' => 'Хотели'],
+          ['image' => './../assets/images/hospital.jpg', 'alt' => 'Болници', 'title' => 'Болници'],
+          ['image' => './../assets/images/education.jpg', 'alt' => 'Образование', 'title' => 'Образование'],
+        ];
+        $areas = $s['areas'] ?? $defaultAreas;
+      @endphp
       <div class=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <!-- Each card shares the same structure -->
+        @foreach($areas as $area)
         <div class="area-card relative rounded-xl overflow-hidden shadow-md cursor-pointer">
-          <img src="{{asset(" ./../assets/images/retail.jpg")}}" alt="Трговски Центри" class="w-full h-64 object-cover">
+          <img src="{{asset( $area['image'] ?? './../assets/images/retail.jpg')}}" alt="{{ $area['alt'] ?? $area['title'] ?? '' }}" class="w-full h-64 object-cover">
           <div class="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent"></div>
-          <h3 class="absolute bottom-4 left-4 text-white font-semibold">Трговски Центри</h3>
+          <h3 class="absolute bottom-4 left-4 text-white font-semibold">{{ $area['title'] ?? '' }}</h3>
         </div>
-
-        <div class="area-card relative rounded-xl overflow-hidden shadow-md cursor-pointer">
-          <img src="{{asset(" ./../assets/images/hotel.jpg")}}" alt="Хотели" class="w-full h-64 object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent"></div>
-          <h3 class="absolute bottom-4 left-4 text-white font-semibold">Хотели</h3>
-        </div>
-
-        <div class="area-card relative rounded-xl overflow-hidden shadow-md cursor-pointer">
-          <img src="{{asset(" ./../assets/images/hospital.jpg")}}" alt="Болници" class="w-full h-64 object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent"></div>
-          <h3 class="absolute bottom-4 left-4 text-white font-semibold">Болници</h3>
-        </div>
-
-        <div class="area-card relative rounded-xl overflow-hidden shadow-md cursor-pointer">
-          <img src="{{asset(" ./../assets/images/education.jpg")}}" alt="Образование" class="w-full h-64 object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent"></div>
-          <h3 class="absolute bottom-4 left-4 text-white font-semibold">Образование</h3>
-        </div>
+        @endforeach
       </div>
     </div>
   </section>
@@ -142,23 +136,19 @@
       <!-- Copy -->
       <div class="md:w-1/2 space-y-6">
         <h2 class="text-6xl md:text-6xl font-normal leading-snug tracking-tighter ">
-          Паметна контрола на чистењето во ваши раце
+          {{ $s['tech_heading'] ?? 'Паметна контрола на чистењето во ваши раце' }}
         </h2>
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-          Апликацијата за мобилни уреди на CenoBots L50 носи ново ниво на контрола и прегледност
-          во процесот на чистење. Со модерен интерфејс, корисниците во секој момент имаат увид
-          во работата на роботот — од тековната позиција до детални информации за перформансите.
+          {{ $s['tech_paragraph_1'] ?? 'Апликацијата за мобилни уреди на CenoBots L50 носи ново ниво на контрола и прегледност во процесот на чистење. Со модерен интерфејс, корисниците во секој момент имаат увид во работата на роботот — од тековната позиција до детални информации за перформансите.' }}
         </p>
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-          Преку апликацијата лесно се креираат рути за чистење, добиваат известувања за завршени
-          задачи и се следи статусот на уредот. Управувањето станува едноставно, паметно и целосно
-          под ваша контрола — каде и да сте.
+          {{ $s['tech_paragraph_2'] ?? 'Преку апликацијата лесно се креираат рути за чистење, добиваат известувања за завршени задачи и се следи статусот на уредот. Управувањето станува едноставно, паметно и целосно под ваша контрола — каде и да сте.' }}
         </p>
       </div>
 
       <!-- App screenshot -->
       <div class="md:w-1/2 flex justify-center">
-        <img src="{{asset(" ./../assets/images/cenobots-app-l50.webp")}}" alt="CenoBots L50 апликација"
+        <img src="{{ $s['tech_image'] ?? asset('./../assets/images/cenobots-app-l50.webp') }}" alt="{{ $s['tech_image_alt'] ?? 'CenoBots L50 апликација' }}"
           class="w-full max-w-md object-cover rounded-2xl shadow-xl hover:scale-105 transition-transform duration-300">
       </div>
     </div>
@@ -171,42 +161,32 @@
       <!-- LEFT SIDE -->
       <div class="space-y-6">
         <h2 class="text-7xl md:text-7xl font-normal">
-          CenoBots L3
+          {{ $s['l3_heading'] ?? 'CenoBots L3' }}
         </h2>
 
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-          Компактен автономен робот за професионално чистење со AI навигација и висока ефикасност.
-          Идеален за канцеларии, маркети, хотели и комерцијални простори.
+          {{ $s['l3_description'] ?? 'Компактен автономен робот за професионално чистење со AI навигација и висока ефикасност. Идеален за канцеларии, маркети, хотели и комерцијални простори.' }}
         </p>
 
+        @php
+          $defaultL3Images = [
+            './../assets/images/cenobots/L3-images/01.png',
+            './../assets/images/cenobots/L3-images/02.png',
+            './../assets/images/cenobots/L3-images/03.png',
+            './../assets/images/cenobots/L3-images/04.png',
+            './../assets/images/cenobots/L3-images/05.png',
+            './../assets/images/cenobots/L3-images/06.png',
+          ];
+          $l3Images = $s['l3_images'] ?? $defaultL3Images;
+        @endphp
         <div class="swiper mySwiper">
           <div class="swiper-wrapper">
+            @foreach($l3Images as $img)
             <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/L3-images/01.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-xl  hover:scale-105 transition-transform duration-300">
+              <img src="{{asset($img)}}" alt="{{ $s['l3_heading'] ?? 'CenoBots L3' }}"
+                class="w-full max-w-xl hover:scale-105 transition-transform duration-300">
             </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/L3-images/02.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/L3-images/03.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/L3-images/04.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/L3-images/05.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/L3-images/06.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-
-
+            @endforeach
           </div>
           <div class="swiper-button-next"></div>
           <div class="swiper-button-prev"></div>
@@ -220,53 +200,44 @@
 
           <div>
             <p class="text-lg md:text-xl font-normal text-zinc-950 mt-3">
-              Автономно професионално чистење со паметна роботика и целосна контрола
+              {{ $s['l3_feature_heading'] ?? 'Автономно професионално чистење со паметна роботика и целосна контрола' }}
             </p>
           </div>
 
           <div class="space-y-3 text-zinc-950">
-
+            @php
+              $defaultL3Features = [
+                ['icon' => '🧠', 'text' => 'AI + SLAM навигација'],
+                ['icon' => '📡', 'text' => '3D LiDAR детекција на пречки'],
+                ['icon' => '💧', 'text' => '25L чиста / 25L валкана вода'],
+                ['icon' => '⚡', 'text' => 'до 2,000 m²/час покриеност'],
+                ['icon' => '🔄', 'text' => 'автоматско докирање и полнење'],
+                ['icon' => '📱', 'text' => 'далечинска контрола и распоредување'],
+              ];
+              $l3Features = $s['l3_features'] ?? $defaultL3Features;
+            @endphp
+            @foreach($l3Features as $f)
             <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-              <span>🧠</span> AI + SLAM навигација
+              <span>{{ $f['icon'] ?? '' }}</span> {{ $f['text'] ?? '' }}
             </div>
-
-            <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-              <span>📡</span> 3D LiDAR детекција на пречки
-            </div>
-
-            <div class="flex  text-lg md:text-xl font-thin items-center gap-2">
-              <span>💧</span> 25L чиста / 25L валкана вода
-            </div>
-
-            <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-              <span>⚡</span> до 2,000 m²/час покриеност
-            </div>
-
-            <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-              <span>🔄</span> автоматско докирање и полнење
-            </div>
-
-            <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-              <span>📱</span> далечинска контрола и распоредување
-            </div>
-
+            @endforeach
           </div>
 
           <div class="pt-4">
             <p class="text-lg md:text-xl font-thin text-zinc-700">
-              100% автономно чистење без човечка интервенција
+              {{ $s['l3_footer_text'] ?? '100% автономно чистење без човечка интервенција' }}
             </p>
           </div>
 
           <div class="flex gap-4 pt-2">
             <a href="#l3"
               class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
-              Дознајте повеќе
+              {{ $s['l3_btn_1'] ?? 'Дознајте повеќе' }}
             </a>
             <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
               download="cenobots-brochure.pdf"
               class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
-              Брошура
+              {{ $s['l3_btn_2'] ?? 'Брошура' }}
             </a>
           </div>
 
@@ -281,73 +252,62 @@
       <!-- LEFT SIDE -->
       <div class="space-y-6">
         <h2 class="text-7xl md:text-7xl font-normal">
-          CenoBots l50
+          {{ $s['l50_heading'] ?? 'CenoBots l50' }}
         </h2>
 
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-          CenoBots L3 е индустриска роботска машина дизајнирана за автоматизација
-          на производствени процеси. Овозможува висока прецизност, брзина и
-          сигурност во работењето, што ја прави идеална за модерни фабрики.
+          {{ $s['l50_description'] ?? 'CenoBots L3 е индустриска роботска машина дизајнирана за автоматизација на производствени процеси. Овозможува висока прецизност, брзина и сигурност во работењето, што ја прави идеална за модерни фабрики.' }}
         </p>
 
-        <img src="{{asset(" ./../assets/images/cenobots/L3-images/01.png")}}" alt="CenoBots L50 апликација"
-          class="w-full max-w-md  hover:scale-135 transition-transform duration-300">
+        <img src="{{asset($s['l50_image'] ?? './../assets/images/cenobots/L3-images/01.png')}}" alt="{{ $s['l50_heading'] ?? 'CenoBots L50' }}"
+          class="w-full max-w-md hover:scale-135 transition-transform duration-300">
       </div>
 
-      <!-- RIGHT SIDE (EMPTY) -->
+      <!-- RIGHT SIDE -->
       <div class="hidden md:block">
         <div>
           <div class="space-y-6">
 
             <div>
               <p class="text-lg md:text-xl font-normal text-zinc-950 mt-3">
-                Индустриски автономен робот за чистење на големи површини со висока продуктивност и напредна роботика
+                {{ $s['l50_feature_heading'] ?? 'Индустриски автономен робот за чистење на големи површини со висока продуктивност и напредна роботика' }}
               </p>
             </div>
 
             <div class="space-y-3 text-zinc-950">
-
+              @php
+                $defaultL50Features = [
+                  ['icon' => '🧠', 'text' => 'AI + SLAM навигација со висока прецизност'],
+                  ['icon' => '📡', 'text' => '3D LiDAR + мулти-сензорска детекција'],
+                  ['icon' => '💧', 'text' => 'голем капацитет на резервоари (чиста / валкана вода)'],
+                  ['icon' => '⚡', 'text' => 'висока покриеност за индустриски простори'],
+                  ['icon' => '🔄', 'text' => 'автоматско докирање, полнење и празнење'],
+                  ['icon' => '📱', 'text' => 'централизирана контрола и управување преку апликација'],
+                ];
+                $l50Features = $s['l50_features'] ?? $defaultL50Features;
+              @endphp
+              @foreach($l50Features as $f)
               <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🧠</span> AI + SLAM навигација со висока прецизност
+                <span>{{ $f['icon'] ?? '' }}</span> {{ $f['text'] ?? '' }}
               </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📡</span> 3D LiDAR + мулти-сензорска детекција
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>💧</span> голем капацитет на резервоари (чиста / валкана вода)
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>⚡</span> висока покриеност за индустриски простори
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🔄</span> автоматско докирање, полнење и празнење
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📱</span> централизирана контрола и управување преку апликација
-              </div>
-
+              @endforeach
             </div>
 
             <div class="pt-4">
               <p class="text-lg md:text-xl font-thin text-zinc-700">
-                Максимална ефикасност за големи комерцијални и индустриски објекти
+                {{ $s['l50_footer_text'] ?? 'Максимална ефикасност за големи комерцијални и индустриски објекти' }}
               </p>
             </div>
 
             <div class="flex gap-4 pt-2">
               <a href="#l50"
                 class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
-                Дознајте повеќе
+                {{ $s['l50_btn_1'] ?? 'Дознајте повеќе' }}
               </a>
               <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
                 download="cenobots-brochure.pdf"
                 class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
-                Брошура
+                {{ $s['l50_btn_2'] ?? 'Брошура' }}
               </a>
             </div>
 
@@ -363,78 +323,63 @@
       <!-- LEFT SIDE -->
       <div class="space-y-6">
         <h2 class="text-7xl md:text-7xl font-normal">
-          CenoBots l4
+          {{ $s['l4_heading'] ?? 'CenoBots l4' }}
         </h2>
 
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-          CenoBots L3 е индустриска роботска машина дизајнирана за автоматизација
-          на производствени процеси. Овозможува висока прецизност, брзина и
-          сигурност во работењето, што ја прави идеална за модерни фабрики.
+          {{ $s['l4_description'] ?? 'CenoBots L3 е индустриска роботска машина дизајнирана за автоматизација на производствени процеси. Овозможува висока прецизност, брзина и сигурност во работењето, што ја прави идеална за модерни фабрики.' }}
         </p>
 
-        <img src="{{asset(" ./../assets/images/cenobots/L3-images/01.png")}}" alt="CenoBots L50 апликација"
-          class="w-full max-w-md  hover:scale-15 transition-transform duration-300">
+        <img src="{{asset($s['l4_image'] ?? './../assets/images/cenobots/L3-images/01.png')}}" alt="{{ $s['l4_heading'] ?? 'CenoBots L4' }}"
+          class="w-full max-w-md hover:scale-15 transition-transform duration-300">
       </div>
 
-      <!-- RIGHT SIDE (EMPTY) -->
+      <!-- RIGHT SIDE -->
       <div class="hidden md:block">
-        <!-- Можеш подоцна тука да додадеш нешто -->
         <div>
           <div class="space-y-6">
 
             <div>
               <p class="text-lg md:text-xl font-normal text-zinc-950 mt-3">
-                Компактен и интелигентен робот за автономно чистење во тесни и динамични простори
+                {{ $s['l4_feature_heading'] ?? 'Компактен и интелигентен робот за автономно чистење во тесни и динамични простори' }}
               </p>
             </div>
 
             <div class="space-y-3 text-zinc-950">
-
+              @php
+                $defaultL4Features = [
+                  ['icon' => '🧠', 'text' => 'AI + SLAM навигација со Nvidia процесор'],
+                  ['icon' => '📡', 'text' => '3D LiDAR + depth камери за прецизна детекција'],
+                  ['icon' => '💧', 'text' => '~34–38L резервоари за чиста и валкана вода'],
+                  ['icon' => '⚡', 'text' => 'до ~2,000 m²/час продуктивност'],
+                  ['icon' => '📐', 'text' => 'дизајниран за тесни простори и коридори'],
+                  ['icon' => '🔄', 'text' => 'автоматско полнење, мапирање и 24/7 работа'],
+                  ['icon' => '📱', 'text' => 'контрола преку мобилна апликација и touchscreen'],
+                ];
+                $l4Features = $s['l4_features'] ?? $defaultL4Features;
+              @endphp
+              @foreach($l4Features as $f)
               <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🧠</span> AI + SLAM навигација со Nvidia процесор
+                <span>{{ $f['icon'] ?? '' }}</span> {{ $f['text'] ?? '' }}
               </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📡</span> 3D LiDAR + depth камери за прецизна детекција
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>💧</span> ~34–38L резервоари за чиста и валкана вода
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>⚡</span> до ~2,000 m²/час продуктивност
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📐</span> дизајниран за тесни простори и коридори
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🔄</span> автоматско полнење, мапирање и 24/7 работа
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📱</span> контрола преку мобилна апликација и touchscreen
-              </div>
-
+              @endforeach
             </div>
 
             <div class="pt-4">
               <p class="text-lg md:text-xl font-thin text-zinc-700">
-                Оптимизиран за максимална маневрибилност и ефикасност во сложени простори
+                {{ $s['l4_footer_text'] ?? 'Оптимизиран за максимална маневрибилност и ефикасност во сложени простори' }}
               </p>
             </div>
 
             <div class="flex gap-4 pt-2">
               <a href="#l4"
                 class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
-                Дознајте повеќе
+                {{ $s['l4_btn_1'] ?? 'Дознајте повеќе' }}
               </a>
               <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
                 download="cenobots-brochure.pdf"
                 class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
-                Брошура
+                {{ $s['l4_btn_2'] ?? 'Брошура' }}
               </a>
             </div>
 
@@ -449,45 +394,35 @@
       <!-- LEFT SIDE -->
       <div class="space-y-6" br>
         <h2 class="text-7xl md:text-7xl font-normal">
-          CenoBots SP50
+          {{ $s['sp50_heading'] ?? 'CenoBots SP50' }}
         </h2>
 
         <h2 class="text-3xl md:text-3xl font-thin">
-          Автономен робот за индустриско чистење со висока прецизност
+          {{ $s['sp50_subheading'] ?? 'Автономен робот за индустриско чистење со висока прецизност' }}
         </h2>
 
         <p class="text-lg md:text-xl font-thin mb-8 text-zinc-950">
-          Паметно, брзо и целосно автоматизирано чистење на големи површини. SP50 користи AI навигација и LiDAR
-          технологија за прецизно детектирање и отстранување на нечистотии – без потреба од човечка интервенција.
+          {{ $s['sp50_description'] ?? 'Паметно, брзо и целосно автоматизирано чистење на големи површини. SP50 користи AI навигација и LiDAR технологија за прецизно детектирање и отстранување на нечистотии – без потреба од човечка интервенција.' }}
         </p>
+        @php
+          $defaultSP50Images = [
+            './../assets/images/cenobots/SP50/1.png',
+            './../assets/images/cenobots/SP50/1.png',
+            './../assets/images/cenobots/SP50/2.png',
+            './../assets/images/cenobots/SP50/3.png',
+            './../assets/images/cenobots/SP50/4.png',
+            './../assets/images/cenobots/SP50/5.png',
+          ];
+          $sp50Images = $s['sp50_images'] ?? $defaultSP50Images;
+        @endphp
         <div class="swiper mySwiper">
           <div class="swiper-wrapper">
+            @foreach($sp50Images as $img)
             <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/SP50/1.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-xl  hover:scale-105 transition-transform duration-300">
+              <img src="{{asset($img)}}" alt="{{ $s['sp50_heading'] ?? 'CenoBots SP50' }}"
+                class="w-full max-w-xl hover:scale-105 transition-transform duration-300">
             </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/SP50/1.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/SP50/2.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/SP50/3.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/SP50/4.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="swiper-slide">
-              <img src="{{asset(" ./../assets/images/cenobots/SP50/5.png")}}" alt="CenoBots L50 апликација"
-                class="w-full max-w-md  hover:scale-105 transition-transform duration-300">
-            </div>
-
-
+            @endforeach
           </div>
           <div class="swiper-button-next"></div>
           <div class="swiper-button-prev"></div>
@@ -496,64 +431,52 @@
 
       </div>
 
-      <!-- RIGHT SIDE (EMPTY) -->
+      <!-- RIGHT SIDE -->
       <div class="hidden md:block">
         <div>
           <div class="space-y-6">
 
             <div>
               <p class="text-lg md:text-xl font-normal text-zinc-950 mt-3">
-                Автономен робот за суво чистење и вакуумирање со интелигентно spot-cleaning детектирање
+                {{ $s['sp50_feature_heading'] ?? 'Автономен робот за суво чистење и вакуумирање со интелигентно spot-cleaning детектирање' }}
               </p>
             </div>
 
             <div class="space-y-3 text-zinc-950">
-
+              @php
+                $defaultSP50Features = [
+                  ['icon' => '🧠', 'text' => 'AI детекција на над 30 типови нечистотии (99% прецизност)'],
+                  ['icon' => '📡', 'text' => '3D LiDAR + мулти-сензорска навигација'],
+                  ['icon' => '🧹', 'text' => 'вакуумирање + метeње (dual cleaning систем)'],
+                  ['icon' => '⚡', 'text' => 'до 20,000 m²/час spot-cleaning продуктивност'],
+                  ['icon' => '🔄', 'text' => 'интелигентно повторно чистење (CRC технологија)'],
+                  ['icon' => '🔋', 'text' => 'до ~16 часа автономна работа'],
+                  ['icon' => '📱', 'text' => 'апликација за контрола, мониторинг и планирање'],
+                ];
+                $sp50Features = $s['sp50_features'] ?? $defaultSP50Features;
+              @endphp
+              @foreach($sp50Features as $f)
               <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🧠</span> AI детекција на над 30 типови нечистотии (99% прецизност)
+                <span>{{ $f['icon'] ?? '' }}</span> {{ $f['text'] ?? '' }}
               </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📡</span> 3D LiDAR + мулти-сензорска навигација
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🧹</span> вакуумирање + метeње (dual cleaning систем)
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>⚡</span> до 20,000 m²/час spot-cleaning продуктивност
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🔄</span> интелигентно повторно чистење (CRC технологија)
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>🔋</span> до ~16 часа автономна работа
-              </div>
-
-              <div class="flex text-lg md:text-xl font-thin items-center gap-2">
-                <span>📱</span> апликација за контрола, мониторинг и планирање
-              </div>
-
+              @endforeach
             </div>
 
             <div class="pt-4">
               <p class="text-lg md:text-xl font-thin text-zinc-700">
-                Идеален за големи и динамични простори со висок проток на луѓе
+                {{ $s['sp50_footer_text'] ?? 'Идеален за големи и динамични простори со висок проток на луѓе' }}
               </p>
             </div>
 
             <div class="flex gap-4 pt-2">
               <a href="#sp50"
                 class="cenobots-glass-btn px-6 py-3 mt-5 rounded-full text-white font-md">
-                Дознајте повеќе
+                {{ $s['sp50_btn_1'] ?? 'Дознајте повеќе' }}
               </a>
               <a href="{{ asset('storage/assets/docs/cenobots-brochure.pdf') }}" target="_blank"
                 download="cenobots-brochure.pdf"
                 class="px-6 py-3 mt-5 rounded-full bg-white text-[#5c59f5] font-medium border border-[#5c59f5] transition-all duration-300 hover:bg-black hover:text-white hover:border-black">
-                Брошура
+                {{ $s['sp50_btn_2'] ?? 'Брошура' }}
               </a>
             </div>
 
@@ -577,13 +500,12 @@
 
       <!-- Title -->
       <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">
-        Потребна ви е професионална ИТ поддршка?
+        {{ $s['cta_heading'] ?? 'Потребна ви е професионална ИТ поддршка?' }}
       </h2>
 
       <!-- Description -->
       <p class="mt-6 text-lg md:text-xl text-zinc-300 max-w-3xl mx-auto leading-relaxed">
-        Контактирајте не за понуда, консултација или техничка поддршка.
-        Нудиме решенија за мрежи, видео надзор, сервисирање и комплетна ИТ инфраструктура.
+        {{ $s['cta_description'] ?? 'Контактирајте не за понуда, консултација или техничка поддршка. Нудиме решенија за мрежи, видео надзор, сервисирање и комплетна ИТ инфраструктура.' }}
       </p>
 
       <!-- Buttons -->

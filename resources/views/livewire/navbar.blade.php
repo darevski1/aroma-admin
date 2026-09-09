@@ -33,7 +33,7 @@
 
           <!-- Parent With Dropdown -->
           <div class="site-navbar__parent">
-            <a href="{{ url($nav->slug) }}" class="site-navbar__link site-navbar__link--dropdown">
+            <a href="{{ $nav->getLinkUrl() }}" class="site-navbar__link site-navbar__link--dropdown">
               <span>{{ $nav->name }}</span>
               <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
@@ -58,7 +58,7 @@
               @foreach ($nav->subNavigations as $sub)
 
               <li>
-                <a href="{{ url($nav->slug . '/' . $sub->slug) }}" class="site-navbar__dropdown-link block">
+                <a href="{{ $sub->getLinkUrl() }}" class="site-navbar__dropdown-link block">
                   {{ $sub->sub_name }}
                 </a>
               </li>
@@ -72,7 +72,7 @@
           @else
 
           <!-- Normal Link -->
-          <a href="{{ url($nav->slug) }}"
+          <a href="{{ $nav->getLinkUrl() }}"
             class="site-navbar__link block">
 
             {{ $nav->name }}
@@ -88,6 +88,7 @@
       </ul>
 
     </div>
+
   </div>
 </nav>
 

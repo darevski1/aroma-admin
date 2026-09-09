@@ -1,8 +1,12 @@
 @extends('layouts.app')
-<livewire:navbar />
+
+
 @section('title', 'ITPlus | Сервис и продажба на принтери')
 @section('meta_description', 'Сервис, продажба и изнајмување на принтери од ITPlus: мрежни принтери, одржување, конфигурација и техничка поддршка.')
 @section('content')
+@php
+    $s = $page->settings ?? [];
+@endphp
 <section class="bg-white py-24 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-12">
 
@@ -14,22 +18,19 @@
 
                 <span
                     class="inline-flex items-center px-5 py-2  rounded-full text-lg bg-gray-200  text-black font-medium hover:bg-gray-200 transition gap-2">
-                    Уреди за печатење
+                    {{ $s['hero_eyebrow'] ?? 'Уреди за печатење' }}
                 </span>
 
                 <h1 class="block text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tight">
-                    Продажба,
-                    Изнајмување
+                    {{ $s['hero_heading_1'] ?? 'Продажба,' }}
+                    {{ $s['hero_heading_2'] ?? 'Изнајмување' }}
                     <span class="main-red">
-                        Принтери
+                        {{ $s['hero_heading_3'] ?? 'Принтери' }}
                     </span>
                 </h1>
 
                 <p class="text-gray-600 text-lg leading-8 mt-8">
-                    Нудиме професионални решенија за продажба, изнајмување
-                    и сервисирање на printer уреди за компании, институции
-                    и деловни корисници. Брза поддршка, квалитетна опрема
-                    и сигурна техничка услуга на едно место.
+                    {!! nl2br(e($s['hero_description'] ?? "Нудиме професионални решенија за продажба, изнајмување\nи сервисирање на printer уреди за компании, институции\nи деловни корисници. Брза поддршка, квалитетна опрема\nи сигурна техничка услуга на едно место.")) !!}
                 </p>
 
                 <!-- BUTTONS -->
@@ -56,31 +57,31 @@
 
                     <div>
                         <h3 class="text-3xl font-thin main-red">
-                            15+
+                            {{ $s['stat_1_value'] ?? '15+' }}
                         </h3>
 
                         <p class="text-gray-600 mt-2">
-                            Години Искуство
+                            {{ $s['stat_1_label'] ?? 'Години Искуство' }}
                         </p>
                     </div>
 
                     <div>
                         <h3 class="text-3xl font-thin main-red">
-                            24/7
+                            {{ $s['stat_2_value'] ?? '24/7' }}
                         </h3>
 
                         <p class="text-gray-600 mt-2">
-                            Техничка Поддршка
+                            {{ $s['stat_2_label'] ?? 'Техничка Поддршка' }}
                         </p>
                     </div>
 
                     <div>
                         <h3 class="text-3xl font-thin main-red">
-                            100+
+                            {{ $s['stat_3_value'] ?? '100+' }}
                         </h3>
 
                         <p class="text-gray-600 mt-2">
-                            Задоволни Клиенти
+                            {{ $s['stat_3_label'] ?? 'Задоволни Клиенти' }}
                         </p>
                     </div>
 
@@ -97,7 +98,7 @@
                 <!-- IMAGE -->
                 <div class="relative rounded-[40px] overflow-hidden shadow-2xl">
 
-                    <img src="{{asset(" ./../assets/images/printer.jpg")}}" alt="Printer Service"
+                    <img src="{{ $s['hero_image'] ?? asset(" ./../assets/images/printer.jpg") }}" alt="Printer Service"
                         class="w-full h-[650px] object-cover">
                 </div>
 
@@ -147,22 +148,22 @@
 <div class="container mx-auto py-10">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <!-- Block 1 -->
+        <!-- Logo 1 -->
         <div class="bg-white rounded-2xl p-8 flex items-center justify-center h-[220px]">
 
-            <img src="{{ asset('./../assets/images/logo/Canon_ide_p-tcLS_0.svg') }}" alt="Canon Logo"
+            <img src="{{ $s['logo_1_image'] ?? asset('./../assets/images/logo/Canon_ide_p-tcLS_0.svg') }}" alt="{{ $s['logo_1_alt'] ?? 'Canon Logo' }}"
                 class="max-h-15 object-contain" />
         </div>
 
-        <!-- Block 2 -->
+        <!-- Logo 2 -->
         <div class="bg-white rounded-2xl p-8 flex items-center justify-center h-[220px]">
-            <img src="{{ asset('./../assets/images/logo/Ricoh_Australia_Logo_0.svg') }}" alt="Ricoh Logo"
+            <img src="{{ $s['logo_2_image'] ?? asset('./../assets/images/logo/Ricoh_Australia_Logo_0.svg') }}" alt="{{ $s['logo_2_alt'] ?? 'Ricoh Logo' }}"
                 class="max-h-20 object-contain" />
         </div>
 
-        <!-- Block 3 -->
+        <!-- Logo 3 -->
         <div class="bg-white rounded-2xl p-8 flex items-center justify-center h-[220px]">
-            <img src="{{ asset('./../assets/images/logo/HP_Logo_0.svg') }}" alt="Hp Logo"
+            <img src="{{ $s['logo_3_image'] ?? asset('./../assets/images/logo/HP_Logo_0.svg') }}" alt="{{ $s['logo_3_alt'] ?? 'Hp Logo' }}"
                 class="max-h-24 object-contain" />>
         </div>
 
@@ -179,17 +180,15 @@
 
                 <span
                     class="text-sm uppercase tracking-[4px]inline-flex items-center px-5 py-2  rounded-full text-lg bg-gray-200  text-black font-medium hover:bg-gray-200 transition gap-2">
-                    Наши Услуги
+                    {{ $s['services_eyebrow'] ?? 'Наши Услуги' }}
                 </span>
 
                 <h2 class="text-5xl font-thin text-gray-900 mt-6">
-                    Комплетни Решенија за Вашиот Бизнис
+                    {{ $s['services_heading'] ?? 'Комплетни Решенија за Вашиот Бизнис' }}
                 </h2>
 
                 <p class="text-lg text-gray-600 leading-8 mt-6">
-                    Обезбедуваме професионални услуги за продажба,
-                    изнајмување и одржување на системи
-                    според потребите на вашиот бизнис.
+                    {!! nl2br(e($s['services_paragraph'] ?? "Обезбедуваме професионални услуги за продажба,\nизнајмување и одржување на системи\nспоред потребите на вашиот бизнис.")) !!}
                 </p>
 
             </div>
@@ -197,7 +196,7 @@
             <!-- CARDS -->
             <div class="grid md:grid-cols-3 gap-8 mt-20">
 
-                <!-- CARD -->
+                <!-- CARD 1 -->
                 <div
                     class="bg-gray-50 rounded-[12px] p-10 border border-gray-200 hover:shadow-2xl transition duration-300">
 
@@ -214,17 +213,16 @@
                     </div>
 
                     <h3 class="text-3xl font-thin text-gray-900 mt-8">
-                        Продажба
+                        {{ $s['svc_card_1_title'] ?? 'Продажба' }}
                     </h3>
 
                     <p class="text-gray-600 leading-8 mt-5">
-                        Продажба на нови и професионални уреди за печатење
-                        од реномирани брендови за сите деловни потреби.
+                        {{ $s['svc_card_1_description'] ?? 'Продажба на нови и професионални уреди за печатење од реномирани брендови за сите деловни потреби.' }}
                     </p>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- CARD 2 -->
                 <div
                     class="bg-gray-50 rounded-[12px] p-10 border border-gray-200 hover:shadow-2xl transition duration-300">
 
@@ -241,16 +239,16 @@
                     </div>
 
                     <h3 class="text-3xl font-thin text-gray-900 mt-8">
-                        Изнајмување
+                        {{ $s['svc_card_2_title'] ?? 'Изнајмување' }}
                     </h3>
 
                     <p class="text-gray-600 leading-8 mt-5">
-                        Флексибилни решенија за изнајмување уреди за печатење со месечна поддршка и одржување.
+                        {{ $s['svc_card_2_description'] ?? 'Флексибилни решенија за изнајмување уреди за печатење со месечна поддршка и одржување.' }}
                     </p>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- CARD 3 -->
                 <div
                     class="bg-gray-50 rounded-[12px] p-10 border border-gray-200 hover:shadow-2xl transition duration-300">
 
@@ -267,12 +265,11 @@
                     </div>
 
                     <h3 class="text-3xl font-thin text-gray-900 mt-8">
-                        Сервис
+                        {{ $s['svc_card_3_title'] ?? 'Сервис' }}
                     </h3>
 
                     <p class="text-gray-600 leading-8 mt-5">
-                        Брз и професионален сервис за сите уреди,
-                        дијагностика и техничка поддршка.
+                        {{ $s['svc_card_3_description'] ?? 'Брз и професионален сервис за сите уреди, дијагностика и техничка поддршка.' }}
                     </p>
 
                 </div>

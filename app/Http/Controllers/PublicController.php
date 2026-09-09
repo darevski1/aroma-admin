@@ -3,39 +3,118 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Page;
+use App\Support\PageTemplateConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class PublicController extends Controller
 {
+    /**
+     * Resolve the Page model for a given route name.
+     */
+    private function getPageByRoute(string $routeName): ?Page
+    {
+        return Page::where('route_name', $routeName)->first();
+    }
+
+    // ─── Public pages listing ────────────────────────────────────
+
+    /**
+     * Show a listing of all published manually-created pages.
+     */
+    public function pagesListing()
+    {
+        $pages = Page::where('published', true)
+            ->orderBy('position')
+            ->orderBy('id')
+            ->get();
+
+        return view('pages.listing', compact('pages'));
+    }
+
+    /**
+     * Render a specific page by slug, resolving its Blade template from the layout field.
+     */
+    public function showPage(string $slug)
+    {
+        $page = Page::where('slug', $slug)
+            ->where('published', true)
+            ->firstOrFail();
+
+        $layout = $page->layout;
+
+        // If the layout maps to a real Blade view, render it
+        // (registered template OR any manually created Blade page added via pages/create)
+        if ($layout && (PageTemplateConfig::isTemplatePage($layout) || view()->exists($layout))) {
+            return view($layout, compact('page'));
+        }
+
+        // If the page has a named route, redirect there
+        if ($page->route_name && Route::has($page->route_name)) {
+            return redirect()->route($page->route_name);
+        }
+
+        // Fallback to the dynamic renderer
+        return view('pages.dynamic', compact('page'));
+    }
+
+    // ─── Specific page routes (existing) ────────────────────────
+
     // cennobots page
-    public function cennobots(){
-        return view("pages.cennobots.index");
+    public function cennobots()
+    {
+        $page = $this->getPageByRoute('cennobots');
+        return view('pages.cennobots.index', compact('page'));
     }
+
     // About us
-    public function about(){
-        return view("pages.about.index");
+    public function about()
+    {
+        $page = $this->getPageByRoute('za-nas');
+        return view('pages.about.index', compact('page'));
     }
+
     // computerNetwork
-    public function computerNetwork(){
-        return view("pages.computer_network.index");
+    public function computerNetwork()
+    {
+        $page = $this->getPageByRoute('mrezni-instalacii-i-odrzuvanje-na-mrezi');
+        return view('pages.computer_network.index', compact('page'));
     }
-    public function computerWorld(){
-        return view("pages.computerWorld.index");
+
+    public function computerWorld()
+    {
+        $page = $this->getPageByRoute('odrzuvanje-na-kompjuterski-sistemi');
+        return view('pages.computerWorld.index', compact('page'));
     }
-    public function accessControl(){
-        return view("pages.accessControl.index");
+
+    public function accessControl()
+    {
+        $page = $this->getPageByRoute('video-nadzor-i-kontrola-na-pristap');
+        return view('pages.accessControl.index', compact('page'));
     }
-    public function printerWorld(){
-        return view("pages.printerWorld.index");
+
+    public function printerWorld()
+    {
+        $page = $this->getPageByRoute('servis-i-prodazba-na-printeri');
+        return view('pages.printerWorld.index', compact('page'));
     }
-    public function uslugi(){
-        return view("pages.uslugi.index");
+
+    public function uslugi()
+    {
+        $page = $this->getPageByRoute('uslugi');
+        return view('pages.uslugi.index', compact('page'));
     }
-    public function portfolio(){
-        return view("pages.portfolio.index");
+
+    public function portfolio()
+    {
+        $page = $this->getPageByRoute('portfolio');
+        return view('pages.portfolio.index', compact('page'));
     }
-    public function kontakt(){
-        return view("pages.kontakt.index");
+
+    public function kontakt()
+    {
+        $page = $this->getPageByRoute('kontakt');
+        return view('pages.kontakt.index', compact('page'));
     }
- 
 }

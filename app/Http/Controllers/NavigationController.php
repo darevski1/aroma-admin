@@ -15,7 +15,10 @@ class NavigationController extends Controller
     // View all navigations
     public function viewNavigation()
     {
-        $navs = Navigation::all();
+        $navs = Navigation::with(['subNavigations' => function ($q) {
+            $q->orderBy('position');
+        }])->orderBy('position')->get();
+
         return view('admin_pages.navigation.index', compact('navs'));
     }
 
@@ -36,7 +39,7 @@ class NavigationController extends Controller
 
 
     public function getNavigation(){
-        $navs = Navigation::all();
+        $navs = Navigation::orderBy('position')->get();
         return response()->json($navs, 200);
     }
 
@@ -66,19 +69,19 @@ class NavigationController extends Controller
     // get navigation by id
     public function getByid($id)
     {
-        $nav = Navigation::findOrFail($id);
+        $nav = Navigation::with('page')->findOrFail($id);
         return response()->json($nav, 200);
     }
 
 
     // json response for sub-navigation
     public function getSubNavigation($id){
-        $subnav = SubNavigation::where('navigation_id', $id)->get();
+        $subnav = SubNavigation::with('page')->where('navigation_id', $id)->orderBy('position')->get();
         return response()->json($subnav, 200);
     }
 
     public function getNavigationjson(){
-        $nav = Navigation::all();
+        $nav = Navigation::orderBy('position')->get();
         return response()->json($nav, 200);
     }
     // chage sub-navigation
@@ -155,7 +158,66 @@ class NavigationController extends Controller
 
     }
 
+    // ─── NEW: Position update for main navigation items ───────
+    public function updatePosition(Request $request, $id)
+    {
+        $nav = Navigation::findOrFail($id);
+        $nav->position = $request->input('position', $nav->position);
+        $nav->save();
 
+        return response()->json(['message' => 'Position updated.']);
+    }
 
+    // ─── NEW: Toggle publish for main navigation items ───────
+    public function togglePublish($id)
+    {
+        $nav = Navigation::findOrFail($id);
+        $nav->published = !$nav->published;
+        $nav->save();
 
+        return response()->json([
+            'message'   => 'Status updated.',
+            'published' => $nav->published,
+        ]);
+    }
+
+    // ─── NEW: Link a page to a main navigation item ──────────
+    public function linkPage(Request $request, $id)
+    {
+        $nav = Navigation::findOrFail($id);
+
+        $nav->page_id = $request->input('page_id'); // nullable to unlink
+        $nav->url = $request->input('url');
+        $nav->save();
+
+        return response()->json([
+            'message' => 'Page linked successfully.',
+            'nav'     => $nav->load('page'),
+        ]);
+    }
+
+    // ─── NEW: Position update for sub-navigation items ───────
+    public function updateSubPosition(Request $request, $id)
+    {
+        $sub = SubNavigation::findOrFail($id);
+        $sub->position = $request->input('position', $sub->position);
+        $sub->save();
+
+        return response()->json(['message' => 'Position updated.']);
+    }
+
+    // ─── NEW: Link a page to a sub-navigation item ───────────
+    public function linkSubPage(Request $request, $id)
+    {
+        $sub = SubNavigation::findOrFail($id);
+
+        $sub->page_id = $request->input('page_id'); // nullable to unlink
+        $sub->url = $request->input('url');
+        $sub->save();
+
+        return response()->json([
+            'message' => 'Page linked successfully.',
+            'sub'     => $sub->load('page'),
+        ]);
+    }
 }

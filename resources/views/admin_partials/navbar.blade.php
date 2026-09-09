@@ -1,11 +1,19 @@
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
     <div class="container-fluid py-1 px-3">
+      <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
           <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Page</a></li>
           <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Template</li>
         </ol>
       </nav>
+
+      <!-- Mobile toggler -->
+      <a href="javascript:;" class="navbar-toggler text-body p-0 mb-2 d-lg-none" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="material-symbols-rounded">menu</span>
+      </a>
+
+      <!-- Right-side navbar content -->
       <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
           <div class="input-group input-group-outline">
@@ -13,24 +21,26 @@
             <input type="text" class="form-control">
           </div>
         </div>
-        <ul class="navbar-nav d-flex align-items-center  justify-content-end">
- 
- 
+        <ul class="navbar-nav d-flex align-items-center justify-content-end">
+
+          <!-- Settings -->
           <li class="nav-item px-3 d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body p-0">
               <i class="material-symbols-rounded fixed-plugin-button-nav">settings</i>
             </a>
           </li>
+
+          <!-- Notifications -->
           <li class="nav-item dropdown pe-3 d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="material-symbols-rounded">notifications</i>
             </a>
-            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
               <li class="mb-2">
                 <a class="dropdown-item border-radius-md" href="javascript:;">
                   <div class="d-flex py-1">
                     <div class="my-auto">
-                      <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                      <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="text-sm font-weight-normal mb-1">
@@ -48,7 +58,7 @@
                 <a class="dropdown-item border-radius-md" href="javascript:;">
                   <div class="d-flex py-1">
                     <div class="my-auto">
-                      <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                      <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark me-3">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="text-sm font-weight-normal mb-1">
@@ -65,7 +75,7 @@
               <li>
                 <a class="dropdown-item border-radius-md" href="javascript:;">
                   <div class="d-flex py-1">
-                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                    <div class="avatar avatar-sm bg-gradient-secondary me-3 my-auto">
                       <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <title>credit-card</title>
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -94,44 +104,54 @@
               </li>
             </ul>
           </li>
+
+          <!-- User / Account Dropdown -->
           <li class="nav-item dropdown pe-3 d-flex align-items-center">
-            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="material-symbols-rounded">account_circle</i>
+            <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              @if(Auth::user()->getFirstMedia('avatar'))
+                <img src="{{ Auth::user()->getFirstMedia('avatar')->getUrl() }}" alt="{{ Auth::user()->name }}" class="avatar avatar-sm me-2" style="width:32px;height:32px;object-fit:cover;border-radius:50%;">
+              @else
+                <div class="avatar avatar-sm bg-gradient-dark me-2 d-flex align-items-center justify-content-center" style="width:32px;height:32px;border-radius:50%;">
+                  <span class="text-white text-xs font-weight-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                </div>
+              @endif
+              <span class="d-none d-md-inline text-sm font-weight-normal text-dark">{{ Auth::user()->name }}</span>
+              <i class="material-symbols-rounded ms-1" style="font-size:18px;">expand_more</i>
             </a>
-            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-              <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="javascript:;">
-                  <div class="d-flex py-1">
-                    <div class="my-auto">
-                      <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                    </div>
-                    <div class="d-flex flex-column justify-content-center">
-                      <h6 class="text-sm font-weight-normal mb-1">
-                        <span class="font-weight-bold">New message</span> from Laur
-                      </h6>
-                      <p class="text-xs text-secondary mb-0">
-                        <i class="fa fa-clock me-1"></i>
-                        13 minutes ago
-                      </p>
-                    </div>
-                  </div>
+            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="userDropdown">
+              <li class="px-3 py-1 mb-2">
+                <div class="d-flex flex-column">
+                  <span class="text-sm font-weight-bold text-dark">{{ Auth::user()->name }}</span>
+                  <span class="text-xs text-muted">{{ Auth::user()->email }}</span>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li>
+                <a class="dropdown-item border-radius-md d-flex align-items-center" href="{{ route('profile.edit') }}">
+                  <i class="material-symbols-rounded me-2" style="font-size:18px;">person</i>
+                  {{ __('Profile') }}
                 </a>
               </li>
-              <li class="mb-2">
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                onclick="event.preventDefault();
-                              document.getElementById('logout-form').submit();">
-                 {{ __('Logout') }}
-             </a>
-
-             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                 @csrf
-             </form>
+              <li>
+                <a class="dropdown-item border-radius-md d-flex align-items-center" href="{{ route('profile.edit') }}">
+                  <i class="material-symbols-rounded me-2" style="font-size:18px;">edit</i>
+                  {{ __('Edit Profile') }}
+                </a>
               </li>
-            
+              <li><hr class="dropdown-divider my-1"></li>
+              <li>
+                <a class="dropdown-item border-radius-md d-flex align-items-center text-danger" href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class="material-symbols-rounded me-2" style="font-size:18px;">logout</i>
+                  {{ __('Logout') }}
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+              </li>
             </ul>
           </li>
- 
+
         </ul>
       </div>
     </div>
