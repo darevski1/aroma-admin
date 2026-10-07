@@ -3,7 +3,8 @@
     <div class="home-services__layout">
       <div class="home-services__intro">
         <span class="home-services__eyebrow">Наши Услуги</span>
-        <h2>Професионални ИТ решенија за стабилен бизнис</h2>
+        <h2 class="block font-medium text-foreground-inverse text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Професионални
+          ИТ решенија за вашиот бизнис</h2>
         <p>
           Нудиме широк спектар на професионални ИТ услуги прилагодени на вашите потреби.
           Од консалтинг и инсталации до одржување и поддршка откријте што можеме да направиме за вас.
@@ -27,10 +28,10 @@
       </div>
 
       <div class="home-services__showcase">
-        <div class="home-services__accent-card">
+        {{-- <div class="home-services__accent-card">
           <span>Managed IT</span>
           <p>Една точка за мрежи, опрема, безбедност, инфраструктура и поддршка.</p>
-        </div>
+        </div> --}}
 
         <div class="home-services__grid">
           <article class="home-service-card">

@@ -10,7 +10,14 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: ["resources/css/app.css", "resources/js/app.js", "resources/js/page-editor.js"],
+            input: [
+                "resources/css/app.css",
+                "resources/js/app.js",
+                "resources/js/page-editor.js",
+                // CenoBots standalone mini-site entries (used only by layouts/cenobots.blade.php)
+                "resources/css/cenobots.css",
+                "resources/js/cenobots.js",
+            ],
             refresh: true,
         }),
         tailwindcss(),

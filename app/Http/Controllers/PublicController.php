@@ -68,6 +68,36 @@ class PublicController extends Controller
         return view('pages.cennobots.index', compact('page'));
     }
 
+    /**
+     * All CenoBots models in one catalogue page (/modeli).
+     */
+    public function cennobotsModels()
+    {
+        return view('pages.cennobots.models.index', [
+            'models' => config('cenobots.models'),
+        ]);
+    }
+
+    /**
+     * One page per CenoBots model (/modeli/{model}), carrying only that model's
+     * own copy, image and specifications, plus a compare grid of the others.
+     *
+     * Every model uses the same template, so the catalogue stays consistent
+     * and adding a model is a config-only change.
+     */
+    public function cennobotsModel(string $model)
+    {
+        $models = collect(config('cenobots.models'))->keyBy('id');
+
+        abort_unless($models->has($model), 404);
+
+        return view('pages.cennobots.models.show', [
+            'model' => $models->get($model),
+            // Every other model, for the "compare with other models" section.
+            'others' => $models->where('id', '!=', $model)->values(),
+        ]);
+    }
+
     // About us
     public function about()
     {

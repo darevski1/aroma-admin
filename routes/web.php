@@ -123,6 +123,22 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
 // ─── Public routes ────────────────────────────────────────────
 Route::get('/services/cenobots', [PublicController::class, 'cennobots'])->name('cennobots');
 
+// CenoBots models — overview + one page per model. The {model} segment is
+// constrained to the ids declared in config/cenobots.php so unknown slugs 404.
+Route::get('/modeli', [PublicController::class, 'cennobotsModels'])->name('cennobots.models');
+// Every model detail page uses the same template. The {model} placeholder is
+// constrained to known catalogue ids, so unknown slugs still 404.
+Route::get('/modeli/{model}', [PublicController::class, 'cennobotsModel'])
+    ->whereIn('model', array_column(config('cenobots.models'), 'id'))
+    ->name('cennobots.model');
+
+// Same pages also reachable under the CenoBots section path, so they sit next
+// to /services/cenobots in the sitemap and share its header/footer links.
+Route::get('/services/cenobots/modeli', [PublicController::class, 'cennobotsModels'])->name('cennobots.models.section');
+Route::get('/services/cenobots/modeli/{model}', [PublicController::class, 'cennobotsModel'])
+    ->whereIn('model', array_column(config('cenobots.models'), 'id'))
+    ->name('cennobots.model.section');
+
 Route::get('uslugi/mrezni-instalacii-i-odrzuvanje-na-mrezi', [PublicController::class, 'computerNetwork'])->name('mrezni-instalacii-i-odrzuvanje-na-mrezi');
 Route::get('uslugi/odrzuvanje-na-kompjuterski-sistemi', [PublicController::class, 'computerWorld'])->name('odrzuvanje-na-kompjuterski-sistemi');
 Route::get('uslugi/video-nadzor-i-kontrola-na-pristap', [PublicController::class, 'accessControl'])->name('video-nadzor-i-kontrola-na-pristap');

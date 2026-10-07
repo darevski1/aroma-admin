@@ -1,7 +1,9 @@
 :root {
   --primary-color: #e04534;
   --primary-dark: #ce3b2a;
+  --heading-size: clamp(1.75rem, 4vw, 2.5rem);
 }
+
 html {
   scroll-behavior: smooth;
 }
@@ -474,13 +476,13 @@ body {
   letter-spacing: 0.08em;
   padding: 0.55rem 0.9rem;
 }
-.home-services h2 {
+/* .home-services h2 {
   color: #171717;
-  font-size: clamp(2.35rem, 5vw, 4.85rem);
+  font-size: var(--heading-size);
   font-weight: 400;
   line-height: 1.04;
   margin: 0;
-}
+} */
 .home-services__intro p {
   color: #555;
   font-size: clamp(1rem, 1.5vw, 1.2rem);
@@ -576,7 +578,7 @@ body {
   max-width: 34rem;
   margin: 0;
   color: #ffffff;
-  font-size: clamp(1.25rem, 2.3vw, 2rem);
+  font-size: clamp(1.45rem, 2.3vw, 2rem);
   font-weight: 300;
   line-height: 1.25;
 }
@@ -1421,9 +1423,16 @@ body {
 .home-clients {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 16% 10%, rgba(224, 69, 52, 0.07), transparent 19rem),
-    radial-gradient(circle at 88% 82%, rgba(56, 44, 44, 0.05), transparent 22rem),
+  background: radial-gradient(
+      circle at 16% 10%,
+      rgba(224, 69, 52, 0.07),
+      transparent 19rem
+    ),
+    radial-gradient(
+      circle at 88% 82%,
+      rgba(56, 44, 44, 0.05),
+      transparent 22rem
+    ),
     linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
   padding: clamp(2.8rem, 5.5vw, 4.75rem) 0;
 }
@@ -1434,7 +1443,12 @@ body {
   left: 50%;
   width: min(82rem, calc(100% - 2rem));
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(56, 44, 44, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(56, 44, 44, 0.1),
+    transparent
+  );
   transform: translateX(-50%);
 }
 .home-clients::before {
@@ -1475,7 +1489,7 @@ body {
 .home-clients__header h2 {
   margin: 0;
   color: #171717;
-  font-size: clamp(2rem, 4vw, 3.8rem);
+  font-size: var(--heading-size);
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.08;
@@ -1494,8 +1508,11 @@ body {
   width: 100%;
   border: 1px solid rgba(56, 44, 44, 0.07);
   border-radius: 1.35rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.66)),
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.86),
+      rgba(255, 255, 255, 0.66)
+    ),
     rgba(255, 255, 255, 0.76);
   box-shadow: 0 22px 60px rgba(23, 23, 23, 0.07);
   padding: clamp(1rem, 2.2vw, 1.35rem) 0;
@@ -1513,11 +1530,19 @@ body {
 }
 .client-marquee::before {
   left: 0;
-  background: linear-gradient(90deg, rgba(249, 250, 252, 0.98), rgba(249, 250, 252, 0));
+  background: linear-gradient(
+    90deg,
+    rgba(249, 250, 252, 0.98),
+    rgba(249, 250, 252, 0)
+  );
 }
 .client-marquee::after {
   right: 0;
-  background: linear-gradient(270deg, rgba(249, 250, 252, 0.98), rgba(249, 250, 252, 0));
+  background: linear-gradient(
+    270deg,
+    rgba(249, 250, 252, 0.98),
+    rgba(249, 250, 252, 0)
+  );
 }
 .client-marquee__track {
   display: flex;
@@ -1546,11 +1571,8 @@ body {
   border-radius: 0.95rem;
   background: rgba(255, 255, 255, 0.58);
   padding: clamp(0.38rem, 0.75vw, 0.55rem);
-  transition:
-    background-color 0.28s ease,
-    border-color 0.28s ease,
-    box-shadow 0.28s ease,
-    transform 0.28s ease;
+  transition: background-color 0.28s ease, border-color 0.28s ease,
+    box-shadow 0.28s ease, transform 0.28s ease;
 }
 .client-marquee__item:hover {
   background: #ffffff;
@@ -1664,8 +1686,16 @@ body {
 .services-hero {
   position: relative;
   padding: clamp(7rem, 11vw, 10rem) 0 clamp(3.5rem, 6vw, 5.5rem);
-  background: radial-gradient(circle at 15% 15%, rgba(224, 69, 52, 0.12), transparent 24rem),
-    radial-gradient(circle at 85% 18%, rgba(23, 23, 23, 0.08), transparent 23rem),
+  background: radial-gradient(
+      circle at 15% 15%,
+      rgba(224, 69, 52, 0.12),
+      transparent 24rem
+    ),
+    radial-gradient(
+      circle at 85% 18%,
+      rgba(23, 23, 23, 0.08),
+      transparent 23rem
+    ),
     linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%);
 }
 .services-hero::after {
@@ -1673,7 +1703,12 @@ body {
   position: absolute;
   inset: auto 0 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(23, 23, 23, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(23, 23, 23, 0.1),
+    transparent
+  );
 }
 .services-hero__grid {
   position: relative;
@@ -1720,8 +1755,8 @@ body {
   font-weight: 500;
   line-height: 1;
   padding: 0.95rem 1.25rem;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease,
-    color 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 .services-btn:hover {
   transform: translateY(-2px);
@@ -1748,7 +1783,11 @@ body {
 .services-hero__panel {
   border: 1px solid rgba(23, 23, 23, 0.08);
   border-radius: 1.35rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.68)),
+  background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.68)
+    ),
     rgba(255, 255, 255, 0.75);
   box-shadow: 0 24px 70px rgba(23, 23, 23, 0.1);
   padding: 1rem;
@@ -1847,7 +1886,8 @@ body {
   background: #ffffff;
   box-shadow: 0 18px 46px rgba(23, 23, 23, 0.055);
   padding: clamp(1.25rem, 3vw, 1.8rem);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  transition: transform 0.28s ease, box-shadow 0.28s ease,
+    border-color 0.28s ease;
 }
 .services-card::after {
   content: "";
@@ -1977,7 +2017,11 @@ body {
   gap: 2rem;
   overflow: hidden;
   border-radius: 1.25rem;
-  background: radial-gradient(circle at 10% 20%, rgba(224, 69, 52, 0.32), transparent 24rem),
+  background: radial-gradient(
+      circle at 10% 20%,
+      rgba(224, 69, 52, 0.32),
+      transparent 24rem
+    ),
     linear-gradient(135deg, #171717 0%, #27282d 100%);
   color: #ffffff;
   padding: clamp(1.5rem, 4vw, 3rem);

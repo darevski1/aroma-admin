@@ -4,7 +4,7 @@
     <div class="absolute w-72 h-72 bg-blue-200/50 rounded-full blur-3xl top-20 left-10 animate-pulse"></div>
     <div class="absolute w-96 h-96 bg-blue-100/40 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
     <div class="max-w-2xl text-center mx-auto">
-      <h1 class="block font-medium text-foreground-inverse text-3xl sm:text-4xl md:text-5xl lg:text-6xl"> Изнајмување,
+      <h1 class="block font-medium text-foreground-inverse text-2xl sm:text-3xl md:text-4xl lg:text-5xl"> Изнајмување,
         продажба и сервис на
         печатачи </h1>
 

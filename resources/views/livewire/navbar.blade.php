@@ -1,4 +1,5 @@
-<nav id="navbar" class="site-navbar bg-transparent backdrop-blur-none shadow-none sticky top-0 z-50 transition-all duration-300">
+<nav id="navbar"
+  class="site-navbar bg-transparent backdrop-blur-none shadow-none sticky top-0 z-50 transition-all duration-300">
   <div class="site-navbar__inner max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
     <!-- Logo -->
@@ -21,8 +22,7 @@
     <!-- Navigation -->
     <div class="site-navbar__menu hidden w-full md:block md:w-auto" id="navbar-dropdown">
 
-      <ul
-        class="site-navbar__list flex flex-col p-4 md:p-0 mt-4 md:flex-row md:mt-0 md:border-0">
+      <ul class="site-navbar__list flex flex-col p-4 md:p-0 mt-4 md:flex-row md:mt-0 md:border-0 uppercase">
 
         @foreach ($navItems as $nav)
 
@@ -35,14 +35,17 @@
           <div class="site-navbar__parent">
             <a href="{{ $nav->getLinkUrl() }}" class="site-navbar__link site-navbar__link--dropdown">
               <span>{{ $nav->name }}</span>
-              <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
+              <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"
+                aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="m1 1 4 4 4-4" />
               </svg>
             </a>
 
-            <button type="button" class="site-navbar__dropdown-toggle md:hidden" aria-expanded="false" aria-label="Отвори подмени за {{ $nav->name }}">
-              <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
+            <button type="button" class="site-navbar__dropdown-toggle md:hidden" aria-expanded="false"
+              aria-label="Отвори подмени за {{ $nav->name }}">
+              <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"
+                aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="m1 1 4 4 4-4" />
               </svg>
@@ -50,8 +53,7 @@
           </div>
 
           <!-- Dropdown -->
-          <div
-            class="site-navbar__dropdown absolute left-0 z-10 mt-2 font-normal bg-white w-64 dropdown-menu">
+          <div class="site-navbar__dropdown absolute left-0 z-10 mt-2 font-normal bg-white w-64 dropdown-menu">
 
             <ul class="site-navbar__dropdown-list py-2 text-sm text-gray-700">
 
@@ -72,8 +74,7 @@
           @else
 
           <!-- Normal Link -->
-          <a href="{{ $nav->getLinkUrl() }}"
-            class="site-navbar__link block">
+          <a href="{{ $nav->getLinkUrl() }}" class="site-navbar__link block">
 
             {{ $nav->name }}
 

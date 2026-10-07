@@ -2,10 +2,11 @@
 
 
 @section('title', 'ITPlus | Мрежни инсталации')
-@section('meta_description', 'Мрежни инсталации и одржување на мрежи од ITPlus: LAN, WiFi, стабилна инфраструктура и професионална техничка поддршка.')
+@section('meta_description', 'Мрежни инсталации и одржување на мрежи од ITPlus: LAN, WiFi, стабилна инфраструктура и
+професионална техничка поддршка.')
 @section('content')
 @php
-    $s = $page->settings ?? [];
+$s = $page->settings ?? [];
 @endphp
 <section class="bg-white py-20">
     <div class="container mx-auto px-6">
@@ -18,12 +19,13 @@
                 class="inline-flex items-center px-5 py-2  rounded-full text-lg bg-gray-200  text-red-600  font-medium hover:bg-gray-200 transition gap-2">
                 {{ $s['eyebrow'] ?? 'CCTV Решенија' }}
             </span>
-            <h1 class="text-3xl  text-foreground sm:text-4xl lg:text-7xl lg:leading-tigh">
+            <h1 class="block font-medium text-foreground-inverse text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
                 {!! nl2br(e($s['heading'] ?? "Паметен видео надзор за\nвашиот дом и бизнис")) !!}
             </h1>
 
             <p class="text-gray-600 mt-6 text-lg leading-relaxed">
-                {!! nl2br(e($s['description'] ?? "Професионална инсталација на CCTV системи,\nIP камери и видео надзор со 24/7 мониторинг,\nдалечински пристап и максимална безбедност.")) !!}
+                {!! nl2br(e($s['description'] ?? "Професионална инсталација на CCTV системи,\nIP камери и видео надзор
+                со 24/7 мониторинг,\nдалечински пристап и максимална безбедност.")) !!}
             </p>
         </div>
 
@@ -42,7 +44,8 @@
                     </h3>
 
                     <p class="text-gray-600 leading-relaxed">
-                        {!! nl2br(e($s['card_1_description'] ?? 'Висококвалитетни IP камери со Full HD и 4K резолуција,\nноќен режим и паметна детекција на движење.')) !!}
+                        {!! nl2br(e($s['card_1_description'] ?? 'Висококвалитетни IP камери со Full HD и 4K
+                        резолуција,\nноќен режим и паметна детекција на движење.')) !!}
                     </p>
                 </div>
             </div>
@@ -59,7 +62,8 @@
                     </h3>
 
                     <p class="text-gray-600 leading-relaxed">
-                        {!! nl2br(e($s['card_2_description'] ?? 'Следете го вашиот објект во секое време преку мобилен,\nтаблет или компјутер од било каде.')) !!}
+                        {!! nl2br(e($s['card_2_description'] ?? 'Следете го вашиот објект во секое време преку
+                        мобилен,\nтаблет или компјутер од било каде.')) !!}
                     </p>
                 </div>
             </div>
@@ -76,7 +80,8 @@
                     </h3>
 
                     <p class="text-gray-600 leading-relaxed">
-                        {!! nl2br(e($s['card_3_description'] ?? 'Комплетна инсталација, конфигурација и техничка поддршка\nза сигурен и стабилен CCTV систем.')) !!}
+                        {!! nl2br(e($s['card_3_description'] ?? 'Комплетна инсталација, конфигурација и техничка
+                        поддршка\nза сигурен и стабилен CCTV систем.')) !!}
                     </p>
                 </div>
             </div>
@@ -90,7 +95,8 @@
             </h2>
 
             <p class="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
-                {!! nl2br(e($s['cta_description'] ?? "Нудиме современи CCTV решенија за компании,\nмагацини, канцеларии, продавници и домови.")) !!}
+                {!! nl2br(e($s['cta_description'] ?? "Нудиме современи CCTV решенија за компании,\nмагацини, канцеларии,
+                продавници и домови.")) !!}
             </p>
 
             <a href="#contact"
@@ -106,8 +112,8 @@
 
     <!-- Background Image -->
     <div class="absolute inset-0">
-        <img src="{{ $s['ai_background_image'] ?? asset(" ./../assets/images/cctv-hero.jpg") }}" alt="AI CCTV Background"
-            class="w-full h-full object-cover">
+        <img src="{{ $s['ai_background_image'] ?? asset(" ./../assets/images/cctv-hero.jpg") }}"
+            alt="AI CCTV Background" class="w-full h-full object-cover">
     </div>
 
     <!-- Dark Overlay -->
@@ -128,7 +134,8 @@
             </h2>
 
             <p class="text-gray-300 text-lg md:text-xl leading-relaxed mt-8 max-w-2xl">
-                {!! nl2br(e($s['ai_description'] ?? "Интелигентни CCTV системи со AI детекција,\nпрепознавање лица, следење на движење и\nпаметни известувања во реално време.")) !!}
+                {!! nl2br(e($s['ai_description'] ?? "Интелигентни CCTV системи со AI детекција,\nпрепознавање лица,
+                следење на движење и\nпаметни известувања во реално време.")) !!}
             </p>
 
             <!-- Buttons -->
