@@ -36,6 +36,8 @@
     ['./../assets/images/clients/logo_total_comunikacii.jpg', 'Total Komunikacii'],
     ['./../assets/images/clients/logo_trend.jpg', 'Trend'],
     ['./../assets/images/clients/Vato-Logo.png', 'Vato'],
+    ['./../assets/images/clients/spar.png', 'Spar'],
+    ['./../assets/images/clients/sanmarti.webp', 'SanMarti'],
     ];
     @endphp
 
