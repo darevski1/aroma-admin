@@ -12,8 +12,12 @@
   let isDirty = false;
   let originalHTML = '';
   const EDITABLE = 'h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, strong, em, blockquote, figcaption, .text, .title, .subtitle, .description';
+  const EDITOR_URL = new URLSearchParams(window.location.search).get('editor') === '1';
+  let pendingImage = null;
 
   // ── Highlight styles ───────────────────────────────────────────
+  if (!EDITOR_URL) return;
+
   const style = document.createElement('style');
   style.textContent = `
     [data-editor-editable="true"] {
@@ -46,6 +50,8 @@
     els.forEach(function (el) {
       // Skip elements inside the editor toolbar itself
       if (el.closest('#page-editor-toolbar')) return;
+      if (el.closest('header, nav, footer, script, style, svg, button')) return;
+      if (!el.closest('main')) return;
       // Skip very short text nodes (single chars, whitespace-only)
       if (el.textContent.trim().length < 2) return;
       // Skip elements that are likely icons or SVGs
@@ -53,8 +59,27 @@
       el.setAttribute('contenteditable', 'true');
       el.setAttribute('data-editor-editable', 'true');
     });
-    originalHTML = document.body.innerHTML;
+    originalHTML = getPageContent();
     trackChanges();
+  }
+
+  function addImageToolbar() {
+    const toolbar = document.createElement('label');
+    toolbar.id = 'page-editor-image-upload';
+    const labelText = document.createTextNode('Insert image');
+    toolbar.appendChild(labelText);
+    toolbar.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9999;padding:10px 14px;border-radius:8px;background:#1f2937;color:#fff;font:600 13px sans-serif;cursor:pointer;box-shadow:0 4px 18px #0003';
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*'; input.hidden = true;
+    input.addEventListener('change', function() {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      pendingImage = {file:file, target:document.activeElement};
+      notifyParent({type:'editor:media-upload', file:file});
+      toolbar.textContent = 'Uploading image…';
+    });
+    toolbar.appendChild(input);
+    document.body.appendChild(toolbar);
   }
 
   // ── Track changes ──────────────────────────────────────────────
@@ -155,6 +180,24 @@
     if (!data || !data.type) return;
 
     switch (data.type) {
+      case 'editor:media-uploaded':
+        if (data.error) {
+          window.alert(data.error);
+        } else if (data.url && pendingImage) {
+          const active = pendingImage.target;
+          const image = document.createElement('img');
+          image.src = data.url;
+          image.alt = '';
+          image.style.maxWidth = '100%';
+          if (active && active.getAttribute && active.getAttribute('data-editor-editable') === 'true') active.appendChild(image);
+          else getContentRoot().appendChild(image);
+          markDirty();
+        }
+        pendingImage = null;
+        const uploadLabel = document.getElementById('page-editor-image-upload');
+        if (uploadLabel) uploadLabel.firstChild.textContent = 'Insert image';
+        break;
+
       case 'editor:save':
         saveContent(data.pageId, data.csrfToken)
           .then(function (result) {
@@ -187,6 +230,7 @@
   // ── Notify parent that editor is ready ─────────────────────────
   function init() {
     enableEditing();
+    addImageToolbar();
     notifyParent({ type: 'editor:ready' });
   }
 

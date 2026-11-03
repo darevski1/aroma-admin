@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Page extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -47,17 +48,12 @@ class Page extends Model implements HasMedia
         return $this->hasMany(Navigation::class);
     }
 
-    public function subNavigations()
-    {
-        return $this->hasMany(SubNavigation::class);
-    }
-
     /**
      * Check if this page appears in the public navigation.
      */
     public function isInNavigation(): bool
     {
-        return $this->navigations()->exists() || $this->subNavigations()->exists();
+        return $this->navigations()->exists();
     }
 
     /**
@@ -65,6 +61,10 @@ class Page extends Model implements HasMedia
      */
     public function getUrl(): string
     {
+        if ($this->layout === 'welcome') {
+            return url('/');
+        }
+
         return url('pages/' . $this->slug);
     }
 

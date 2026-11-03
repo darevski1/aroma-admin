@@ -8,7 +8,7 @@
         <div class="ms-3">
             <h3 class="mb-0 h4 font-weight-bolder">Create New Page</h3>
             <p class="mb-4">
-                Create a new page. You can link it to navigation after creation.
+                Add a new page or register an existing site page here. Existing templates, including CenoBots, are already in the list and should be edited rather than added again.
             </p>
         </div>
     </div>
@@ -24,6 +24,10 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger text-white text-sm">{{ session('error') }}</div>
+    @endif
+
     {{-- Add Existing Manual Blade Page --}}
     <div class="row mb-1">
         <div class="col-lg-8">
@@ -32,7 +36,7 @@
                     <div class="me-3">
                         <h6 class="mb-1 font-weight-bolder text-sm">Add Existing Manual Page</h6>
                         <p class="text-xs text-muted mb-0">
-                            Select a manually created Blade page from <code>resources/views/pages</code> and add it to the pages management system – without creating a duplicate copy of the file. You can also rename its Blade file.
+                            Select an existing site page and add it to the pages management system – without creating a duplicate copy of its file.
                         </p>
                     </div>
                     <button type="button" class="btn btn-sm bg-gradient-dark text-nowrap mb-0" data-bs-toggle="modal" data-bs-target="#addExistingPageModal">
@@ -91,7 +95,14 @@
                         <div class="mb-3">
                             <label class="text-xs font-weight-bolder mb-1 text-dark">Route Name (for custom Blade templates)</label>
                             <div class="input-group input-group-outline">
-                                <input type="text" name="route_name" class="form-control" value="{{ old('route_name') }}" placeholder="e.g. za-nas">
+                             <input type="text" name="route_name" class="form-control" value="{{ old('route_name') }}" placeholder="e.g. za-nas" list="availablePageRoutes">
+                             <datalist id="availablePageRoutes">
+                                 @foreach (\Illuminate\Support\Facades\Route::getRoutes() as $route)
+                                     @if ($route->getName() && str_starts_with($route->getName(), 'uslugi.'))
+                                         <option value="{{ $route->getName() }}">{{ $route->uri() }}</option>
+                                     @endif
+                                 @endforeach
+                             </datalist>
                             </div>
                             <small class="text-muted">Optional. Use the existing route name if this page has a custom Blade template.</small>
                         </div>
@@ -178,8 +189,25 @@
                 </div>
                 <div class="modal-body pt-2">
                     <p class="text-xs text-muted">
-                        Manually created Blade pages detected in <code>resources/views/pages</code>. Select one to add it to the pages management system (the file itself is not copied or duplicated).
+                        Existing Blade pages available to register. The original template is not copied or duplicated.
                     </p>
+
+                    @if (session('manual_pages_status'))
+                        <div class="alert alert-success text-white text-xs py-2">{{ session('manual_pages_status') }}</div>
+                    @endif
+
+                    {{-- Removal keeps the Blade files; the pages can be selected again --}}
+                    <form id="aepRemoveForm" action="{{ route('pages.remove-existing') }}" method="POST" class="d-none">
+                        @csrf
+                        <input type="hidden" name="view" id="aepRemoveView">
+                    </form>
+                    <form id="aepRemoveAllForm" action="{{ route('pages.remove-all-existing') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                    <form id="aepSelectedForm" action="{{ route('pages.add-existing-selected') }}" method="POST" class="d-none">
+                        @csrf
+                        <div id="aepSelectedInputs"></div>
+                    </form>
 
                     <div id="manualPagesList" class="vstack gap-2">
                         <div class="text-center text-muted py-4 text-xs">
@@ -199,8 +227,8 @@
                             @csrf
                             <input type="hidden" name="view" id="aepView">
 
-                            {{-- Rename --}}
-                            <div class="mb-3">
+                            {{-- Rename (directory-scanned Blade pages only) --}}
+                            <div class="mb-3" id="aepRenameGroup">
                                 <label class="text-xs font-weight-bolder mb-1 text-dark">Rename Blade file / folder (optional)</label>
                                 <div class="input-group input-group-outline">
                                     <input type="text" name="new_name" id="aepNewName" class="form-control" autocomplete="off">
@@ -244,7 +272,7 @@
                     <button type="button" class="btn btn-outline-secondary btn-sm mb-0" data-bs-dismiss="modal">Close</button>
                     <button type="submit" form="addExistingPageForm" class="btn btn-sm bg-gradient-dark mb-0" id="aepSubmitBtn" disabled>
                         <i class="material-symbols-rounded me-1" style="font-size: 16px;">save</i>
-                        Add Page
+                        <span id="aepSubmitLabel">Add Page</span>
                     </button>
                 </div>
             </div>
@@ -262,6 +290,7 @@
         var listEl = document.getElementById('manualPagesList');
         var detailsEl = document.getElementById('selectedPageDetails');
         var submitBtn = document.getElementById('aepSubmitBtn');
+        var submitLabel = document.getElementById('aepSubmitLabel');
         var renameInput = document.getElementById('aepNewName');
         var renameHint = document.getElementById('aepRenameHint');
         var pagesCache = [];
@@ -286,7 +315,7 @@
             var value = renameInput.value.trim();
             if (value && value !== current.name) {
                 var target = current.kind === 'folder' ? value + '/index.blade.php' : value + '.blade.php';
-                renameHint.innerHTML = 'Will rename <code>resources/views/pages/' + esc(current.path) +
+                renameHint.innerHTML = 'Will rename <code>' + esc(current.path) +
                     '</code> &rarr; <code>' + esc(target) + '</code>';
             } else {
                 renameHint.textContent = 'Leave unchanged to keep the current file name.';
@@ -302,49 +331,116 @@
             document.getElementById('aepSelectedName').textContent = page.name;
             document.getElementById('aepSelectedView').textContent = page.view;
             renameInput.value = page.name;
+            var renameGroup = document.getElementById('aepRenameGroup');
+            renameGroup.classList.toggle('d-none', page.kind === 'registered');
+            renameInput.disabled = page.kind === 'registered';
             document.getElementById('aepTitle').value = page.page_title || titleCase(page.name);
-            document.getElementById('aepSlug').value = slugify(page.name);
-            document.getElementById('aepRouteName').value = '';
+            document.getElementById('aepSlug').value = page.page_slug || slugify(page.name);
+            document.getElementById('aepRouteName').value = page.page_route || '';
             updateRenameHint();
+        }
+
+        // One checked page shows its details form; several are added together.
+        function updateSelection() {
+            var checked = Array.prototype.map.call(
+                listEl.querySelectorAll('input[name="aepCheck"]:checked'),
+                function (box) { return pagesCache[parseInt(box.value, 10)]; }
+            );
+
+            current = null;
+            detailsEl.classList.add('d-none');
+            submitBtn.disabled = !checked.length;
+            submitBtn.setAttribute('form', checked.length > 1 ? 'aepSelectedForm' : 'addExistingPageForm');
+            submitLabel.textContent = checked.length > 1 ? 'Add ' + checked.length + ' Pages' : 'Add Page';
+
+            var inputs = document.getElementById('aepSelectedInputs');
+            inputs.innerHTML = '';
+            checked.forEach(function (page) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'views[]';
+                input.value = page.view;
+                inputs.appendChild(input);
+            });
+
+            if (checked.length === 1) selectPage(checked[0]);
+        }
+
+        function renderRow(page) {
+            var index = pagesCache.indexOf(page);
+            var details = '<span class="flex-grow-1">' +
+                    '<span class="text-xs font-weight-bolder d-block">' + esc(page.display_name || page.name) +
+                    (page.added
+                        ? '<span class="badge bg-gradient-success ms-2">Already added</span>'
+                        : '<span class="badge bg-gradient-secondary ms-2">Not added</span>') + '</span>' +
+                    '<span class="text-xxs text-muted d-block">' + esc(page.path) + ' &middot; <code>' + esc(page.view) + '</code></span>' +
+                '</span>';
+
+            if (page.added) {
+                return '<div class="border rounded-3 p-2 mb-0 d-flex align-items-center">' + details +
+                    '<button type="button" class="btn btn-sm btn-outline-danger mb-0 ms-2" data-aep-remove="' + index + '">Remove</button>' +
+                '</div>';
+            }
+
+            return '<label class="border rounded-3 p-2 mb-0 d-flex align-items-center" style="cursor: pointer;">' +
+                '<input type="checkbox" name="aepCheck" value="' + index + '" class="form-check-input mt-0 me-2">' + details +
+            '</label>';
         }
 
         function renderList(pages) {
             pagesCache = pages;
 
             if (!pages.length) {
-                listEl.innerHTML = '<div class="alert alert-warning text-xs mb-0">No manually created Blade pages were found in resources/views/pages.</div>';
+                listEl.innerHTML = '<div class="alert alert-warning text-xs mb-0">No site pages were found.</div>';
                 return;
             }
 
-            var html = '';
-            pages.forEach(function (page, index) {
-                var badge = page.added
-                    ? '<span class="badge bg-gradient-success ms-2">Already added</span>'
-                    : '<span class="badge bg-gradient-secondary ms-2">Not added</span>';
+            var available = pages.filter(function (page) { return !page.added; });
+            var added = pages.filter(function (page) { return page.added; });
 
-                html += '<label class="border rounded-3 p-2 mb-0 d-flex align-items-center ' + (page.added ? 'opacity-50' : '') + '" style="cursor: ' + (page.added ? 'not-allowed' : 'pointer') + ';">' +
-                    '<input type="radio" name="aepRadio" value="' + index + '" class="form-check-input mt-0 me-2"' + (page.added ? ' disabled' : '') + '>' +
-                    '<span class="flex-grow-1">' +
-                        '<span class="text-xs font-weight-bolder d-block">' + esc(page.name) + badge + '</span>' +
-                        '<span class="text-xxs text-muted d-block">resources/views/pages/' + esc(page.path) + ' &middot; <code>' + esc(page.view) + '</code></span>' +
-                    '</span>' +
-                '</label>';
-            });
+            var html = '<h6 class="text-xs font-weight-bolder mb-0">Available to add (' + available.length + ')</h6>';
+            html += available.length
+                ? available.map(renderRow).join('')
+                : '<p class="text-xs text-muted mb-0">Every page is already added.</p>';
+
+            html += '<div class="d-flex justify-content-between align-items-center mt-3">' +
+                '<h6 class="text-xs font-weight-bolder mb-0">Currently added (' + added.length + ')</h6>' +
+                (added.length ? '<button type="button" class="btn btn-sm btn-danger mb-0" id="aepRemoveAllBtn">Remove All</button>' : '') +
+            '</div>';
+            html += added.length
+                ? added.map(renderRow).join('')
+                : '<p class="text-xs text-muted mb-0">No pages are added yet.</p>';
 
             listEl.innerHTML = html;
 
-            listEl.querySelectorAll('input[name="aepRadio"]').forEach(function (radio) {
-                radio.addEventListener('change', function () {
-                    var page = pagesCache[parseInt(this.value, 10)];
-                    if (page && !page.added) selectPage(page);
+            listEl.querySelectorAll('input[name="aepCheck"]').forEach(function (box) {
+                box.addEventListener('change', updateSelection);
+            });
+
+            listEl.querySelectorAll('[data-aep-remove]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var page = pagesCache[parseInt(this.getAttribute('data-aep-remove'), 10)];
+                    if (!confirm('Remove "' + (page.page_title || page.name) + '" from the pages list? Its Blade file is kept, and menu items linked to it are unlinked.')) return;
+                    document.getElementById('aepRemoveView').value = page.view;
+                    document.getElementById('aepRemoveForm').submit();
                 });
             });
+
+            var removeAllBtn = document.getElementById('aepRemoveAllBtn');
+            if (removeAllBtn) {
+                removeAllBtn.addEventListener('click', function () {
+                    if (!confirm('Remove all ' + added.length + ' added pages, including the Welcome Page if added? Blade files are kept, and menu items linked to these pages are unlinked.')) return;
+                    document.getElementById('aepRemoveAllForm').submit();
+                });
+            }
         }
 
         function loadPages() {
             listEl.innerHTML = '<div class="text-center text-muted py-4 text-xs"><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading pages…</div>';
             detailsEl.classList.add('d-none');
             submitBtn.disabled = true;
+            submitBtn.setAttribute('form', 'addExistingPageForm');
+            submitLabel.textContent = 'Add Page';
             current = null;
 
             fetch('{{ route('pages.manual-blades') }}', {
@@ -359,6 +455,10 @@
 
         modalEl.addEventListener('show.bs.modal', loadPages);
         renameInput.addEventListener('input', updateRenameHint);
+
+        @if (session('manual_pages_status'))
+            document.querySelector('[data-bs-target="#addExistingPageModal"]').click();
+        @endif
     });
 </script>
 @endpush

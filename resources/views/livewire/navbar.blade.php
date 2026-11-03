@@ -25,16 +25,20 @@
       <ul class="site-navbar__list flex flex-col p-4 md:p-0 mt-4 md:flex-row md:mt-0 md:border-0 uppercase">
 
         @foreach ($navItems as $nav)
+        @php
+          $navUrl = $nav->getLinkUrl();
+          $navChildren = $nav->visibleChildren;
+        @endphp
 
         <!-- ITEM -->
-        <li class="site-navbar__item relative {{ $nav->subNavigations->count() ? 'has-dropdown' : '' }}">
+        <li class="site-navbar__item relative {{ $navChildren->isNotEmpty() ? 'has-dropdown' : '' }}">
 
-          @if ($nav->subNavigations->count())
+          @if ($navChildren->isNotEmpty())
 
           <!-- Parent With Dropdown -->
           <div class="site-navbar__parent">
-            <a href="{{ $nav->getLinkUrl() }}" class="site-navbar__link site-navbar__link--dropdown">
-              <span>{{ $nav->name }}</span>
+            <a href="{{ $navUrl }}" class="site-navbar__link site-navbar__link--dropdown" @if (request()->url() === $navUrl) aria-current="page" @endif>
+              <span>{{ $nav->title }}</span>
               <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"
                 aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
@@ -43,7 +47,7 @@
             </a>
 
             <button type="button" class="site-navbar__dropdown-toggle md:hidden" aria-expanded="false"
-              aria-label="Отвори подмени за {{ $nav->name }}">
+              aria-label="Отвори подмени за {{ $nav->title }}">
               <svg class="site-navbar__chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"
                 aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
@@ -52,31 +56,17 @@
             </button>
           </div>
 
-          <!-- Dropdown -->
+          <!-- Dropdown (any depth) -->
           <div class="site-navbar__dropdown absolute left-0 z-10 mt-2 font-normal bg-white w-64 dropdown-menu">
-
-            <ul class="site-navbar__dropdown-list py-2 text-sm text-gray-700">
-
-              @foreach ($nav->subNavigations as $sub)
-
-              <li>
-                <a href="{{ $sub->getLinkUrl() }}" class="site-navbar__dropdown-link block">
-                  {{ $sub->sub_name }}
-                </a>
-              </li>
-
-              @endforeach
-
-            </ul>
-
+            @include('livewire.navbar-children', ['children' => $navChildren])
           </div>
 
           @else
 
           <!-- Normal Link -->
-          <a href="{{ $nav->getLinkUrl() }}" class="site-navbar__link block">
+          <a href="{{ $navUrl }}" class="site-navbar__link block" @if (request()->url() === $navUrl) aria-current="page" @endif>
 
-            {{ $nav->name }}
+            {{ $nav->title }}
 
           </a>
 
@@ -110,6 +100,19 @@
             const item = this.closest('.site-navbar__item');
             const isOpen = item.classList.toggle('is-open');
             this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    });
+
+    document.querySelectorAll('.site-navbar__dropdown').forEach(dropdown => {
+        const item = dropdown.closest('.site-navbar__item');
+        const toggle = item?.querySelector('.site-navbar__dropdown-toggle');
+        if (!item || !toggle) return;
+        item.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                item.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.focus();
+            }
         });
     });
 </script>

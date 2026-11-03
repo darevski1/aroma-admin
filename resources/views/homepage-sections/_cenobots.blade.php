@@ -1,23 +1,23 @@
 {{--
-    Homepage · CenoBots promo block (redesigned).
+Homepage · CenoBots promo block (redesigned).
 
-    Design reference: the hero of /services/cenobots — Archivo display type,
-    Barlow body type, brand blue #007be4 CTAs, dark "ink" gradient, generous
-    spacing and a strong left-content / right-product composition.
+Design reference: the hero of /services/cenobots — Archivo display type,
+Barlow body type, brand blue #007be4 CTAs, dark "ink" gradient, generous
+spacing and a strong left-content / right-product composition.
 
-    Content is unchanged: the original heading, lead paragraph and both
-    actions are reused. The "CenoBOTS" word of the heading is now rendered
-    with the real CenoBots logo (alt text keeps it in the accessible heading),
-    the lead sits under it as the hero lede, and the actions use the same
-    button language as the hero.
+Content is unchanged: the original heading, lead paragraph and both
+actions are reused. The "CenoBOTS" word of the heading is now rendered
+with the real CenoBots logo (alt text keeps it in the accessible heading),
+the lead sits under it as the hero lede, and the actions use the same
+button language as the hero.
 
-    Assets: assets/images/logo/logocenotbot.png (logo, reversed to white with
-    a filter) and assets/images/cenobots/opt/sp50-cutout-800.webp (SP50
-    product cutout).
+Assets: assets/images/logo/logocenotbot.png (logo, reversed to white with
+a filter) and assets/images/cenobots/opt/sp50-cutout-800.webp (SP50
+product cutout).
 
-    Everything is namespaced .cbh* and self-contained in this partial — no
-    other homepage section, and no global typography, colour or spacing, is
-    affected.
+Everything is namespaced .cbh* and self-contained in this partial — no
+other homepage section, and no global typography, colour or spacing, is
+affected.
 --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,7 +114,7 @@
   .cbh__title {
     margin: 0;
     font-family: var(--cbh-display);
-    font-weight: 700;
+    font-weight: normal;
     font-size: clamp(2rem, 1.15rem + 3.2vw, 3.5rem);
     line-height: 1.03;
     letter-spacing: -0.01em;
@@ -418,8 +418,7 @@
         <span class="cbh__stage-floor" aria-hidden="true"></span>
 
         <img class="cbh__robot" src="{{ asset('assets/images/cenobots/opt/sp50-cutout-800.webp') }}"
-          alt="CenoBots SP50 — автономен робот за чистење" width="800" height="1253" loading="lazy"
-          decoding="async">
+          alt="CenoBots SP50 — автономен робот за чистење" width="800" height="1253" loading="lazy" decoding="async">
 
         <span class="cbh__tick cbh__tick--tl" aria-hidden="true"></span>
         <span class="cbh__tick cbh__tick--tr" aria-hidden="true"></span>

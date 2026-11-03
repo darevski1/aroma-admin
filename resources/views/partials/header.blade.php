@@ -3,6 +3,16 @@
 <meta property="og:description" content="{{ $pageDescription ?? 'ITPlus нуди професионални ИТ решенија, мрежна инфраструктура, видео надзор, сервис, принтери и техничка поддршка.' }}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url()->current() }}">
+@if(trim($__env->yieldContent('canonical_url')) !== '')
+<link rel="canonical" href="{{ trim($__env->yieldContent('canonical_url')) }}">
+@endif
+@if(trim($__env->yieldContent('robots_content')) !== '')
+<meta name="robots" content="{{ trim($__env->yieldContent('robots_content')) }}">
+@endif
+@if(trim($__env->yieldContent('og_image')) !== '')
+<meta property="og:image" content="{{ trim($__env->yieldContent('og_image')) }}">
+<meta name="twitter:image" content="{{ trim($__env->yieldContent('og_image')) }}">
+@endif
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $pageTitle ?? 'ITPlus | Комплетни ИТ решенија' }}">
 <meta name="twitter:description" content="{{ $pageDescription ?? 'ITPlus нуди професионални ИТ решенија, мрежна инфраструктура, видео надзор, сервис, принтери и техничка поддршка.' }}">

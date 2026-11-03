@@ -17,7 +17,7 @@ Auth::routes(['register' => false, 'reset' => true]);
 Route::get("/", function(){
     $sections = HomepageSection::published();
     return view("welcome", compact('sections'));
-});
+})->middleware('page.active');
 
 // ─── Admin-only routes ────────────────────────────────────────
 Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
@@ -41,17 +41,9 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
 
     // Navigation Builder
     Route::get('/navigation', [NavigationController::class, 'viewNavigation'])->name('navigation');
-    Route::post('/navigation', [NavigationController::class, 'createNavigation'])->name('navigation.post');
-    Route::delete('/navigation/delete/{id}', [NavigationController::class, 'deleteNavigation'])->name('navigation.delete');
-    Route::patch('/navigation/update/{id}', [NavigationController::class, 'updateLink'])->name('navigation.update');
-    Route::get('/navigation/get/{id}', [NavigationController::class, 'getByid'])->name('navigation.get');
-    Route::get('/navigation/get', [NavigationController::class, 'getNavigation'])->name('navigation.get.all');
-    Route::delete('/navigation/submenu/delete/{id}', [NavigationController::class, 'deleteSubNavigation'])->name('navigation.submenu.delete');
-    Route::patch('/navigation/submenu/update-status/{id}', [NavigationController::class, 'updateSubNavigation'])->name('navigation.submenu.update-status');
-    Route::post('/navigation/submenu/create', [NavigationController::class, 'createSubNavigation'])->name('navigation.submenu.create');
-    Route::get('get-submenu/{id}', [NavigationController::class, 'getSubNavigation'])->name('navigation.sub');
-    Route::patch('/change-submenu/{id}', [NavigationController::class, 'changeSubNavigation'])->name('navigation.change');
-    Route::get('get-nav', [NavigationController::class, 'getNavigationjson'])->name('navigation.nav');
+    Route::get('/navigation/tree', [NavigationController::class, 'tree'])->name('navigation.tree');
+    Route::post('/navigation', [NavigationController::class, 'store'])->name('navigation.store');
+    Route::put('/navigation/save', [NavigationController::class, 'saveMenu'])->name('navigation.save');
 
     // Page Management (CMS) – admin index moved to /admin/pages to avoid conflict with public /pages
     Route::get('/admin/pages', [PageController::class, 'index'])->name('pages.index');
@@ -61,6 +53,9 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     // Add Existing Manual Blade Page (from resources/views/pages)
     Route::get('/pages/manual-blades', [PageController::class, 'manualBlades'])->name('pages.manual-blades');
     Route::post('/pages/add-existing', [PageController::class, 'addExisting'])->name('pages.add-existing');
+    Route::post('/pages/add-existing-selected', [PageController::class, 'addExistingSelected'])->name('pages.add-existing-selected');
+    Route::post('/pages/remove-existing', [PageController::class, 'removeExisting'])->name('pages.remove-existing');
+    Route::post('/pages/remove-all-existing', [PageController::class, 'removeAllExisting'])->name('pages.remove-all-existing');
 
     // Page Editor (must be before {page} wildcard routes)
     Route::get('/pages/{page}/editor', [PageController::class, 'editor'])->name('pages.editor');
@@ -76,12 +71,6 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::patch('/pages/{page}/toggle-publish', [PageController::class, 'togglePublish'])->name('pages.toggle');
     Route::delete('/pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
 
-    // Navigation Builder – extra AJAX endpoints
-    Route::patch('/navigation/{id}/position', [NavigationController::class, 'updatePosition'])->name('navigation.position');
-    Route::patch('/navigation/{id}/toggle-publish', [NavigationController::class, 'togglePublish'])->name('navigation.toggle-publish');
-    Route::patch('/navigation/{id}/link-page', [NavigationController::class, 'linkPage'])->name('navigation.link-page');
-    Route::patch('/navigation/submenu/{id}/position', [NavigationController::class, 'updateSubPosition'])->name('navigation.submenu.position');
-    Route::patch('/navigation/submenu/{id}/link-page', [NavigationController::class, 'linkSubPage'])->name('navigation.submenu.link-page');
     Route::get('/pages/all/json', [PageController::class, 'allJson'])->name('pages.all.json');
 
     // Health Check
@@ -121,6 +110,7 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
 });
 
 // ─── Public routes ────────────────────────────────────────────
+Route::middleware('page.active')->group(function () {
 Route::get('/services/cenobots', [PublicController::class, 'cennobots'])->name('cennobots');
 
 // CenoBots models — overview + one page per model. The {model} segment is
@@ -147,6 +137,7 @@ Route::get('za-nas', [PublicController::class, 'about'])->name('za-nas');
 Route::get('uslugi', [PublicController::class, 'uslugi'])->name('uslugi');
 Route::get('portfolio', [PublicController::class, 'portfolio'])->name('portfolio');
 Route::get('kontakt', [PublicController::class, 'kontakt'])->name('kontakt');
+});
 
 // ─── Public Pages listing & slug-based rendering ──────────────
 Route::get('/pages', [PublicController::class, 'pagesListing'])->name('pages.listing');

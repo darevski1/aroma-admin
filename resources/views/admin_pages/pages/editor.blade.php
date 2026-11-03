@@ -172,6 +172,22 @@
       }, 20000);
     });
 
+    window.addEventListener('message', function(event) {
+      if (!event.data || event.data.type !== 'editor:media-upload') return;
+      const formData = new FormData();
+      formData.append('file', event.data.file);
+      fetch('{{ route('pages.editor-media', $page->id) }}', {
+        method: 'POST',
+        headers: {'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'},
+        body: formData,
+      }).then(response => response.json().then(data => ({response, data}))).then(({response, data}) => {
+        if (!response.ok || !data.success) throw new Error(data.message || 'Image upload failed.');
+        iframe.contentWindow.postMessage({type:'editor:media-uploaded', url:data.media.url}, window.location.origin);
+      }).catch(error => {
+        iframe.contentWindow.postMessage({type:'editor:media-uploaded', error:error.message}, window.location.origin);
+      });
+    });
+
     // ── Preview button ─────────────────────────────────────────────
     btnPreview.addEventListener('click', function() {
       window.open('{{ $previewUrl }}', '_blank');

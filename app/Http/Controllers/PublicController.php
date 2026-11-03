@@ -38,9 +38,21 @@ class PublicController extends Controller
      */
     public function showPage(string $slug)
     {
-        $page = Page::where('slug', $slug)
-            ->where('published', true)
+        $query = Page::where('slug', $slug);
+
+        // Unpublished pages may only be previewed by authenticated administrators.
+        if (request()->boolean('editor')) {
+            abort_unless(auth()->check() && auth()->user()->isAdmin(), 403);
+        } else {
+            $query->where('published', true);
+        }
+
+        $page = $query
             ->firstOrFail();
+
+        if ($page->layout === 'welcome') {
+            return redirect('/');
+        }
 
         $layout = $page->layout;
 
@@ -134,6 +146,13 @@ class PublicController extends Controller
     {
         $page = $this->getPageByRoute('uslugi');
         return view('pages.uslugi.index', compact('page'));
+    }
+
+    public function serviceDetail(string $service)
+    {
+        abort_unless(in_array($service, ['software', 'networks', 'servers', 'cctv', 'printing'], true), 404);
+
+        return view('pages.uslugi.' . $service);
     }
 
     public function portfolio()

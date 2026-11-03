@@ -35,6 +35,13 @@
 
     {{-- Tabs --}}
     <ul class="nav nav-tabs mb-4" id="pageEditTabs" role="tablist">
+        @if ($page->content || \App\Support\PageTemplateConfig::isTemplatePage($page->layout))
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="{{ \App\Support\PageTemplateConfig::isTemplatePage($page->layout) ? route('pages.edit-content', $page->id) : route('pages.editor', $page->id) }}">
+                <i class="material-symbols-rounded me-1" style="font-size:16px;">edit</i>Visual Editor
+            </a>
+        </li>
+        @endif
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-general" data-bs-toggle="tab" data-bs-target="#panel-general"
                 type="button" role="tab" aria-controls="panel-general" aria-selected="true">
@@ -72,7 +79,11 @@
             <form action="{{ route('pages.update', $page->id) }}" method="POST" enctype="multipart/form-data" id="generalForm">
                 @csrf
                 @method('PATCH')
-
+                <input type="hidden" name="canonical_url" value="{{ $page->setting('canonical_url') }}">
+                <input type="hidden" name="og_title" value="{{ $page->setting('og_title') }}">
+                <input type="hidden" name="og_description" value="{{ $page->setting('og_description') }}">
+                <input type="hidden" name="og_image" value="{{ $page->setting('og_image') }}">
+                <input type="hidden" name="position" value="{{ $page->position }}">
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="card">
@@ -93,14 +104,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Content --}}
-                                <div class="mb-3">
-                                    <label class="text-xs font-weight-bolder mb-1 text-dark">Content (HTML)</label>
-                                    <div class="input-group input-group-outline">
-                                        <textarea name="content" class="form-control" rows="8">{{ old('content', $page->content) }}</textarea>
-                                    </div>
-                                    <small class="text-muted">Use the "Full Page Editor" tab for visual inline editing.</small>
-                                </div>
+                                <input type="hidden" name="content" value="{{ $page->content }}">
 
                                 {{-- Layout --}}
                                 <div class="mb-3">
@@ -148,6 +152,11 @@
                                     Last updated: {{ $page->updated_at?->format('M d, Y H:i') ?? 'N/A' }}
                                 </div>
 
+                                <div class="mb-3 form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="robots_index" value="1" id="robotsIndexGeneral" {{ $page->setting('robots_index', true) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="robotsIndexGeneral">Allow search engine indexing</label>
+                                </div>
+
                                 {{-- Buttons --}}
                                 <div class="d-flex gap-2 mt-4">
                                     <button type="submit" class="btn bg-gradient-dark">
@@ -170,19 +179,15 @@
                                     <i class="material-symbols-rounded me-1" style="font-size: 16px;">link</i>
                                     Linked Navigation Items
                                 </h6>
-                                @if ($page->navigations->count() > 0 || $page->subNavigations->count() > 0)
+                                @if ($page->navigations->count() > 0)
                                     <ul class="list-unstyled text-xs">
                                         @foreach ($page->navigations as $nav)
                                             <li class="mb-1">
-                                                <span class="badge bg-gradient-info">Main</span>
-                                                {{ $nav->name }}
-                                            </li>
-                                        @endforeach
-                                        @foreach ($page->subNavigations as $sub)
-                                            <li class="mb-1">
-                                                <span class="badge bg-gradient-secondary">Sub</span>
-                                                {{ $sub->sub_name }}
-                                                <span class="text-muted">({{ $sub->navigation->name ?? '?' }})</span>
+                                                <span class="badge {{ $nav->parent_id ? 'bg-gradient-secondary' : 'bg-gradient-info' }}">{{ $nav->parent_id ? 'Sub' : 'Main' }}</span>
+                                                {{ $nav->title }}
+                                                @if ($nav->parent)
+                                                    <span class="text-muted">({{ $nav->parent->title }})</span>
+                                                @endif
                                             </li>
                                         @endforeach
                                     </ul>
@@ -218,6 +223,11 @@
             <form action="{{ route('pages.update', $page->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
+                <input type="hidden" name="canonical_url" value="{{ $page->setting('canonical_url') }}">
+                <input type="hidden" name="og_title" value="{{ $page->setting('og_title') }}">
+                <input type="hidden" name="og_description" value="{{ $page->setting('og_description') }}">
+                <input type="hidden" name="og_image" value="{{ $page->setting('og_image') }}">
+                <input type="hidden" name="position" value="{{ $page->position }}">
                 <input type="hidden" name="title" value="{{ $page->title }}">
 
                 <div class="row">
@@ -230,6 +240,9 @@
                                 </h6>
 
                                 <x-media.media-picker name="featured_image_file" collection="featured_image" :model="$page" :current="$page->getFirstMedia('featured_image')" label="Featured Image" :multiple="false" :accept="'image/jpeg,image/png,image/webp,image/avif,image/gif,image/svg+xml'" />
+                                @if ($page->featured_image && !$page->getFirstMedia('featured_image'))
+                                    <div class="mb-3"><img src="{{ str_starts_with($page->featured_image, 'http') ? $page->featured_image : url($page->featured_image) }}" alt="Current featured image" style="max-width:240px;max-height:160px;object-fit:contain"></div>
+                                @endif
 
                                 <hr class="my-4">
 
@@ -320,6 +333,27 @@
                                     <small class="text-muted">Recommended: 150-160 characters. Describes the page for search engines.</small>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label class="text-xs font-weight-bolder mb-1 text-dark">Canonical URL</label>
+                                    <div class="input-group input-group-outline"><input type="url" name="canonical_url" class="form-control" value="{{ old('canonical_url', $page->setting('canonical_url')) }}" placeholder="https://example.com/page"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="text-xs font-weight-bolder mb-1 text-dark">Open Graph title</label>
+                                    <div class="input-group input-group-outline"><input type="text" name="og_title" class="form-control" value="{{ old('og_title', $page->setting('og_title')) }}" maxlength="255"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="text-xs font-weight-bolder mb-1 text-dark">Open Graph description</label>
+                                    <textarea name="og_description" class="form-control" rows="3" maxlength="500">{{ old('og_description', $page->setting('og_description')) }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="text-xs font-weight-bolder mb-1 text-dark">Open Graph image URL</label>
+                                    <div class="input-group input-group-outline"><input type="text" name="og_image" class="form-control" value="{{ old('og_image', $page->setting('og_image')) }}"></div>
+                                </div>
+                                <div class="mb-3 form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="robots_index" value="1" id="robotsIndexSeo" {{ $page->setting('robots_index', true) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="robotsIndexSeo">Allow search engine indexing</label>
+                                </div>
+
                                 {{-- Slug (SEO-relevant) --}}
                                 <div class="mb-3">
                                     <label class="text-xs font-weight-bolder mb-1 text-dark">URL Slug</label>
@@ -389,7 +423,7 @@
                                 <i class="material-symbols-rounded me-2" style="font-size:20px;">open_in_new</i>
                                 Full Page Editor (iframe)
                             </a>
-                            <a href="{{ $previewUrl }}" target="_blank" class="btn btn-outline-dark btn-lg">
+                            <a href="{{ $previewUrl }}{{ str_contains($previewUrl, '?') ? '&' : '?' }}editor=1" target="_blank" class="btn btn-outline-dark btn-lg">
                                 <i class="material-symbols-rounded me-2" style="font-size:20px;">visibility</i>
                                 Preview
                             </a>
@@ -405,11 +439,12 @@
                             </p>
                         </div>
                     @else
-                        <div class="d-flex justify-content-center gap-3">
+                        <div class="d-flex justify-content-center gap-3 flex-wrap">
                             <a href="{{ route('pages.editor', $page->id) }}" class="btn bg-gradient-dark btn-lg">
                                 <i class="material-symbols-rounded me-2" style="font-size:20px;">open_in_new</i>
                                 Open Full Page Editor
                             </a>
+                            <a href="{{ route('pages.edit', $page->id) }}#panel-general" class="btn btn-outline-primary btn-lg">General, SEO &amp; Media</a>
                             <a href="{{ $previewUrl }}" target="_blank" class="btn btn-outline-secondary btn-lg">
                                 <i class="material-symbols-rounded me-2" style="font-size:20px;">visibility</i>
                                 Preview Page

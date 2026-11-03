@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Page;
 use App\Support\PageTemplateConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PageController extends Controller
 {
@@ -17,7 +19,9 @@ class PageController extends Controller
      */
     public function index()
     {
-        $pages = Page::withCount('navigations')->with('subNavigations')->orderByDesc('id')->get();
+        $this->syncManualBladePages();
+
+        $pages = Page::withCount('navigations')->orderByDesc('id')->get();
 
         return view('admin_pages.pages.index', compact('pages'));
     }
@@ -27,7 +31,14 @@ class PageController extends Controller
      */
     public function create()
     {
-        return view('admin_pages.pages.create');
+        $this->syncManualBladePages();
+
+        $manualPages = collect($this->detectManualBladePages())
+            ->reject(fn ($entry) => $entry['view'] === 'welcome')
+            ->values()
+            ->all();
+
+        return view('admin_pages.pages.create', compact('manualPages'));
     }
 
     /**
@@ -41,13 +52,18 @@ class PageController extends Controller
             'content'          => 'nullable|string',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'canonical_url' => 'nullable|url|max:2048',
+            'og_title' => 'nullable|string|max:255',
+            'og_description' => 'nullable|string|max:500',
+            'og_image' => 'nullable|string|max:500',
             'featured_image'   => 'nullable|string|max:500',
             'layout'           => 'nullable|string|max:255',
             'route_name'       => 'nullable|string|max:255',
+            'position'         => 'nullable|integer|min:0',
             'published'        => 'nullable',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?: Str::slug($validated['title'], '-');
+        $validated['slug'] = $validated['slug'] ?: $this->uniquePageSlug($validated['title']);
         $validated['published'] = $request->boolean('published');
         $validated['layout'] = $validated['layout'] ?: 'pages.show';
 
@@ -89,11 +105,15 @@ class PageController extends Controller
      */
     public function addExisting(Request $request)
     {
+        // A previously removed page is brought back rather than re-created, so
+        // its own reserved slug must not fail the uniqueness check.
+        $trashed = Page::onlyTrashed()->where('layout', (string) $request->input('view'))->latest('deleted_at')->first();
+
         $validated = $request->validate([
             'view'       => ['required', 'string'],
             'new_name'   => ['nullable', 'string', 'max:255'],
             'title'      => ['required', 'string', 'max:255'],
-            'slug'       => ['nullable', 'string', 'max:255', 'unique:pages,slug'],
+            'slug'       => ['nullable', 'string', 'max:255', Rule::unique('pages', 'slug')->ignore($trashed?->id)],
             'route_name' => ['nullable', 'string', 'max:255'],
             'published'  => ['nullable'],
         ]);
@@ -116,7 +136,7 @@ class PageController extends Controller
         $renamed     = false;
         $newNameRaw  = trim($validated['new_name'] ?? '');
 
-        if ($newNameRaw !== '' && $newNameRaw !== $entry['name']) {
+        if ($entry['kind'] !== 'registered' && $newNameRaw !== '' && $newNameRaw !== $entry['name']) {
             $newName = $this->sanitizeBladeName($newNameRaw);
 
             if ($newName === '' || $newName === $entry['name']) {
@@ -152,6 +172,29 @@ class PageController extends Controller
             $renamed   = true;
         }
 
+        // Registered system views can still have multiple Page records by
+        // slug; they all point to the same template and never copy its file.
+        // For directory-scanned views, retain the one-record-per-layout rule.
+        if ($entry['kind'] === 'registered') {
+            $slug = $validated['slug'] ?: ($trashed->slug ?? Str::slug($validated['title'], '-'));
+            $slug = $slug !== '' ? $slug : 'welcome-page';
+            $original = $slug;
+            $i = 2;
+            while ($this->manualSlugTaken($slug, $trashed)) {
+                $slug = $original . '-' . $i++;
+            }
+
+            $this->persistManualPage($trashed, [
+                'title' => $validated['title'],
+                'slug' => $slug,
+                'layout' => $finalView,
+                'route_name' => $validated['route_name'] ?? $trashed?->route_name,
+                'published' => $request->boolean('published'),
+            ]);
+
+            return redirect()->route('pages.index')->with('success', 'Welcome Page registered successfully without duplicating its Blade template.');
+        }
+
         // Duplicate guard on the final layout name
         if (Page::where('layout', $finalView)->exists()) {
             if ($renamed) {
@@ -162,22 +205,22 @@ class PageController extends Controller
         }
 
         // Build a unique slug (auto-generated from title when empty)
-        $slug = $validated['slug'] ?: Str::slug($validated['title'], '-');
+        $slug = $validated['slug'] ?: ($trashed->slug ?? Str::slug($validated['title'], '-'));
         if ($slug === '') {
             $slug = Str::slug(str_replace(['.', '/'], '-', substr($finalView, strlen('pages.'))), '-');
         }
         $original = $slug;
         $i = 2;
-        while (Page::where('slug', $slug)->exists()) {
+        while ($this->manualSlugTaken($slug, $trashed)) {
             $slug = $original . '-' . $i++;
         }
 
         try {
-            Page::create([
+            $this->persistManualPage($trashed, [
                 'title'      => $validated['title'],
                 'slug'       => $slug,
                 'layout'     => $finalView,
-                'route_name' => $validated['route_name'] ?? null,
+                'route_name' => $validated['route_name'] ?? $trashed?->route_name,
                 'published'  => $request->boolean('published'),
             ]);
         } catch (\Throwable $e) {
@@ -194,6 +237,107 @@ class PageController extends Controller
             : 'Existing Blade page added successfully – no duplicate copy of the file was created.';
 
         return redirect()->route('pages.index')->with('success', $message);
+    }
+
+    /**
+     * Add several selected pages at once. Each one comes back with the title,
+     * slug and content it had before it was removed.
+     */
+    public function addExistingSelected(Request $request)
+    {
+        $validated = $request->validate([
+            'views'   => ['required', 'array', 'min:1'],
+            'views.*' => ['required', 'string'],
+        ]);
+
+        $added = 0;
+
+        foreach ($this->detectManualBladePages() as $entry) {
+            if ($entry['trashed'] && in_array($entry['view'], $validated['views'], true)) {
+                Page::onlyTrashed()->where('layout', $entry['view'])->latest('deleted_at')->first()?->restore();
+                $added++;
+            }
+        }
+
+        if ($added === 0) {
+            return back()->with('error', 'None of the selected pages could be added.');
+        }
+
+        return redirect()->route('pages.index')->with('success', "{$added} existing page(s) added successfully.");
+    }
+
+    /**
+     * Remove one page from the pages management system. Its Blade file is left
+     * untouched and the page can be selected again later.
+     */
+    public function removeExisting(Request $request)
+    {
+        $validated = $request->validate([
+            'view' => ['required', 'string'],
+        ]);
+
+        $entry = collect($this->detectManualBladePages())->firstWhere('view', $validated['view']);
+
+        if (!$entry || !$entry['added']) {
+            return back()->with('error', 'The selected page is not currently added.');
+        }
+
+        DB::transaction(fn () => $this->removeManualPage($entry['view']));
+
+        return redirect()->route('pages.create')
+            ->with('manual_pages_status', "\"{$entry['page_title']}\" was removed.");
+    }
+
+    /**
+     * Remove every added Blade page so the selection can start from scratch.
+     * Pages created with the form on this screen are not Blade pages and stay.
+     */
+    public function removeAllExisting()
+    {
+        $entries = collect($this->detectManualBladePages())->where('added', true);
+
+        DB::transaction(fn () => $entries->each(fn ($entry) => $this->removeManualPage($entry['view'])));
+
+        return redirect()->route('pages.create')
+            ->with('manual_pages_status', "{$entries->count()} page(s) removed. Select only the pages you want.");
+    }
+
+    /** Soft-delete the records of a view, unlinking navigation as destroy() does. */
+    private function removeManualPage(string $view): void
+    {
+        Page::where('layout', $view)->get()->each(function (Page $page) {
+            $page->navigations()->update(['page_id' => null]);
+            $page->delete();
+        });
+    }
+
+    /** Whether a slug belongs to any page other than the one being brought back. */
+    private function manualSlugTaken(string $slug, ?Page $except): bool
+    {
+        return Page::withTrashed()
+            ->where('slug', $slug)
+            ->when($except, fn ($query) => $query->whereKeyNot($except->id))
+            ->exists();
+    }
+
+    /** Bring a removed page back with the given values, or create it if it never existed. */
+    private function persistManualPage(?Page $trashed, array $attributes): Page
+    {
+        if (!$trashed) {
+            return Page::create($attributes);
+        }
+
+        $trashed->restore();
+        $trashed->update($attributes);
+
+        return $trashed;
+    }
+
+    /** The live record of a view, or the most recently removed one when there is none. */
+    private function manualPageRecord(string $view): ?Page
+    {
+        return Page::where('layout', $view)->first()
+            ?? Page::onlyTrashed()->where('layout', $view)->latest('deleted_at')->first();
     }
 
     /**
@@ -215,16 +359,12 @@ class PageController extends Controller
     {
         $base = $this->manualPagesPath();
 
-        if (!is_dir($base)) {
-            return [];
-        }
-
         // System views that power the CMS itself – never offered as selectable pages.
         $systemViews = ['pages.dynamic', 'pages.listing'];
 
         $found = [];
 
-        foreach (File::allFiles($base) as $file) {
+        foreach (is_dir($base) ? File::allFiles($base) : [] as $file) {
             $relative = str_replace(['\\', '/'], '/', $file->getRelativePathname());
 
             if (!str_ends_with($relative, '.blade.php')) {
@@ -233,27 +373,182 @@ class PageController extends Controller
 
             $view = 'pages.' . str_replace('/', '.', substr($relative, 0, -strlen('.blade.php')));
 
-            if (in_array($view, $systemViews, true)) {
+            if (in_array($view, $systemViews, true) || $this->isPartialView($relative)) {
                 continue;
             }
 
             $isFolderTemplate = str_ends_with($relative, '/index.blade.php');
-            $existing = Page::where('layout', $view)->first();
+            $existing = $this->manualPageRecord($view);
 
             $found[] = [
                 'view'       => $view,
                 'path'       => $relative,
                 'name'       => $isFolderTemplate ? basename(dirname($relative)) : basename($relative, '.blade.php'),
                 'kind'       => $isFolderTemplate ? 'folder' : 'file',
-                'added'      => $existing !== null,
+                'added'      => $existing !== null && !$existing->trashed(),
+                'trashed'    => $existing?->trashed() ?? false,
                 'page_id'    => $existing->id ?? null,
                 'page_title' => $existing->title ?? null,
+                'page_slug'  => $existing->slug ?? null,
+                'page_route' => $existing->route_name ?? null,
+            ];
+        }
+
+        foreach ($found as &$entry) {
+            $entry['display_name'] = $entry['name'];
+        }
+        unset($entry);
+
+        // The public homepage is a real, independently routed Blade page, but
+        // its view lives at resources/views/welcome.blade.php rather than in
+        // the pages/ directory. Expose that existing view in the same picker.
+        if (view()->exists('welcome')) {
+            $existing = $this->manualPageRecord('welcome');
+            $found[] = [
+                'view' => 'welcome',
+                'path' => '../welcome.blade.php',
+                'name' => 'Welcome Page',
+                'display_name' => 'Welcome Page',
+                'kind' => 'registered',
+                'added' => $existing !== null && !$existing->trashed(),
+                'trashed' => $existing?->trashed() ?? false,
+                'page_id' => $existing->id ?? null,
+                'page_title' => $existing->title ?? null,
+                'page_slug' => $existing->slug ?? null,
+                'page_route' => $existing->route_name ?? null,
             ];
         }
 
         usort($found, fn ($a, $b) => strcmp($a['name'], $b['name']));
 
         return $found;
+    }
+
+    /**
+     * Keep Blade pages visible in the CMS without requiring a separate manual
+     * registration step. Existing records are matched by layout and are never
+     * overwritten; the manual add flow remains available for custom metadata.
+     */
+    public function syncManualBladePages(): void
+    {
+        $nextPosition = (int) Page::max('position');
+
+        foreach ($this->detectManualBladePages() as $entry) {
+            // Pages removed on purpose stay removed until they are selected again.
+            if ($entry['added'] || $entry['trashed']) {
+                continue;
+            }
+
+            $routeName = $entry['view'] === 'welcome' ? 'welcome' : $this->inferRouteName($entry['view']);
+            $route = $routeName ? collect(Route::getRoutes())->first(fn ($candidate) => $candidate->getName() === $routeName) : null;
+            $routeUri = $route?->uri();
+            $routeSlug = $routeUri && !str_contains($routeUri, '{')
+                ? Str::slug(basename($routeUri))
+                : null;
+            $slug = $entry['view'] === 'welcome'
+                ? 'welcome-page'
+                : ($routeSlug ?: $this->manualBladeSlug($entry));
+
+            if ($slug === '') {
+                $slug = Str::slug($entry['name']);
+            }
+
+            if (Page::withTrashed()->where('slug', $slug)->exists()) {
+                $slug = $this->manualBladeSlug($entry);
+            }
+
+            $originalSlug = $slug;
+            $suffix = 2;
+            while (Page::withTrashed()->where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $suffix++;
+            }
+
+            Page::create([
+                'title' => $entry['view'] === 'welcome'
+                    ? 'Welcome Page'
+                    : Str::headline(str_replace(['-', '_'], ' ', $entry['name'])),
+                'slug' => $slug,
+                'layout' => $entry['view'],
+                'route_name' => $entry['view'] === 'welcome' ? 'welcome' : $routeName,
+                'published' => true,
+                'position' => ++$nextPosition,
+            ]);
+        }
+    }
+
+    /** Partials (`_name`, `partials/`) and backup copies are building blocks, not pages. */
+    private function isPartialView(string $relativePath): bool
+    {
+        foreach (explode('/', $relativePath) as $segment) {
+            if (str_starts_with($segment, '_') || $segment === 'partials' || str_contains($segment, ' copy')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** Derive a unique, URL-safe slug (soft-deleted pages keep their slug reserved). */
+    private function uniquePageSlug(string $title): string
+    {
+        $base = Str::slug($title, '-') ?: 'page';
+        $slug = $base;
+        $suffix = 2;
+        while (Page::withTrashed()->where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $suffix++;
+        }
+
+        return $slug;
+    }
+
+    /** Derive a stable, URL-safe slug from a discovered Blade view path. */
+    private function manualBladeSlug(array $entry): string
+    {
+        $path = preg_replace('/\.blade\.php$/', '', $entry['path']);
+        $parts = explode('/', str_replace('\\', '/', $path));
+        if (end($parts) === 'index') {
+            array_pop($parts);
+        }
+
+        return Str::slug(implode('-', $parts)) ?: Str::slug($entry['name']);
+    }
+
+    /**
+     * Infer the dedicated public route for a Blade template when its name is
+     * an exact match or a conventional kebab-case form of the template name.
+     */
+    private function inferRouteName(string $view): ?string
+    {
+        $suffix = substr($view, strlen('pages.'));
+        $path = str_replace('.', '/', $suffix);
+        $baseName = basename($path);
+        if ($baseName === 'index') {
+            $baseName = basename(dirname($path));
+        }
+        $routeSlugs = array_unique([
+            Str::kebab(str_replace('/', '-', $path)),
+            Str::kebab($baseName),
+        ]);
+        $candidateRouteNames = array_unique(array_merge(
+            $routeSlugs,
+            array_map(fn ($slug) => 'uslugi.' . $slug, $routeSlugs)
+        ));
+
+        foreach ($candidateRouteNames as $candidate) {
+            if (Route::has($candidate)) {
+                return $candidate;
+            }
+        }
+
+        foreach (Route::getRoutes() as $route) {
+            $name = $route->getName();
+            $uri = trim($route->uri(), '/');
+            if ($name && !str_contains($uri, '{') && in_array($uri, $routeSlugs, true)) {
+                return $name;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -272,12 +567,14 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        $page->load('navigations', 'subNavigations.navigation');
+        $page->load('navigations.parent', 'media');
 
         // Build the preview URL based on whether the page has a named route
-        $previewUrl = $page->route_name && Route::has($page->route_name)
-            ? route($page->route_name)
-            : url('p/' . $page->slug);
+        $previewUrl = $page->layout === 'welcome'
+            ? url('/')
+            : ($page->route_name && Route::has($page->route_name)
+                ? route($page->route_name)
+                : url('p/' . $page->slug));
 
         return view('admin_pages.pages.edit', compact('page', 'previewUrl'));
     }
@@ -299,13 +596,12 @@ class PageController extends Controller
      */
     public function saveContent(Request $request, Page $page)
     {
-        $request->validate([
-            'content' => 'required|string',
+        $data = $request->validate([
+            'content' => 'required|string|max:2000000',
         ]);
 
-        $page->update([
-            'content' => $request->input('content'),
-        ]);
+        $page->forceFill(['content' => $data['content']])->save();
+        abort_unless($page->fresh()->content === $data['content'], 500, 'The page content could not be verified after saving.');
 
         return response()->json([
             'success' => true,
@@ -324,15 +620,32 @@ class PageController extends Controller
             'content'          => 'nullable|string',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'canonical_url' => 'nullable|url|max:2048',
+            'og_title' => 'nullable|string|max:255',
+            'og_description' => 'nullable|string|max:500',
+            'og_image' => 'nullable|string|max:500',
             'featured_image'   => 'nullable|string|max:500',
             'layout'           => 'nullable|string|max:255',
             'route_name'       => 'nullable|string|max:255',
+            'position'         => 'nullable|integer|min:0',
             'published'        => 'nullable',
         ]);
 
         $validated['slug'] = $validated['slug'] ?: Str::slug($validated['title'], '-');
         $validated['published'] = $request->boolean('published');
         $validated['layout'] = $validated['layout'] ?: 'pages.show';
+
+        $settings = $page->settings ?? [];
+        foreach (['canonical_url', 'og_title', 'og_description', 'og_image'] as $seoKey) {
+            if ($request->has($seoKey)) $settings[$seoKey] = $request->input($seoKey);
+        }
+        if ($request->has('robots_index')) $settings['robots_index'] = $request->boolean('robots_index');
+        $validated['settings'] = $settings;
+        $validated['position'] = $request->input('position', $page->position);
+
+        if ($request->has('featured_image_file')) {
+            unset($validated['featured_image']);
+        }
 
         $page->update($validated);
 
@@ -346,6 +659,7 @@ class PageController extends Controller
         // Handle featured image removal
         if ($request->input('remove_featured_image')) {
             $page->clearMediaCollection('featured_image');
+            $page->update(['featured_image' => null]);
         }
 
         // Handle attachment additions
@@ -371,12 +685,45 @@ class PageController extends Controller
     /**
      * Toggle the published status of a page.
      */
-    public function togglePublish(Page $page)
+    public function togglePublish(Request $request, Page $page)
     {
         $page->update(['published' => !$page->published]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'published' => $page->published,
+                'message' => $page->published ? 'Page published successfully.' : 'Page unpublished successfully.',
+            ]);
+        }
+
         $status = $page->published ? 'published' : 'unpublished';
         return redirect()->route('pages.index')->with('success', "Page {$status} successfully.");
+    }
+
+    /** Upload a file into the reusable media library, without creating a duplicate on page assignment. */
+    public function uploadEditorMedia(Request $request, Page $page)
+    {
+        $data = $request->validate([
+            'file' => ['required', 'file', 'max:10240', 'mimetypes:image/jpeg,image/png,image/webp,image/avif,image/gif,image/svg+xml'],
+        ]);
+
+        $file = $data['file'];
+        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::query()
+            ->where('collection_name', 'editor-library')
+            ->where('file_name', $file->getClientOriginalName())
+            ->where('size', $file->getSize())
+            ->where('mime_type', $file->getMimeType())
+            ->first();
+
+        if (!$media) {
+            $media = $page->addMedia($file)->toMediaCollection('editor-library');
+        }
+
+        return response()->json([
+            'success' => true,
+            'media' => ['id' => $media->id, 'url' => $media->getUrl(), 'name' => $media->name],
+        ]);
     }
 
     /**
@@ -386,7 +733,6 @@ class PageController extends Controller
     {
         // Unlink from navigation before deleting
         $page->navigations()->update(['page_id' => null]);
-        $page->subNavigations()->update(['page_id' => null]);
 
         $page->delete();
 
@@ -401,11 +747,17 @@ class PageController extends Controller
         $query = Page::where('slug', $slug);
 
         // When loaded in the Full Page Editor iframe (?editor=1), allow unpublished pages
-        if (!request('editor')) {
+        if (request()->boolean('editor')) {
+            abort_unless(auth()->check() && auth()->user()->isAdmin(), 403);
+        } else {
             $query->where('published', true);
         }
 
         $page = $query->firstOrFail();
+
+        if ($page->layout === 'welcome') {
+            return redirect('/');
+        }
 
         if ($page->content) {
             return view('pages.dynamic', compact('page'));
@@ -423,7 +775,8 @@ class PageController extends Controller
      */
     public function allJson()
     {
-        $pages = Page::select('id', 'title', 'slug', 'route_name', 'published')
+        $pages = Page::where('published', true)
+            ->select('id', 'title', 'slug', 'route_name', 'published')
             ->orderBy('title')
             ->get();
 
@@ -493,12 +846,38 @@ class PageController extends Controller
         $data = $request->validate([
             'title'    => 'required|string|max:255',
             'settings' => 'nullable|array',
+            'content' => 'nullable|string|max:2000000',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'canonical_url' => 'nullable|url|max:2048',
+            'og_title' => 'nullable|string|max:255',
+            'og_description' => 'nullable|string|max:500',
+            'og_image' => 'nullable|string|max:500',
+            'robots_index' => 'nullable|boolean',
         ]);
+
+        $settings = $page->settings ?? [];
+        foreach (['canonical_url', 'og_title', 'og_description', 'og_image', 'robots_index'] as $seoKey) {
+            if (array_key_exists($seoKey, $data)) {
+                $settings[$seoKey] = $data[$seoKey];
+            }
+        }
+        if (array_key_exists('robots_index', $data)) {
+            $settings['robots_index'] = (bool) $data['robots_index'];
+        }
+        $settings = array_replace($settings, $data['settings'] ?? []);
 
         $page->update([
             'title'    => $data['title'],
-            'settings' => $data['settings'] ?? $page->settings,
+            'content' => array_key_exists('content', $data) ? $data['content'] : $page->content,
+            'settings' => $settings,
+            'meta_title' => array_key_exists('meta_title', $data) ? $data['meta_title'] : $page->meta_title,
+            'meta_description' => array_key_exists('meta_description', $data) ? $data['meta_description'] : $page->meta_description,
         ]);
+
+        $page->refresh();
+        $persistedSettings = $page->settings ?? [];
+        abort_unless($page->title === $data['title'] && $persistedSettings == $settings, 500, 'The page changes could not be verified after saving.');
 
         return response()->json([
             'success' => true,
@@ -515,10 +894,10 @@ class PageController extends Controller
             $file = $request->file($key);
 
             if ($file->isValid()) {
-                // Store in public storage: page-images/{page_id}/filename
-                $path = $file->store('page-images/' . $request->route('page')->id, 'public');
+                $page = $request->route('page');
+                $media = $page->addMedia($file)->toMediaCollection('page-content');
 
-                return Storage::url($path);
+                return $media->getUrl();
             }
         }
 
@@ -531,6 +910,11 @@ class PageController extends Controller
      */
     private function buildPageUrl(Page $page, array $params = []): string
     {
+        if ($page->layout === 'welcome') {
+            $url = url('/');
+            return empty($params) ? $url : $url . '?' . http_build_query($params);
+        }
+
         $url = url('pages/' . $page->slug);
         if (!empty($params)) {
             $url .= '?' . http_build_query($params);

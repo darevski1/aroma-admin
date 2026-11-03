@@ -60,9 +60,9 @@
         overflow: hidden; transition: box-shadow .2s;
     }
     .ve-section-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
-    .ve-section-header {
+.ve-section-header {
         padding: 14px 20px; display: flex; align-items: center; gap: 10px;
-        border-bottom: 1px solid #f3f4f6; cursor: pointer; user-select: none;
+        width: 100%; border: 0; border-bottom: 1px solid #f3f4f6; background: #fff; text-align: left; cursor: pointer; user-select: none;
     }
     .ve-section-header h6 { margin: 0; font-size: 0.85rem; font-weight: 700; color: #374151; }
     .ve-section-header .chevron {
@@ -153,9 +153,11 @@
         <span id="veStatusText">Saved</span>
     </div>
 
+    <span class="badge {{ $page->published ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">{{ $page->published ? 'Published' : 'Draft' }}</span>
+
     <div class="d-flex gap-2 ms-auto">
         @if ($previewUrl)
-            <a href="{{ $previewUrl }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Preview">
+            <a href="{{ $previewUrl }}{{ str_contains($previewUrl, '?') ? '&' : '?' }}editor=1" target="_blank" class="btn btn-sm btn-outline-secondary" title="Preview">
                 <i class="material-symbols-rounded" style="font-size:16px;">open_in_new</i>
                 Preview
             </a>
@@ -163,6 +165,9 @@
         <button type="button" class="btn btn-sm bg-gradient-dark" id="veSaveBtn" title="Save changes">
             <i class="material-symbols-rounded" style="font-size:16px;">save</i>
             Save
+        </button>
+        <button type="button" class="btn btn-sm {{ $page->published ? 'btn-outline-warning' : 'btn-outline-success' }}" id="vePublishBtn" data-published="{{ $page->published ? '1' : '0' }}" data-publish-url="{{ route('pages.toggle', $page->id) }}">
+            <i class="material-symbols-rounded" style="font-size:16px;">{{ $page->published ? 'visibility_off' : 'visibility' }}</i>{{ $page->published ? 'Unpublish' : 'Publish' }}
         </button>
     </div>
 </div>
@@ -181,13 +186,13 @@
     @foreach ($sections as $sIdx => $section)
         <div class="ve-section" data-section-index="{{ $sIdx }}">
             <div class="ve-section-card">
-                <div class="ve-section-header" onclick="this.nextElementSibling.classList.toggle('collapsed');this.classList.toggle('collapsed');">
+                <button type="button" class="ve-section-header" aria-expanded="true" onclick="const body=this.nextElementSibling;const collapsed=body.classList.toggle('collapsed');this.classList.toggle('collapsed',collapsed);this.setAttribute('aria-expanded',String(!collapsed));">
                     <i class="material-symbols-rounded" style="font-size:18px;color:#6366f1;">
                         {{ ($section['type'] ?? '') === 'repeatable' ? 'format_list_numbered' : 'edit' }}
                     </i>
                     <h6>{{ $section['name'] ?? 'Section ' . ($sIdx + 1) }}</h6>
                     <i class="material-symbols-rounded chevron" style="font-size:18px;">expand_more</i>
-                </div>
+                </button>
 
                 <div class="ve-section-body">
                     @if (($section['type'] ?? '') === 'repeatable')
@@ -227,6 +232,17 @@
         </div>
     @endforeach
 
+    @if (!count($sections))
+        <section class="card mb-4">
+            <div class="card-body">
+                <h5>Page Content</h5>
+                <label class="form-label" for="veHtmlContent">HTML content</label>
+                <textarea id="veHtmlContent" class="form-control" rows="16" spellcheck="true">{{ $page->content }}</textarea>
+                <small class="text-muted">This edits the page's stored content only; the page's assigned layout remains unchanged.</small>
+            </div>
+        </section>
+    @endif
+
     {{-- Bottom Save --}}
     <div class="d-flex gap-2 my-4">
         <button type="button" class="btn bg-gradient-dark" id="veSaveBtnBottom">
@@ -235,6 +251,38 @@
         </button>
         <a href="{{ route('pages.index') }}" class="btn btn-outline-secondary">Back to Pages</a>
     </div>
+
+    <section class="card mb-4" aria-labelledby="page-seo-title">
+        <div class="card-body">
+            <h5 id="page-seo-title">SEO &amp; Social Sharing</h5>
+            <div class="row g-3">
+                <div class="col-md-6"><label for="veMetaTitle" class="form-label">SEO title</label><input id="veMetaTitle" name="meta_title" class="form-control" maxlength="255" value="{{ $page->meta_title }}"></div>
+                <div class="col-md-6"><label for="veCanonical" class="form-label">Canonical URL</label><input id="veCanonical" name="canonical_url" type="url" class="form-control" value="{{ $page->setting('canonical_url') }}" placeholder="https://example.com/page"></div>
+                <div class="col-md-12"><label for="veMetaDescription" class="form-label">Meta description</label><textarea id="veMetaDescription" name="meta_description" class="form-control" maxlength="500" rows="2">{{ $page->meta_description }}</textarea></div>
+                <div class="col-md-6"><label for="veOgTitle" class="form-label">Open Graph title</label><input id="veOgTitle" name="og_title" class="form-control" maxlength="255" value="{{ $page->setting('og_title') }}"></div>
+                <div class="col-md-6"><label for="veOgImage" class="form-label">Open Graph image URL</label><input id="veOgImage" name="og_image" class="form-control" value="{{ $page->setting('og_image') }}" placeholder="Select an image below or enter URL"></div>
+                <div class="col-md-12"><label for="veOgDescription" class="form-label">Open Graph description</label><textarea id="veOgDescription" name="og_description" class="form-control" maxlength="500" rows="2">{{ $page->setting('og_description') }}</textarea></div>
+                <div class="col-md-12 form-check form-switch ms-2"><input id="veRobotsIndex" name="robots_index" class="form-check-input" type="checkbox" value="1" {{ $page->setting('robots_index', true) ? 'checked' : '' }}><label for="veRobotsIndex" class="form-check-label">Allow search engines to index this page</label></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card mb-4" aria-labelledby="page-media-title">
+        <div class="card-body">
+            <h5 id="page-media-title">Page Media Library</h5>
+            <p class="text-sm text-muted">Upload images to the reusable library or select an existing image for the featured/OG image.</p>
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                <input type="file" id="veMediaUpload" accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/svg+xml" class="form-control" style="max-width:360px">
+                <button type="button" id="veMediaUploadBtn" class="btn btn-outline-primary mb-0">Upload image</button>
+                <button type="button" id="veMediaBrowseBtn" class="btn btn-outline-secondary mb-0">Browse existing images</button>
+            </div>
+            <div id="veMediaLibrary" class="ml-modal-grid" hidden></div>
+            <input type="hidden" id="veFeaturedImage" value="{{ $page->featured_image }}">
+            @if ($page->getFirstMedia('featured_image'))
+                <div class="mt-3"><strong>Current featured image</strong><br><img src="{{ $page->getFirstMediaUrl('featured_image') }}" alt="Current featured image" style="max-width:240px;max-height:160px;object-fit:contain"></div>
+            @endif
+        </div>
+    </section>
 </div>
 
 {{-- ═══════════════ MEDIA LIBRARY MODAL ═══════════════ --}}
@@ -305,7 +353,10 @@
     const CSRF   = '{{ csrf_token() }}';
     const PAGE_ID = {{ $page->id }};
     const SAVE_URL = '{{ route("pages.visual-save", $page->id) }}';
+    const CONTENT_SAVE_URL = '{{ route("pages.save-content", $page->id) }}';
     const PICKER_URL = '{{ route("media.picker") }}';
+    const UPLOAD_URL = '{{ route("pages.editor-media", $page->id) }}';
+    const TOGGLE_URL = '{{ route("pages.toggle", $page->id) }}';
 
     // ── Collect all field data ──────────────────────────────
     // Store Quill instances by field key
@@ -353,6 +404,13 @@
             settings[el.dataset.fieldKey] = el.value;
         });
 
+        ['meta_title','meta_description','canonical_url','og_title','og_description','og_image'].forEach(function(name) {
+            const field = document.querySelector('[name="' + name + '"]');
+            if (field) settings[name] = field.value;
+        });
+        const robotsIndex = document.querySelector('[name="robots_index"]');
+        if (robotsIndex) settings.robots_index = robotsIndex.checked;
+
         return settings;
     }
 
@@ -371,6 +429,36 @@
         dot.className = 'dot saving';
         text.textContent = 'Saving…';
 
+        const htmlContentField = document.getElementById('veHtmlContent');
+        if (htmlContentField) {
+            fetch(CONTENT_SAVE_URL, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'X-Requested-With':'XMLHttpRequest','Accept':'application/json'},
+                body: JSON.stringify({content:htmlContentField.value}),
+            }).then(function(response) {
+                if (!response.ok) throw new Error('Page content save failed (HTTP ' + response.status + ').');
+                return response.json();
+            }).then(function() { return savePageSettingsAndFinish(title, settings, dot, text, false); })
+              .catch(function(error) { saving=false; dot.className='dot error'; text.textContent='Error'; showToast(error.message || 'Save failed.', 'error'); });
+            return;
+        }
+
+        savePageSettingsAndFinish(title, settings, dot, text, true);
+    }
+
+    function savePageSettingsAndFinish(title, settings, dot, text, includeContent) {
+        const payload = {
+            title: title,
+            settings: settings,
+            meta_title: settings.meta_title,
+            meta_description: settings.meta_description,
+            canonical_url: settings.canonical_url,
+            og_title: settings.og_title,
+            og_description: settings.og_description,
+            og_image: settings.og_image,
+            robots_index: settings.robots_index,
+        };
+        if (includeContent && document.getElementById('veHtmlContent')) payload.content = document.getElementById('veHtmlContent').value;
         fetch(SAVE_URL, {
             method: 'POST',
             headers: {
@@ -379,11 +467,12 @@
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
             },
-            body: JSON.stringify({ title: title, settings: settings }),
+            body: JSON.stringify(payload),
         })
         .then(function(r) { return r.json(); })
         .then(function(data) {
             saving = false;
+            window.postMessage({type:'editor:save-finished',success:!!data.success}, window.location.origin);
             if (data.success) {
                 dot.className = 'dot saved';
                 text.textContent = 'Saved';
@@ -396,6 +485,7 @@
         })
         .catch(function(err) {
             saving = false;
+            window.postMessage({type:'editor:save-finished',success:false}, window.location.origin);
             dot.className = 'dot error';
             text.textContent = 'Error';
             showToast('Network error. Please try again.', 'error');
@@ -416,6 +506,122 @@
 
     // Mark dirty on any change
     document.getElementById('vePageTitle').addEventListener('input', markDirty);
+    document.getElementById('vePublishBtn').addEventListener('click', function() {
+        if (saving) return;
+        if (document.getElementById('veStatusDot').classList.contains('saving')) return;
+        if (document.getElementById('veStatusDot').classList.contains('error')) {
+            showToast('Resolve the save error before changing publication status.', 'error');
+            return;
+        }
+        const dirty = !document.getElementById('veStatusDot').classList.contains('saved');
+        if (dirty) {
+            if (!window.confirm('Save your changes before changing publication status?')) return;
+            let finished = false;
+            const finish = function(event) {
+                if (finished || !event.data || event.data.type !== 'editor:save-finished') return;
+                finished = true;
+                window.removeEventListener('message', finish);
+                if (event.data.success) togglePagePublication();
+            };
+            window.addEventListener('message', finish);
+            savePage();
+            return;
+        }
+        togglePagePublication();
+    });
+
+    async function togglePagePublication() {
+        const button = document.getElementById('vePublishBtn');
+        const wasPublished = button.dataset.published === '1';
+        if (!window.confirm('Are you sure you want to ' + (wasPublished ? 'unpublish' : 'publish') + ' this page?')) return;
+        button.disabled = true;
+        try {
+            const response = await fetch(TOGGLE_URL, {method:'PATCH',headers:{'X-CSRF-TOKEN':CSRF,'Accept':'application/json','X-Requested-With':'XMLHttpRequest'}});
+            const result = await response.json();
+            if (!response.ok || !result.success) throw new Error(result.message || 'Publication status update failed.');
+            button.dataset.published = result.published ? '1' : '0';
+            window.location.reload();
+        } catch (error) {
+            button.disabled = false;
+            showToast(error.message || 'Publication status update failed.', 'error');
+        }
+    }
+    const htmlContent = document.getElementById('veHtmlContent');
+    if (htmlContent) htmlContent.addEventListener('input', markDirty);
+    document.querySelectorAll('[name="meta_title"], [name="meta_description"], [name="canonical_url"], [name="og_title"], [name="og_description"], [name="og_image"], [name="robots_index"]').forEach(function(el) {
+        el.addEventListener('input', markDirty);
+        el.addEventListener('change', markDirty);
+    });
+
+    const mediaLibrary = document.getElementById('veMediaLibrary');
+    document.getElementById('veMediaBrowseBtn').addEventListener('click', async function() {
+        mediaLibrary.hidden = false;
+        mediaLibrary.innerHTML = '<p class="text-muted">Loading images…</p>';
+        try {
+            const response = await fetch(PICKER_URL + '?per_page=100&mime_type=image', {headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest'}});
+            if (!response.ok) throw new Error('Could not load media library.');
+            const data = await response.json();
+            const images = (data.data || []).filter(item => item.mime_type && item.mime_type.startsWith('image/'));
+            mediaLibrary.innerHTML = '';
+            images.forEach(item => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'ml-modal-item';
+            const image = document.createElement('img');
+            image.src = item.thumb_url || item.url;
+            image.alt = item.name || '';
+                const label = document.createElement('div');
+                label.className = 'name';
+                label.textContent = item.file_name || item.name || 'Image';
+            const check = document.createElement('span');
+            check.className = 'check-badge';
+            check.textContent = '✓';
+            button.append(image, check, label);
+                button.addEventListener('click', function() {
+                    const ogImageInput = document.getElementById('veOgImage');
+                    if (ogImageInput) ogImageInput.value = item.url;
+                    const pageFeaturedImage = document.getElementById('veFeaturedImage');
+                    if (pageFeaturedImage) pageFeaturedImage.value = item.url;
+                    const pageContent = document.getElementById('veHtmlContent');
+                    if (pageContent) {
+                        const imageHtml = '<img src="' + item.url.replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '" alt="" style="max-width:100%">';
+                        pageContent.value += (pageContent.value ? '\n' : '') + imageHtml;
+                    }
+                    markDirty();
+                });
+                mediaLibrary.appendChild(button);
+            });
+            if (!images.length) mediaLibrary.textContent = 'No uploaded images yet.';
+        } catch (error) {
+            mediaLibrary.textContent = error.message;
+        }
+    });
+
+    document.getElementById('veMediaUploadBtn').addEventListener('click', async function() {
+        const input = document.getElementById('veMediaUpload');
+        const file = input.files[0];
+        if (!file) { showToast('Choose an image to upload.', 'error'); return; }
+        const form = new FormData();
+        form.append('file', file);
+        this.disabled = true;
+        try {
+            const response = await fetch(UPLOAD_URL, {method:'POST',headers:{'X-CSRF-TOKEN':CSRF,'Accept':'application/json','X-Requested-With':'XMLHttpRequest'},body:form});
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || 'Image upload failed.');
+            document.getElementById('veOgImage').value = data.media.url;
+            const pageFeaturedImage = document.getElementById('veFeaturedImage');
+            if (pageFeaturedImage) pageFeaturedImage.value = data.media.url;
+            const pageContent = document.getElementById('veHtmlContent');
+            if (pageContent) pageContent.value += (pageContent.value ? '\n' : '') + '<img src="' + data.media.url.replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '" alt="" style="max-width:100%">';
+            markDirty();
+            showToast('Image uploaded to the reusable media library.', 'success');
+            document.getElementById('veMediaBrowseBtn').click();
+        } catch (error) {
+            showToast(error.message || 'Image upload failed.', 'error');
+        } finally {
+            this.disabled = false;
+        }
+    });
     document.querySelectorAll('.ve-text-input').forEach(function(el) {
         el.addEventListener('input', markDirty);
     });

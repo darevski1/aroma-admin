@@ -2,57 +2,54 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Page;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
-
 
 class NavigationSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds. Run after PageSeeder so items can be linked to pages.
      */
     public function run(): void
     {
-        $navigations = [
-            [
-                'id' => 1,
-                'name' => 'Почетнa',
-                'slug' => '/',
-                'created_at' => '2025-06-09 21:02:21',
-                'updated_at' => '2025-10-02 19:25:45',
-            ],
-            [
-                'id' => 2,
-                'name' => 'За Нас',
-                'slug' => 'za-nas',
-                'created_at' => '2025-06-10 11:57:48',
-                'updated_at' => '2025-10-02 19:20:04',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Услуги',
-                'slug' => 'uslugi',
-                'created_at' => '2025-06-10 12:34:18',
-                'updated_at' => '2025-10-02 18:56:28',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Портфолио',
-                'slug' => 'portfolio',
-                'created_at' => '2025-06-10 12:47:13',
-                'updated_at' => '2025-10-02 19:10:47',
-            ],
-            [
-                'id' => 5,
-                'name' => 'Контакт',
-                'slug' => 'kontakt',
-                'created_at' => '2025-06-10 12:47:53',
-                'updated_at' => '2025-10-02 19:12:49',
-            ],
+        $services = [
+            ['id' => 6, 'title' => 'Мрежни инсталации и одржување на мрежи', 'slug' => 'mrezni-instalacii-i-odrzuvanje-na-mrezi'],
+            ['id' => 7, 'title' => 'Одржување на компјутерски системи', 'slug' => 'odrzuvanje-na-kompjuterski-sistemi'],
+            ['id' => 8, 'title' => 'Видео надзор и контрола на пристап', 'slug' => 'video-nadzor-i-kontrola-na-pristap'],
+            ['id' => 9, 'title' => 'Сервис и продажба на принтери', 'slug' => 'servis-i-prodazba-na-printeri'],
         ];
 
-        DB::table('navigations')->insert($navigations);
+        $items = [
+            ['id' => 1, 'parent_id' => null, 'title' => 'Почетнa', 'slug' => '/'],
+            ['id' => 2, 'parent_id' => null, 'title' => 'За Нас', 'slug' => 'za-nas'],
+            ['id' => 3, 'parent_id' => null, 'title' => 'Услуги', 'slug' => 'uslugi'],
+            ['id' => 4, 'parent_id' => null, 'title' => 'Портфолио', 'slug' => 'portfolio'],
+            ['id' => 5, 'parent_id' => null, 'title' => 'Контакт', 'slug' => 'kontakt'],
+        ];
+        foreach ($services as $service) {
+            $items[] = $service + ['parent_id' => 3];
+        }
+
+        $position = [];
+        $rows = [];
+        foreach ($items as $item) {
+            $key = $item['parent_id'] ?? 0;
+            $position[$key] = ($position[$key] ?? -1) + 1;
+
+            $rows[] = [
+                'id' => $item['id'],
+                'parent_id' => $item['parent_id'],
+                'title' => $item['title'],
+                'slug' => $item['slug'],
+                'page_id' => Page::where('route_name', $item['slug'])->value('id'),
+                'published' => true,
+                'position' => $position[$key],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        DB::table('navigations')->insert($rows);
     }
 }

@@ -55,6 +55,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Title</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Slug</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Route</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Template</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">In Navigation</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
@@ -74,10 +75,13 @@
                                             <code class="text-xs">{{ $page->slug }}</code>
                                         </td>
                                         <td class="align-middle">
-                                            <span class="badge bg-gradient-secondary">{{ $page->layout }}</span>
+                                            <code class="text-xs">{{ $page->route_name ?: '—' }}</code>
                                         </td>
                                         <td class="align-middle">
-                                            @if ($page->navigations_count > 0 || $page->subNavigations->count() > 0)
+                                            <span class="badge bg-gradient-secondary">{{ \App\Support\PageTemplateConfig::getLayouts()[$page->layout] ?? $page->layout }}</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            @if ($page->navigations_count > 0)
                                                 <span class="badge bg-gradient-success">
                                                     {{ $page->navigations_count }} nav item(s)
                                                 </span>
@@ -102,16 +106,10 @@
                                                 </button>
                                             </form>
 
-                                            {{-- Edit: template pages go to visual editor, others to settings --}}
-                                            @if (PageTemplateConfig::isTemplatePage($page->layout))
-                                                <a href="{{ route('pages.edit-content', $page->id) }}" class="btn btn-sm btn-outline-info me-1" title="Visual Editor">
-                                                    <i class="material-symbols-rounded" style="font-size: 16px;">edit</i>
-                                                </a>
-                                            @else
-                                                <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-info me-1" title="Edit">
-                                                    <i class="material-symbols-rounded" style="font-size: 16px;">edit</i>
-                                                </a>
-                                            @endif
+                                            {{-- Every page opens in the settings/editor hub. --}}
+                                            <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-info me-1" title="Edit">
+                                                <i class="material-symbols-rounded" style="font-size: 16px;">edit</i>
+                                            </a>
 
                                             {{-- Settings (for template pages – access general/SEO/media tabs) --}}
                                             @if (PageTemplateConfig::isTemplatePage($page->layout))
@@ -139,7 +137,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-4 text-muted">No pages found. Create your first page to get started.</td>
+                                        <td colspan="8" class="text-center py-4 text-muted">No pages found. Create your first page to get started.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

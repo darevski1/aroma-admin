@@ -16,16 +16,18 @@ class DatabaseSeeder extends Seeder
         // Roles must exist first: users.user_role has an FK to roles.id.
         $this->call(RolesSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            User::factory()->make([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ])->getAttributes()
+        );
 
         $this->call([
             AdminUserSeeder::class,
-            NavigationSeeder::class,
-            SubNavigationSeeder::class,
             PageSeeder::class,
+            NavigationSeeder::class,
             HomepageSectionSeeder::class,
         ]);
     }

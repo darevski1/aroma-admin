@@ -3,10 +3,22 @@
 
 
 @endif
-@section('title', $page->meta_title ?: $page->title . ' | ITPlus')
-@if($page->meta_description)
+@section('title', request()->boolean('editor') ? ($page->meta_title ?: $page->title . ' | ITPlus') : (trim($page->setting('og_title', '')) ?: ($page->meta_title ?: $page->title . ' | ITPlus')))
+@if(request()->boolean('editor') && $page->meta_description)
+@section('meta_description', $page->meta_description)
+@elseif($page->setting('og_description'))
+@section('meta_description', $page->setting('og_description'))
+@elseif($page->meta_description)
 @section('meta_description', $page->meta_description)
 @endif
+@section('canonical_url', $page->setting('canonical_url') ?: url('pages/' . $page->slug))
+@php
+    $pageOgImage = $page->setting('og_image') ?: ($page->featured_image ? (str_starts_with($page->featured_image, 'http') ? $page->featured_image : url($page->featured_image)) : '');
+@endphp
+@if($pageOgImage)
+@section('og_image', $pageOgImage)
+@endif
+@section('robots_content', $page->published && $page->setting('robots_index', true) ? 'index,follow' : 'noindex,nofollow')
 @section('content')
 @if($page->content && (str_contains($page->content, '<html') || str_contains($page->content, '<body')))
     {{-- Full HTML from Full Page Editor: strip outer html/body to avoid nesting --}}
