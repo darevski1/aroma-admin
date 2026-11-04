@@ -145,3 +145,7 @@ Route::get('/pages/{slug}', [PublicController::class, 'showPage'])->name('pages.
 
 // Dynamic page rendering (fallback for pages not matched by specific routes)
 Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
+
+// XML sitemap for search engines (see SitemapController)
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');

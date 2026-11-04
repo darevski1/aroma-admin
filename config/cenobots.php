@@ -89,7 +89,7 @@ return [
             /* Every model links to its own brochure PDF — never a shared file. */
             'brochure' => [
                 'label' => 'Преземи брошура (PDF)',
-                'path'  => 'assets/pdf/cenobots/CenoBots-L3-brochure.pdf',
+                'path'  => 'assets/pdf/cenobots/CenoBots L3 Brochure.pdf',
                 'meta'  => 'Технички податоци, карактеристики и примена на CenoBots L3',
             ],
             /* Intrinsic size of card/stage image, used for width/height attrs. */
@@ -143,7 +143,7 @@ return [
             'description' => 'Автономен scrubber dryer за комерцијални и јавни објекти со поголема површина. Обезбедува конзистентен резултат на големи отворени површини и во објекти со висока фреквенција на посетители.',
             'brochure' => [
                 'label' => 'Преземи брошура (PDF)',
-                'path'  => 'assets/pdf/cenobots/CenoBots-L4-brochure.pdf',
+                'path'  => 'assets/pdf/cenobots/CenoBots Autonomous Scrubber Dryer L4 Brochure.pdf',
                 'meta'  => 'Технички податоци, карактеристики и примена на CenoBots L4',
             ],
             /* Intrinsic size of card/stage image, used for width/height attrs. */
@@ -197,7 +197,7 @@ return [
             'description' => 'Високопродуктивен автономен scrubber dryer за големи комерцијални и индустриски простори. Наменет за објекти каде чистењето се планира како континуиран оперативен процес.',
             'brochure' => [
                 'label' => 'Преземи брошура (PDF)',
-                'path'  => 'assets/pdf/cenobots/CenoBots-L50-brochure.pdf',
+                'path'  => 'assets/pdf/cenobots/CenBots Autonomous Scrubber Dryer L50.pdf',
                 'meta'  => 'Технички податоци, карактеристики и примена на CenoBots L50',
             ],
             /* Intrinsic size of card/stage image, used for width/height attrs. */
@@ -252,7 +252,7 @@ return [
             'description' => 'Автономен индустриски sweeper за суво метење и собирање отпад. Решение за производни погони, магацини и надворешни површини каде секојдневно се создава прашина и цврст отпад.',
             'brochure' => [
                 'label' => 'Преземи брошура (PDF)',
-                'path'  => 'assets/pdf/cenobots/CenoBots-S5-brochure.pdf',
+                'path'  => 'assets/pdf/cenobots/CenoBots Autonomous Sweeper S5.pdf',
                 'meta'  => 'Технички податоци, карактеристики и примена на CenoBots S5',
             ],
             /* Intrinsic size of card/stage image, used for width/height attrs. */
@@ -310,7 +310,7 @@ return [
             'description' => 'Автономен vacuum sweeper за суво чистење со силна филтрација. Соодветен за објекти каде квалитетот на воздухот и контролата на прашината се дел од стандардите за одржување.',
             'brochure' => [
                 'label' => 'Преземи брошура (PDF)',
-                'path'  => 'assets/pdf/cenobots/CenoBots-SP50-brochure.pdf',
+                'path'  => 'assets/pdf/cenobots/CenoBots Autonomous Vacuum Sweeper SP50.pdf',
                 'meta'  => 'Технички податоци, карактеристики и примена на CenoBots SP50',
             ],
             /* Intrinsic size of card/stage image, used for width/height attrs. */

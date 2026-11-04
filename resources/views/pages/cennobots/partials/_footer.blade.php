@@ -26,6 +26,13 @@
 <footer class="site-footer">
     <div class="container site-footer__grid">
         <div class="site-footer__brand">
+            <a href="/" class="site-footer__logo" aria-label="IT Plus Smart">
+                <img src="{{ asset('assets/images/logo-itplus.png') }}" alt="IT Plus - Be Smart" height="48">
+            </a>
+            <img class="site-footer__distributor"
+                src="{{ asset('assets/pdf/cenobots/' . rawurlencode('Authorized Distributor CenoBots IT Plus.jpg')) }}"
+                alt="Authorized Distributor CenoBots IT Plus" loading="lazy"
+                style="display:block; margin-top:12px; max-width:220px; height:auto;">
             <p class="brand__name">Ceno<span>Bots</span> x IT Plus Smart</p>
             <p>Овластен CenoBots дистрибутер и локален сервисен партнер во Северна Македонија. Продажба, изнајмување,
                 обука и сервис на автономни роботи за комерцијално и индустриско чистење.</p>

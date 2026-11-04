@@ -20,6 +20,9 @@
   <meta property="og:description"
     content="@yield('description', 'Професионални автономни роботи за комерцијално и индустриско чистење во Северна Македонија – продажба, изнајмување, обука и локален сервис преку IT Plus Smart.')">
   <meta property="og:image" content="{{ asset('assets/images/cenobots/cenno/hero-robot.jpg') }}">
+  <link rel="canonical" href="@yield('canonical_url', url()->current())">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:locale" content="mk_MK">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
