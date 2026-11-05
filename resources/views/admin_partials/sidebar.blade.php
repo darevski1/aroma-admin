@@ -54,6 +54,18 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('cenobots-clients.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('cenobots-clients.index') }}">
+          <i class="material-symbols-rounded opacity-5">handshake</i>
+          <span class="nav-link-text ms-1">CenoBots Projects</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('analytics.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('analytics.index') }}">
+          <i class="material-symbols-rounded opacity-5">analytics</i>
+          <span class="nav-link-text ms-1">Analytics</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link text-dark" href="{{ route('health-check') }}">
           <i class="material-symbols-rounded opacity-5">monitor_heart</i>
           <span class="nav-link-text ms-1">Health Check</span>

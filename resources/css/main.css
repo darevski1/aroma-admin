@@ -97,7 +97,7 @@ body{
   margin: 0;
   color: #17191c;
   font-size: clamp(2.7rem, 5vw, 5rem);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.055em;
   line-height: 1.04;
 }
@@ -2721,4 +2721,32 @@ body{
 }
 .br{
   border: 1px solid;
+}
+.aroma-footer{ background: #0f172a; color: #cbd5e1; margin-top: auto; width: 100%; }
+.aroma-footer, .aroma-footer *{ font-weight: 400; }
+.aroma-footer__inner{ max-width: 80rem; margin: 0 auto; padding: 3.5rem 1.5rem 1.5rem; }
+.aroma-footer__grid{ display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+@media (min-width: 640px){.aroma-footer__grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px){.aroma-footer__grid{ grid-template-columns: 1.4fr 1fr 1.2fr 1.2fr; gap: 3rem; }
+}
+.aroma-footer h3{ color: #fff; font-size: 1rem; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 1rem; }
+.aroma-footer ul{ list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.aroma-footer li, .aroma-footer p{ font-size: .9rem; line-height: 1.6; margin: 0; }
+.aroma-footer a{ color: #cbd5e1; text-decoration: none; transition: color .2s ease; }
+.aroma-footer a:hover, .aroma-footer a:focus-visible{ color: #fff; }
+.aroma-footer__logo img{ height: 2.5rem; width: auto; filter: brightness(0) invert(1); }
+.aroma-footer__brand p{ margin-top: 1rem; max-width: 22rem; }
+.aroma-footer__socials{ display: flex; gap: .5rem; margin-top: 1.25rem; }
+.aroma-footer__social{ width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; border: 1px solid #334155; }
+.aroma-footer__social:hover{ background: #1e293b; border-color: #475569; }
+.aroma-footer__social svg{ width: .9rem; height: .9rem; }
+.aroma-footer__partner{ display: inline-block; margin-top: 1.25rem; background: #fff; border-radius: .5rem; padding: .35rem .75rem; }
+.aroma-footer__partner img{ height: 1.75rem; width: auto; display: block; }
+.aroma-footer__powered{ display: flex; flex-direction: column; align-items: center; gap: .75rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1e293b; font-size: .85rem; color: #94a3b8; }
+.aroma-footer__powered img{ height: 2.5rem; width: auto; display: block; }
+.aroma-footer__bottom{ display: flex; flex-direction: column; align-items: center; gap: .5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #1e293b; font-size: .8rem; color: #94a3b8; text-align: center; }
+.aroma-footer__bottom p{ display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
+.aroma-footer__bottom img{ height: 1.25rem; width: auto; display: block; }
+@media (min-width: 768px){.aroma-footer__bottom{ flex-direction: row; justify-content: space-between; text-align: left; }
 }

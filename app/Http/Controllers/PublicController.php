@@ -56,6 +56,21 @@ class PublicController extends Controller
 
         $layout = $page->layout;
 
+        // These templates are fed by config('cenobots.models'), not by a Page record.
+        if ($layout === 'pages.cennobots.models.index') {
+            return $this->cennobotsModels();
+        }
+
+        // The per-model template needs a specific model, so send visitors to the catalogue.
+        if ($layout === 'pages.cennobots.models.show') {
+            // The visual editor edits the shared per-model template through the first model.
+            if (request()->boolean('editor') && ($first = collect(config('cenobots.models'))->first())) {
+                return redirect()->route('cennobots.model', ['model' => $first['id'], 'editor' => 1]);
+            }
+
+            return redirect()->route('cennobots.models');
+        }
+
         // If the layout maps to a real Blade view, render it
         // (registered template OR any manually created Blade page added via pages/create)
         if ($layout && (PageTemplateConfig::isTemplatePage($layout) || view()->exists($layout))) {
@@ -77,7 +92,8 @@ class PublicController extends Controller
     public function cennobots()
     {
         $page = $this->getPageByRoute('cennobots');
-        return view('pages.cennobots.index', compact('page'));
+        $projects = \App\Models\CenobotsClient::forCarousel();
+        return view('pages.cennobots.index', compact('page', 'projects'));
     }
 
     /**
@@ -87,6 +103,8 @@ class PublicController extends Controller
     {
         return view('pages.cennobots.models.index', [
             'models' => config('cenobots.models'),
+            // Lets the visual editor store its edits for the catalogue page.
+            'page' => Page::where('layout', 'pages.cennobots.models.index')->first(),
         ]);
     }
 
@@ -107,6 +125,7 @@ class PublicController extends Controller
             'model' => $models->get($model),
             // Every other model, for the "compare with other models" section.
             'others' => $models->where('id', '!=', $model)->values(),
+            'page' => Page::where('layout', 'pages.cennobots.models.show')->first(),
         ]);
     }
 

@@ -383,7 +383,7 @@
             }
 
             return '<label class="border rounded-3 p-2 mb-0 d-flex align-items-center" style="cursor: pointer;">' +
-                '<input type="checkbox" name="aepCheck" value="' + index + '" class="form-check-input mt-0 me-2">' + details +
+                '<input type="checkbox" name="aepCheck" value="' + index + '" class="form-check-input mt-0 me-2 flex-shrink-0" style="border: 1px solid #737373;">' + details +
             '</label>';
         }
 

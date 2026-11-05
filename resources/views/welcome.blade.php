@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'ITPlus | Почетна')
-@section('meta_description', 'Комплетни ИТ решенија за вашиот бизнис: инфраструктура, одржување, софтверски решенија,
-безбедност, принтери и техничка поддршка.')
+@include('partials.page-seo', ['seoPage' => \App\Models\Page::where('layout', 'welcome')->first(), 'seoTitle' => 'ITPlus | Почетна', 'seoDescription' => 'Комплетни ИТ решенија за вашиот бизнис: инфраструктура, одржување, софтверски решенија,
+безбедност, принтери и техничка поддршка.'])
 
 
 @section('content')
@@ -22,6 +21,10 @@ $sectionPartials = [
 ];
 @endphp
 
+@if (!empty($editedContent))
+    {{-- Saved from the Full Page Editor --}}
+    {!! $editedContent !!}
+@else
 @foreach ($sections as $section)
     @if (isset($sectionPartials[$section->slug]))
         @include($sectionPartials[$section->slug])
@@ -30,5 +33,6 @@ $sectionPartials = [
         @include('homepage-sections._custom')
     @endif
 @endforeach
+@endif
 
 @endsection

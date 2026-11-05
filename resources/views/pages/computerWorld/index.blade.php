@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 
-@section('title', 'ITPlus | Одржување на компјутери')
-@section('meta_description', 'Одржување на компјутерски системи од ITPlus: техничка поддршка, оптимизација, сервис и стабилна ИТ инфраструктура.')
+@include('partials.page-seo', ['seoPage' => $page ?? null, 'seoTitle' => 'ITPlus | Одржување на компјутери', 'seoDescription' => 'Одржување на компјутерски системи од ITPlus: техничка поддршка, оптимизација, сервис и стабилна ИТ инфраструктура.'])
 
 @section('content')
 @php

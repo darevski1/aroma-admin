@@ -47,10 +47,10 @@ affected.
       linear-gradient(140deg, #050b17 0%, #101a2d 60%, #132643 100%);
   }
 
-  @media (min-width: 1024px) {
-    .cbh {
-      min-height: min(760px, 92vh);
-    }
+  /* full viewport height (svh keeps it right under mobile browser toolbars) */
+  .cbh {
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   /* blueprint grid */

@@ -33,7 +33,7 @@
                 <input type="hidden" class="ve-image-url" data-field-key="{{ $fieldKey }}"
                        value="{{ $fieldValue }}">
                 @if ($fieldValue)
-                    <small class="text-muted d-block mt-1" style="font-size:0.7rem;">{{ \Illuminate\Support\Str::basename($fieldValue) }}</small>
+                    <small class="text-muted d-block mt-1" style="font-size:0.7rem;">{{ basename($fieldValue) }}</small>
                 @endif
             </div>
         </div>

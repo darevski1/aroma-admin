@@ -447,6 +447,10 @@ return [
         'eyebrow' => 'Проекти',
         'heading' => 'CenoBots во реални објекти',
         'lead'    => 'Практични примени на автономното чистење во комерцијални и деловни простори.',
+        // Shown on a project that has no photo of its own (pick one in Admin → CenoBots Projects).
+        'fallback_image' => 'assets/images/cenobots/opt/hero-scene-1600.webp',
+        // Original projects. Seeded into the cenobots_clients table once; now managed in the admin,
+        // and shown from here only while that table has no active project.
         'items' => [
             ['Шопинг центар', 'Diamond Mall', 'Автономно машинско перење на заеднички површини со висока фреквенција на посетители.'],
             ['Резиденцијален и деловен комплекс', 'Limak Residence', 'Одржување на заеднички простори, коридори и влезни зони со планирани распореди.'],

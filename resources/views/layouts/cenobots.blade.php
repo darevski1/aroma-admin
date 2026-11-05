@@ -19,10 +19,11 @@
   <meta property="og:title" content="@yield('title', 'CenoBots — Автономни роботи за чистење | IT Plus Smart')">
   <meta property="og:description"
     content="@yield('description', 'Професионални автономни роботи за комерцијално и индустриско чистење во Северна Македонија – продажба, изнајмување, обука и локален сервис преку IT Plus Smart.')">
-  <meta property="og:image" content="{{ asset('assets/images/cenobots/cenno/hero-robot.jpg') }}">
+  <meta property="og:image" content="@yield('og_image', asset('assets/images/cenobots/cenno/hero-robot.jpg'))">
   <link rel="canonical" href="@yield('canonical_url', url()->current())">
   <meta property="og:url" content="{{ url()->current() }}">
   <meta property="og:locale" content="mk_MK">
+  @hasSection('robots_content')<meta name="robots" content="@yield('robots_content')">@endif
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +40,23 @@
 </head>
 
 <body>
-  @yield('content')
+  @php
+    // Text/image edits saved from the visual editor (no-op when a page has none).
+    $__inlineEdits = isset($page) && $page instanceof \App\Models\Page ? $page->setting('inline_edits') : null;
+  @endphp
+  @if (!empty($__inlineEdits))
+    {!! app(\App\Services\InlineEdits::class)->apply($__env->yieldContent('content'), $__inlineEdits, request()->boolean('editor') && auth()->check() && auth()->user()->isAdmin()) !!}
+  @else
+    @yield('content')
+  @endif
+
+  {{-- ── Visual editor mode (admin iframe / ?editor=1) ── --}}
+  @if (request('editor') && auth()->check() && auth()->user()->isAdmin())
+    <div id="ie-config" data-mode="edits"
+      data-page-id="{{ isset($page) && $page instanceof \App\Models\Page ? $page->id : '' }}"
+      data-csrf="{{ csrf_token() }}" hidden></div>
+    <script type="module" src="{{ Vite::asset('resources/js/page-editor.js') }}"></script>
+  @endif
 </body>
 
 </html>

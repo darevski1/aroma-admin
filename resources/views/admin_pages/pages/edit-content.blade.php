@@ -156,6 +156,10 @@
     <span class="badge {{ $page->published ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">{{ $page->published ? 'Published' : 'Draft' }}</span>
 
     <div class="d-flex gap-2 ms-auto">
+        <a href="{{ route('pages.editor', $page->id) }}" class="btn btn-sm btn-outline-dark" title="Edit the page visually, directly on the live layout">
+            <i class="material-symbols-rounded" style="font-size:16px;">edit_note</i>
+            Visual Editor
+        </a>
         @if ($previewUrl)
             <a href="{{ $previewUrl }}{{ str_contains($previewUrl, '?') ? '&' : '?' }}editor=1" target="_blank" class="btn btn-sm btn-outline-secondary" title="Preview">
                 <i class="material-symbols-rounded" style="font-size:16px;">open_in_new</i>
@@ -232,10 +236,13 @@
         </div>
     @endforeach
 
-    @if (!count($sections))
+    @if (!count($sections) && trim((string) $page->content) !== '')
         <section class="card mb-4">
             <div class="card-body">
                 <h5>Page Content</h5>
+                <a href="{{ route('pages.editor', $page->id) }}" class="btn btn-sm btn-outline-dark mb-3">
+                    <i class="material-symbols-rounded me-1" style="font-size:16px;">edit_note</i>Edit visually on the page
+                </a>
                 <label class="form-label" for="veHtmlContent">HTML content</label>
                 <textarea id="veHtmlContent" class="form-control" rows="16" spellcheck="true">{{ $page->content }}</textarea>
                 <small class="text-muted">This edits the page's stored content only; the page's assigned layout remains unchanged.</small>

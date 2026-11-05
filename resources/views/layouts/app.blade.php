@@ -29,7 +29,15 @@
 
     {{-- Page Content --}}
     <main class="mx-auto w-full ">
-        @yield('content')
+        @php
+            // Re-apply text edits saved from the visual editor (no-op when a page has none).
+            $__inlineEdits = isset($page) && $page instanceof \App\Models\Page ? $page->setting('inline_edits') : null;
+        @endphp
+        @if (!empty($__inlineEdits))
+            {!! app(\App\Services\InlineEdits::class)->apply($__env->yieldContent('content'), $__inlineEdits, request()->boolean('editor') && auth()->check() && auth()->user()->isAdmin()) !!}
+        @else
+            @yield('content')
+        @endif
     </main>
 
     {{-- Footer scripts --}}
@@ -41,6 +49,13 @@
 
     {{-- ── Full Page Editor mode ────────────────────────────────── --}}
     @if(request('editor'))
+        @php
+            $__ieTemplate = isset($page) && $page instanceof \App\Models\Page
+                && $page->layout && $page->layout !== 'welcome' && $page->layout !== 'pages.dynamic' && view()->exists($page->layout);
+        @endphp
+        <div id="ie-config" data-mode="{{ $__ieTemplate ? 'edits' : 'content' }}"
+             data-page-id="{{ isset($page) && $page instanceof \App\Models\Page ? $page->id : '' }}"
+             data-csrf="{{ auth()->check() && auth()->user()->isAdmin() ? csrf_token() : '' }}" hidden></div>
         <script type="module" src="{{ Vite::asset('resources/js/page-editor.js') }}"></script>
     @endif
 </body>

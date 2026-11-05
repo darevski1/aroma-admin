@@ -1,5 +1,13 @@
 @extends('layouts.cenobots')
 
+@if (!empty($page?->meta_title) || !empty($page?->meta_description) || $page?->setting('canonical_url') || $page?->setting('og_image') || $page?->setting('robots_index') === false)
+@include('partials.page-seo', [
+    'seoPage' => $page,
+    'seoTitle' => 'CenoBots — Автономни роботи за чистење | IT Plus Smart',
+    'seoDescription' => 'Професионални автономни роботи за комерцијално и индустриско чистење во Северна Македонија – продажба, изнајмување, обука и локален сервис преку IT Plus Smart.',
+])
+@endif
+
 @section('content')
 
 @php
@@ -386,30 +394,76 @@ $arrowIcon = '<svg class="btn__icon" xmlns="http://www.w3.org/2000/svg" width="2
                 <p>Практични примени на автономното чистење во комерцијални и деловни простори.</p>
             </div>
 
-            <div class="section__body grid grid--3">
-                <article class="card card--pad reveal">
-                    <p class="eyebrow">Шопинг центар</p>
-                    <h3 class="card__heading card__heading--sm">Diamond Mall</h3>
-                    <p class="card__body">Автономно машинско перење на заеднички површини со висока фреквенција на
-                        посетители.</p>
-                    <p class="card__foot">CenoBots автономно чистење</p>
-                </article>
-                <article class="card card--pad reveal">
-                    <p class="eyebrow">Резиденцијален и деловен комплекс</p>
-                    <h3 class="card__heading card__heading--sm">Limak Residence</h3>
-                    <p class="card__body">Одржување на заеднички простори, коридори и влезни зони со планирани
-                        распореди.</p>
-                    <p class="card__foot">CenoBots автономно чистење</p>
-                </article>
-                <article class="card card--pad reveal">
-                    <p class="eyebrow">Деловни објекти</p>
-                    <h3 class="card__heading card__heading--sm">NLB Tutunska Banka Macedonia</h3>
-                    <p class="card__body">Чистење на деловни простори без прекин на секојдневната работа на вработените.
-                    </p>
-                    <p class="card__foot">CenoBots автономно чистење</p>
-                </article>
-            </div>
+            @php
+                // Projects come from Admin → CenoBots Projects. Until the first one is
+                // saved there, the original three projects are shown as plain cards.
+                $fallbackPhoto = asset(config('cenobots.projects.fallback_image'));
+            @endphp
 
+            @if (!empty($projects) && $projects->count())
+            <div class="cb-projects reveal" data-cb-projects data-interval="6000" aria-roledescription="carousel" aria-label="Проекти">
+                <div class="cb-projects__frame">
+                    <button type="button" class="cb-projects__arrow cb-projects__arrow--prev" data-cb-prev aria-label="Претходен проект">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+                    </button>
+
+                    <div class="cb-projects__viewport" data-cb-viewport tabindex="0" aria-live="off" aria-label="Листај ги проектите со стрелките на тастатурата">
+                        <ul class="cb-projects__track" data-cb-track>
+                            @foreach ($projects as $project)
+                                @php
+                                    $photoUrl = $project->photo ? $project->photo->getUrl() : $fallbackPhoto;
+                                    $logoUrl = $project->logo?->getUrl();
+                                @endphp
+                                <li class="cb-projects__slide" role="group" aria-roledescription="slide" aria-label="{{ $loop->iteration }} од {{ $loop->count }}">
+                                    <article class="cb-project">
+                                        <div class="cb-project__media">
+                                            <img src="{{ $photoUrl }}" alt="{{ $project->photo ? ($project->photo->getCustomProperty('alt_text') ?: $project->name) : $project->name . ' – CenoBots' }}" loading="lazy" draggable="false">
+                                            @if ($logoUrl)
+                                                <span class="cb-project__logo">
+                                                    <img src="{{ $logoUrl }}" alt="{{ $project->logo_alt ?: $project->name }}" loading="lazy" draggable="false">
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <div class="cb-project__body">
+                                            @if ($project->category)<p class="eyebrow">{{ $project->category }}</p>@endif
+                                            <h3 class="card__heading card__heading--sm">{{ $project->name }}</h3>
+                                            @if ($project->description)<p class="card__body">{{ $project->description }}</p>@endif
+                                            @if ($project->foot_text)<p class="card__foot">{{ $project->foot_text }}</p>@endif
+                                            @if ($project->website_url)
+                                                <a class="cb-project__link" href="{{ $project->website_url }}" target="_blank" rel="noopener noreferrer">Посети веб-страница {!! $arrowIcon !!}</a>
+                                            @endif
+                                        </div>
+                                    </article>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    <button type="button" class="cb-projects__arrow cb-projects__arrow--next" data-cb-next aria-label="Следен проект">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+                    </button>
+                </div>
+
+                <div class="cb-projects__controls">
+                    <div class="cb-projects__dots" data-cb-dots role="group" aria-label="Позиција на слајдерот"></div>
+                    <button type="button" class="cb-projects__toggle" data-cb-toggle aria-pressed="false" aria-label="Паузирај автоматско листање">
+                        <svg class="cb-projects__icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+                        <svg class="cb-projects__icon-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" /></svg>
+                    </button>
+                </div>
+            </div>
+            @else
+            <div class="section__body grid grid--3">
+                @foreach (config('cenobots.projects.items') as [$category, $name, $description])
+                    <article class="card card--pad reveal">
+                        <p class="eyebrow">{{ $category }}</p>
+                        <h3 class="card__heading card__heading--sm">{{ $name }}</h3>
+                        <p class="card__body">{{ $description }}</p>
+                        <p class="card__foot">CenoBots автономно чистење</p>
+                    </article>
+                @endforeach
+            </div>
+            @endif
 
         </div>
     </section>
