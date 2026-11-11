@@ -35,13 +35,11 @@
 
     {{-- Tabs --}}
     <ul class="nav nav-tabs mb-4" id="pageEditTabs" role="tablist">
-        @if ($page->content || \App\Support\PageTemplateConfig::isTemplatePage($page->layout))
         <li class="nav-item" role="presentation">
-            <a class="nav-link" href="{{ \App\Support\PageTemplateConfig::isTemplatePage($page->layout) ? route('pages.edit-content', $page->id) : route('pages.editor', $page->id) }}">
+            <a class="nav-link" href="{{ route('pages.edit-content', $page->id) }}">
                 <i class="material-symbols-rounded me-1" style="font-size:16px;">edit</i>Visual Editor
             </a>
         </li>
-        @endif
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-general" data-bs-toggle="tab" data-bs-target="#panel-general"
                 type="button" role="tab" aria-controls="panel-general" aria-selected="true">
@@ -63,6 +61,7 @@
                 SEO
             </button>
         </li>
+        @if (trim((string) $page->content) !== '')
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab-editor" data-bs-toggle="tab" data-bs-target="#panel-editor"
                 type="button" role="tab" aria-controls="panel-editor" aria-selected="false">
@@ -70,6 +69,7 @@
                 Full Page Editor
             </button>
         </li>
+        @endif
     </ul>
 
     <div class="tab-content" id="pageEditTabContent">

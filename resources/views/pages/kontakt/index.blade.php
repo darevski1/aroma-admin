@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 
-@section('title', 'ITPlus | Контакт')
-@section('meta_description', 'Контактирајте го ITPlus за понуда, техничка поддршка, ИТ услуги, мрежна инфраструктура, видео надзор и сервис.')
+@include('partials.page-seo', ['seoPage' => $page ?? null, 'seoTitle' => 'ITPlus | Контакт', 'seoDescription' => 'Контактирајте го ITPlus за понуда, техничка поддршка, ИТ услуги, мрежна инфраструктура, видео надзор и сервис.'])
 @section('content')
 @php
     $s = $page->settings ?? [];

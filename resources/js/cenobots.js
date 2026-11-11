@@ -143,4 +143,108 @@
      --------------------------------------------------------------------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
+
+  /* ---------------------------------------------------------------------
+     6. Projects slider — native scroll-snap (swipe on touch) with arrows,
+        dots, keyboard and autoplay on top. Autoplay pauses on hover, focus
+        and touch, while the tab is hidden, and via the pause button; it
+        never starts for visitors who prefer reduced motion.
+     --------------------------------------------------------------------- */
+  var carousel = document.querySelector('[data-cb-projects]');
+  if (carousel) {
+    var viewport = carousel.querySelector('[data-cb-viewport]');
+    var track = carousel.querySelector('[data-cb-track]');
+    var dotsBox = carousel.querySelector('[data-cb-dots]');
+    var toggleBtn = carousel.querySelector('[data-cb-toggle]');
+    var slides = track.children;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var interval = parseInt(carousel.getAttribute('data-interval'), 10) || 6000;
+    var positions = 1;
+    var timer = null;
+    var hovering = false;
+    var userPaused = reduceMotion;
+
+    var perView = function () {
+      return parseInt(getComputedStyle(carousel).getPropertyValue('--cb-per'), 10) || 1;
+    };
+    var stepWidth = function () {
+      if (slides.length < 2) return viewport.clientWidth;
+      return slides[1].offsetLeft - slides[0].offsetLeft;
+    };
+    var maxScroll = function () { return Math.max(0, viewport.scrollWidth - viewport.clientWidth); };
+    var currentIndex = function () {
+      var step = stepWidth();
+      return step ? Math.min(positions - 1, Math.max(0, Math.round(viewport.scrollLeft / step))) : 0;
+    };
+    var goTo = function (index) {
+      var left = Math.min(index * stepWidth(), maxScroll());
+      viewport.scrollTo({ left: left, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+    var next = function () { goTo(currentIndex() >= positions - 1 ? 0 : currentIndex() + 1); };
+    var prev = function () { goTo(currentIndex() <= 0 ? positions - 1 : currentIndex() - 1); };
+
+    var paintDots = function () {
+      var cur = currentIndex();
+      for (var i = 0; i < dotsBox.children.length; i++) {
+        var on = i === cur;
+        dotsBox.children[i].classList.toggle('is-active', on);
+        dotsBox.children[i].setAttribute('aria-current', on ? 'true' : 'false');
+      }
+    };
+
+    var stop = function () { if (timer) { clearInterval(timer); timer = null; } };
+    var start = function () {
+      stop();
+      if (userPaused || positions <= 1 || hovering || document.hidden) return;
+      timer = setInterval(next, interval);
+    };
+    var paintToggle = function () {
+      toggleBtn.setAttribute('aria-pressed', userPaused ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-label', userPaused ? 'Продолжи автоматско листање' : 'Паузирај автоматско листање');
+      viewport.setAttribute('aria-live', userPaused ? 'polite' : 'off');
+    };
+
+    var build = function () {
+      positions = Math.max(1, slides.length - perView() + 1);
+      carousel.classList.toggle('is-static', positions <= 1);
+      dotsBox.innerHTML = '';
+      for (var i = 0; i < positions && positions > 1; i++) {
+        (function (idx) {
+          var dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'cb-projects__dot';
+          dot.setAttribute('aria-label', 'Проект ' + (idx + 1));
+          dot.addEventListener('click', function () { goTo(idx); start(); });
+          dotsBox.appendChild(dot);
+        })(i);
+      }
+      paintDots();
+    };
+
+    carousel.querySelector('[data-cb-next]').addEventListener('click', function () { next(); start(); });
+    carousel.querySelector('[data-cb-prev]').addEventListener('click', function () { prev(); start(); });
+    toggleBtn.addEventListener('click', function () { userPaused = !userPaused; paintToggle(); start(); });
+    viewport.addEventListener('scroll', paintDots, { passive: true });
+    viewport.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); next(); start(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); start(); }
+    });
+    carousel.addEventListener('mouseenter', function () { hovering = true; stop(); });
+    carousel.addEventListener('mouseleave', function () { hovering = false; start(); });
+    carousel.addEventListener('focusin', stop);
+    carousel.addEventListener('focusout', start);
+    carousel.addEventListener('touchstart', stop, { passive: true });
+    carousel.addEventListener('touchend', function () { setTimeout(start, interval); }, { passive: true });
+    document.addEventListener('visibilitychange', start);
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { build(); start(); }, 150);
+    });
+
+    build();
+    paintToggle();
+    start();
+  }
 })();

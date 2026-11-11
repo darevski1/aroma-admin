@@ -597,9 +597,29 @@ class PageController extends Controller
     public function saveContent(Request $request, Page $page)
     {
         $data = $request->validate([
-            'content' => 'required|string|max:2000000',
+            'content' => 'nullable|string|max:2000000',
+            'edits' => 'nullable|array|max:2000',
+            'edits.*.k' => 'required|string|max:5000',
+            'edits.*.n' => 'required|integer|min:0',
+            'edits.*.html' => 'present|nullable|string|max:20000',
         ]);
 
+        // Pages rendered from a Blade template keep their markup untouched: only the
+        // edited text is stored and re-applied on render. Stored-HTML pages (Home,
+        // dynamic pages) keep saving the whole content region.
+        $rendersTemplate = $page->layout !== 'welcome'
+            && $page->layout && view()->exists($page->layout) && $page->layout !== 'pages.dynamic';
+
+        if ($rendersTemplate) {
+            $service = app(\App\Services\InlineEdits::class);
+            $settings = $page->settings ?? [];
+            $settings['inline_edits'] = $service->merge($settings['inline_edits'] ?? [], $data['edits'] ?? []);
+            $page->forceFill(['settings' => $settings])->save();
+
+            return response()->json(['success' => true, 'message' => 'Page content saved successfully.']);
+        }
+
+        abort_unless(isset($data['content']), 422, 'No content to save.');
         $page->forceFill(['content' => $data['content']])->save();
         abort_unless($page->fresh()->content === $data['content'], 500, 'The page content could not be verified after saving.');
 
@@ -790,12 +810,9 @@ class PageController extends Controller
     {
         $layout = $page->layout;
 
-        if (!PageTemplateConfig::isTemplatePage($layout)) {
-            return redirect()->route('pages.edit', $page->id)
-                ->with('error', 'This page does not have an editable template.');
-        }
-
-        $sections  = PageTemplateConfig::getFields($layout);
+        // Every page uses this editor. Pages without registered template fields
+        // (stored-HTML pages such as Home) get the HTML content area instead.
+        $sections  = PageTemplateConfig::isTemplatePage((string) $layout) ? PageTemplateConfig::getFields($layout) : [];
         $previewUrl = $this->buildPageUrl($page);
 
         return view('admin_pages.pages.edit-content', compact('page', 'sections', 'previewUrl'));
@@ -808,7 +825,7 @@ class PageController extends Controller
     {
         $layout = $page->layout;
 
-        if (!PageTemplateConfig::isTemplatePage($layout)) {
+        if (!PageTemplateConfig::isTemplatePage((string) $layout)) {
             return back()->with('error', 'This page does not have an editable template.');
         }
 

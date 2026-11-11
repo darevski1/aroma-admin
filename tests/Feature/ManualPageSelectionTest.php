@@ -97,6 +97,23 @@ class ManualPageSelectionTest extends TestCase
         $this->get('/')->assertOk();
     }
 
+    public function test_public_routes_keep_rendering_after_remove_all(): void
+    {
+        $this->post(route('pages.remove-all-existing'));
+
+        $uris = collect(\Illuminate\Support\Facades\Route::getRoutes())
+            ->filter(fn ($route) => in_array('GET', $route->methods(), true)
+                && in_array('page.active', $route->gatherMiddleware(), true)
+                && !str_contains($route->uri(), '{'))
+            ->map(fn ($route) => '/' . ltrim($route->uri(), '/'));
+
+        $this->assertNotEmpty($uris);
+
+        foreach ($uris as $uri) {
+            $this->assertLessThan(500, $this->get($uri)->getStatusCode(), "{$uri} failed after remove all");
+        }
+    }
+
     public function test_a_page_that_is_not_added_cannot_be_removed(): void
     {
         $this->post(route('pages.remove-existing'), ['view' => 'welcome']);

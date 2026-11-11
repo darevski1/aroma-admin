@@ -204,6 +204,12 @@ class MediaController extends Controller
      */
     public function update(Request $request, Media $media)
     {
+        // The media library detail form posts flat fields (alt_text, title, ...).
+        $flat = $request->only(['alt_text', 'title', 'caption', 'copyright']);
+        if ($flat) {
+            $request->merge(['custom_properties' => array_merge((array) $request->input('custom_properties', []), $flat)]);
+        }
+
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
             'custom_properties.alt_text' => 'nullable|string|max:500',

@@ -16,7 +16,9 @@ Auth::routes(['register' => false, 'reset' => true]);
 
 Route::get("/", function(){
     $sections = HomepageSection::published();
-    return view("welcome", compact('sections'));
+    // Text saved from the Full Page Editor (/pages/{id}/editor) is stored on the Welcome page record.
+    $editedContent = \App\Models\Page::where('layout', 'welcome')->value('content');
+    return view("welcome", compact('sections', 'editedContent'));
 })->middleware('page.active');
 
 // ─── Admin-only routes ────────────────────────────────────────
@@ -60,6 +62,7 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     // Page Editor (must be before {page} wildcard routes)
     Route::get('/pages/{page}/editor', [PageController::class, 'editor'])->name('pages.editor');
     Route::post('/pages/{page}/save-content', [PageController::class, 'saveContent'])->name('pages.save-content');
+    Route::post('/pages/{page}/editor-media', [PageController::class, 'uploadEditorMedia'])->name('pages.editor-media');
 
     // Template Content Editor
     Route::get('/pages/{page}/edit-content', [PageController::class, 'editContent'])->name('pages.edit-content');
@@ -73,6 +76,10 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
 
     Route::get('/pages/all/json', [PageController::class, 'allJson'])->name('pages.all.json');
 
+    // Analytics (Google Analytics 4)
+    Route::get('/admin/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('/admin/analytics/data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'data'])->name('analytics.data');
+
     // Health Check
     Route::get('/health', [\App\Http\Controllers\HealthController::class, 'index'])->name('health-check');
 
@@ -80,7 +87,7 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::get('/admin/media', [MediaController::class, 'index'])->name('media.index');
     Route::post('/admin/media', [MediaController::class, 'store'])->name('media.store');
     Route::get('/admin/media/{media}', [MediaController::class, 'show'])->name('media.show');
-    Route::patch('/admin/media/{media}', [MediaController::class, 'update'])->name('media.update');
+    Route::match(['put', 'patch'], '/admin/media/{media}', [MediaController::class, 'update'])->name('media.update');
     Route::delete('/admin/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
     Route::post('/admin/media/bulk-delete', [MediaController::class, 'bulkDelete'])->name('media.bulk-delete');
     Route::post('/admin/media/{media}/replace', [MediaController::class, 'replace'])->name('media.replace');
@@ -99,6 +106,12 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::patch('/posts/{post:slug}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post:slug}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::patch('/posts/{post:slug}/toggle-publish', [PostController::class, 'togglePublish'])->name('posts.toggle');
+
+    // ─── CenoBots Clients (Projects carousel) ───────────────
+    Route::post('/admin/cenobots-clients/reorder', [\App\Http\Controllers\Admin\CenobotsClientController::class, 'reorder'])->name('cenobots-clients.reorder');
+    Route::patch('/admin/cenobots-clients/{client}/toggle', [\App\Http\Controllers\Admin\CenobotsClientController::class, 'toggle'])->name('cenobots-clients.toggle');
+    Route::resource('/admin/cenobots-clients', \App\Http\Controllers\Admin\CenobotsClientController::class)
+        ->except('show')->parameters(['cenobots-clients' => 'client'])->names('cenobots-clients');
 
     // ─── Homepage Sections ──────────────────────────────────
     Route::get('/homepage-sections', [HomepageSectionController::class, 'index'])->name('homepage-sections.index');
@@ -145,3 +158,7 @@ Route::get('/pages/{slug}', [PublicController::class, 'showPage'])->name('pages.
 
 // Dynamic page rendering (fallback for pages not matched by specific routes)
 Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
+
+// XML sitemap for search engines (see SitemapController)
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');

@@ -107,16 +107,14 @@
                                             </form>
 
                                             {{-- Every page opens in the settings/editor hub. --}}
-                                            <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-info me-1" title="Edit">
+                                            <a href="{{ route('pages.edit-content', $page->id) }}" class="btn btn-sm btn-outline-info me-1" title="Edit">
                                                 <i class="material-symbols-rounded" style="font-size: 16px;">edit</i>
                                             </a>
 
                                             {{-- Settings (for template pages – access general/SEO/media tabs) --}}
-                                            @if (PageTemplateConfig::isTemplatePage($page->layout))
-                                                <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Page Settings">
-                                                    <i class="material-symbols-rounded" style="font-size: 16px;">settings</i>
-                                                </a>
-                                            @endif
+                                            <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Page Settings">
+                                                <i class="material-symbols-rounded" style="font-size: 16px;">settings</i>
+                                            </a>
 
                                             {{-- View (if published) --}}
                                             @if ($page->published)
