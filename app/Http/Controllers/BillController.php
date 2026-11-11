@@ -11,3 +11,4 @@ class BillController extends Controller
         return view('wellcome.index');
     }
 }
+// 
