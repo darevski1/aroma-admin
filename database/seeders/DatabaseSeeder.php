@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             NavigationSeeder::class,
             HomepageSectionSeeder::class,
+            ChatbotSeeder::class,
         ]);
     }
 }

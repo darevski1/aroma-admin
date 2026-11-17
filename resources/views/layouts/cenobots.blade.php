@@ -50,6 +50,9 @@
     @yield('content')
   @endif
 
+  {{-- Website chatbot (hidden in editor mode / when disabled in Admin → Chatbot) --}}
+  @include('partials.chatbot-widget')
+
   {{-- ── Visual editor mode (admin iframe / ?editor=1) ── --}}
   @if (request('editor') && auth()->check() && auth()->user()->isAdmin())
     <div id="ie-config" data-mode="edits"

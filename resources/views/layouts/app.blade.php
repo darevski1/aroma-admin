@@ -46,6 +46,8 @@
     {{-- Footer --}}
     @include('partials.footer')
     @livewireScripts
+    {{-- Website chatbot (hidden in editor mode / when disabled in Admin → Chatbot) --}}
+    @include('partials.chatbot-widget')
 
     {{-- ── Full Page Editor mode ────────────────────────────────── --}}
     @if(request('editor'))

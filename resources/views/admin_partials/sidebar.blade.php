@@ -65,6 +65,34 @@
           <span class="nav-link-text ms-1">Analytics</span>
         </a>
       </li>
+      @php $chatbotOpen = request()->routeIs('chatbot.admin.*'); @endphp
+      <li class="nav-item">
+        <a class="nav-link {{ $chatbotOpen ? 'active bg-gradient-dark text-white' : 'text-dark' }}" data-bs-toggle="collapse" href="#chatbotMenu" role="button" aria-expanded="{{ $chatbotOpen ? 'true' : 'false' }}" aria-controls="chatbotMenu">
+          <i class="material-symbols-rounded opacity-5">smart_toy</i>
+          <span class="nav-link-text ms-1">Chatbot</span>
+        </a>
+        <div class="collapse {{ $chatbotOpen ? 'show' : '' }}" id="chatbotMenu">
+          <ul class="nav ms-4 ps-1">
+            @foreach ([
+              'chatbot.admin.dashboard' => 'Dashboard',
+              'chatbot.admin.settings' => 'General Settings',
+              'chatbot.admin.providers' => 'AI Provider Settings',
+              'chatbot.admin.instructions' => 'System Instructions',
+              'chatbot.admin.knowledge.index' => 'Knowledge Base',
+              'chatbot.admin.faqs.index' => 'FAQ Management',
+              'chatbot.admin.categories.index' => 'Categories',
+              'chatbot.admin.conversations.index' => 'Conversations',
+              'chatbot.admin.statistics' => 'Usage Statistics',
+            ] as $chatbotRoute => $chatbotLabel)
+              <li class="nav-item">
+                <a class="nav-link py-1 text-sm {{ request()->routeIs(\Illuminate\Support\Str::beforeLast($chatbotRoute, '.index') . '*') ? 'font-weight-bold text-dark' : 'text-secondary' }}" href="{{ route($chatbotRoute) }}">
+                  <span class="nav-link-text">{{ $chatbotLabel }}</span>
+                </a>
+              </li>
+            @endforeach
+          </ul>
+        </div>
+      </li>
       <li class="nav-item">
         <a class="nav-link text-dark" href="{{ route('health-check') }}">
           <i class="material-symbols-rounded opacity-5">monitor_heart</i>

@@ -120,6 +120,31 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::patch('/homepage-sections/{section}/toggle-publish', [HomepageSectionController::class, 'togglePublish'])->name('homepage-sections.toggle-publish');
     Route::patch('/homepage-sections/{section}/order', [HomepageSectionController::class, 'updateOrder'])->name('homepage-sections.order');
     Route::post('/homepage-sections/reorder', [HomepageSectionController::class, 'reorder'])->name('homepage-sections.reorder');
+
+    // ─── Chatbot ────────────────────────────────────────────
+    Route::prefix('admin/chatbot')->name('chatbot.admin.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\Chatbot\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/settings', [\App\Http\Controllers\Admin\Chatbot\SettingsController::class, 'edit'])->name('settings');
+        Route::put('/settings', [\App\Http\Controllers\Admin\Chatbot\SettingsController::class, 'update'])->name('settings.update');
+        Route::get('/providers', [\App\Http\Controllers\Admin\Chatbot\ProviderController::class, 'index'])->name('providers');
+        Route::put('/providers/active', [\App\Http\Controllers\Admin\Chatbot\ProviderController::class, 'activate'])->name('providers.activate');
+        Route::put('/providers/{provider}', [\App\Http\Controllers\Admin\Chatbot\ProviderController::class, 'update'])->whereIn('provider', ['faq', 'ollama', 'openai'])->name('providers.update');
+        Route::post('/providers/{provider}/test', [\App\Http\Controllers\Admin\Chatbot\ProviderController::class, 'test'])->whereIn('provider', ['faq', 'ollama', 'openai'])->name('providers.test');
+        Route::get('/instructions', [\App\Http\Controllers\Admin\Chatbot\InstructionController::class, 'edit'])->name('instructions');
+        Route::put('/instructions', [\App\Http\Controllers\Admin\Chatbot\InstructionController::class, 'update'])->name('instructions.update');
+        Route::post('/instructions/reset', [\App\Http\Controllers\Admin\Chatbot\InstructionController::class, 'reset'])->name('instructions.reset');
+        Route::patch('/knowledge/{knowledge}/toggle', [\App\Http\Controllers\Admin\Chatbot\KnowledgeController::class, 'toggle'])->name('knowledge.toggle');
+        Route::resource('knowledge', \App\Http\Controllers\Admin\Chatbot\KnowledgeController::class)->except('show');
+        Route::post('/faqs/bulk', [\App\Http\Controllers\Admin\Chatbot\FaqController::class, 'bulk'])->name('faqs.bulk');
+        Route::patch('/faqs/{faq}/toggle', [\App\Http\Controllers\Admin\Chatbot\FaqController::class, 'toggle'])->name('faqs.toggle');
+        Route::resource('faqs', \App\Http\Controllers\Admin\Chatbot\FaqController::class)->except('show');
+        Route::patch('/categories/{category}/toggle', [\App\Http\Controllers\Admin\Chatbot\CategoryController::class, 'toggle'])->name('categories.toggle');
+        Route::resource('categories', \App\Http\Controllers\Admin\Chatbot\CategoryController::class)->except('show');
+        Route::get('/conversations', [\App\Http\Controllers\Admin\Chatbot\ConversationController::class, 'index'])->name('conversations.index');
+        Route::get('/conversations/{conversation}', [\App\Http\Controllers\Admin\Chatbot\ConversationController::class, 'show'])->name('conversations.show');
+        Route::delete('/conversations/{conversation}', [\App\Http\Controllers\Admin\Chatbot\ConversationController::class, 'destroy'])->name('conversations.destroy');
+        Route::get('/statistics', [\App\Http\Controllers\Admin\Chatbot\StatisticsController::class, 'index'])->name('statistics');
+    });
 });
 
 // ─── Public routes ────────────────────────────────────────────
@@ -162,3 +187,10 @@ Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
 // XML sitemap for search engines (see SitemapController)
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
+
+// ─── Website chatbot (used by the floating widget; session + CSRF via web group) ───
+Route::middleware('throttle:chatbot')->prefix('chatbot')->name('chatbot.')->group(function () {
+    Route::post('/message', [\App\Http\Controllers\ChatbotController::class, 'message'])->name('message');
+    Route::get('/history', [\App\Http\Controllers\ChatbotController::class, 'history'])->name('history');
+    Route::post('/reset', [\App\Http\Controllers\ChatbotController::class, 'reset'])->name('reset');
+});
