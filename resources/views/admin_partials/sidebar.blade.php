@@ -67,12 +67,22 @@
       </li>
       @php $chatbotOpen = request()->routeIs('chatbot.admin.*'); @endphp
       <li class="nav-item">
-        <a class="nav-link {{ $chatbotOpen ? 'active bg-gradient-dark text-white' : 'text-dark' }}" data-bs-toggle="collapse" href="#chatbotMenu" role="button" aria-expanded="{{ $chatbotOpen ? 'true' : 'false' }}" aria-controls="chatbotMenu">
+        {{-- The theme's collapse caret is a Font Awesome glyph; a Material Symbols chevron is used instead. --}}
+        <style>
+          .chatbot-menu-toggle::after { display: none !important; }
+          .chatbot-menu-toggle .chatbot-chevron { font-size: 18px; transition: transform .2s ease; }
+          .chatbot-menu-toggle[aria-expanded="true"] .chatbot-chevron { transform: rotate(180deg); }
+        </style>
+        {{-- No data-bs-toggle: the admin layout loads Bootstrap twice, and two
+             collapse handlers make the menu reopen right after it closes.
+             The script below drives a single Collapse instance instead. --}}
+        <a class="nav-link chatbot-menu-toggle {{ $chatbotOpen ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="#chatbotMenu" role="button" aria-expanded="{{ $chatbotOpen ? 'true' : 'false' }}" aria-controls="chatbotMenu">
           <i class="material-symbols-rounded opacity-5">smart_toy</i>
           <span class="nav-link-text ms-1">Chatbot</span>
+          <i class="material-symbols-rounded chatbot-chevron ms-auto opacity-7" aria-hidden="true">expand_more</i>
         </a>
         <div class="collapse {{ $chatbotOpen ? 'show' : '' }}" id="chatbotMenu">
-          <ul class="nav ms-4 ps-1">
+          <ul class="nav flex-column ms-4 ps-1">
             @foreach ([
               'chatbot.admin.dashboard' => 'Dashboard',
               'chatbot.admin.settings' => 'General Settings',
@@ -92,6 +102,24 @@
             @endforeach
           </ul>
         </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            var toggle = document.querySelector('.chatbot-menu-toggle');
+            var menu = document.getElementById('chatbotMenu');
+            if (!toggle || !menu) return;
+            var sync = function (open) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+            menu.addEventListener('show.bs.collapse', function () { sync(true); });
+            menu.addEventListener('hide.bs.collapse', function () { sync(false); });
+            toggle.addEventListener('click', function (e) {
+              e.preventDefault();
+              if (window.bootstrap && window.bootstrap.Collapse) {
+                window.bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }).toggle();
+              } else {
+                sync(menu.classList.toggle('show'));
+              }
+            });
+          });
+        </script>
       </li>
       <li class="nav-item">
         <a class="nav-link text-dark" href="{{ route('health-check') }}">
