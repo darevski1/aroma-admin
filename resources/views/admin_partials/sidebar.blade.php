@@ -75,8 +75,14 @@
         </style>
         {{-- No data-bs-toggle: the admin layout loads Bootstrap twice, and two
              collapse handlers make the menu reopen right after it closes.
-             The script below drives a single Collapse instance instead. --}}
-        <a class="nav-link chatbot-menu-toggle {{ $chatbotOpen ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="#chatbotMenu" role="button" aria-expanded="{{ $chatbotOpen ? 'true' : 'false' }}" aria-controls="chatbotMenu">
+             The script below drives a single Collapse instance instead.
+             On Chatbot pages the submenu always stays open and "Chatbot"
+             is a plain link to the Chatbot dashboard. --}}
+        @if ($chatbotOpen)
+        <a class="nav-link chatbot-menu-toggle active bg-gradient-dark text-white" href="{{ route('chatbot.admin.dashboard') }}" aria-expanded="true" aria-controls="chatbotMenu">
+        @else
+        <a class="nav-link chatbot-menu-toggle text-dark" href="#chatbotMenu" role="button" data-chatbot-toggle aria-expanded="false" aria-controls="chatbotMenu">
+        @endif
           <i class="material-symbols-rounded opacity-5">smart_toy</i>
           <span class="nav-link-text ms-1">Chatbot</span>
           <i class="material-symbols-rounded chatbot-chevron ms-auto opacity-7" aria-hidden="true">expand_more</i>
@@ -104,7 +110,7 @@
         </div>
         <script>
           document.addEventListener('DOMContentLoaded', function () {
-            var toggle = document.querySelector('.chatbot-menu-toggle');
+            var toggle = document.querySelector('[data-chatbot-toggle]');
             var menu = document.getElementById('chatbotMenu');
             if (!toggle || !menu) return;
             var sync = function (open) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); };
