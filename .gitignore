@@ -23,3 +23,6 @@ yarn-error.log
 /.zed
 /storage/app/analytics/
 public/assets/video/
+
+# Local Claude Code settings
+/.claude/launch.json
