@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Route;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -63,6 +64,45 @@ class Page extends Model implements HasMedia
     {
         if ($this->layout === 'welcome') {
             return url('/');
+        }
+
+        return url('pages/' . $this->slug);
+    }
+
+    /** Static = own hardcoded route, Custom Template = Blade template without one, Dynamic = stored HTML. */
+    public function getPageTypeAttribute(): string
+    {
+        $layout = (string) $this->layout;
+        $isBlade = $layout !== '' && !in_array($layout, ['pages.show', 'pages.dynamic'], true)
+            && ($layout === 'welcome' || view()->exists($layout));
+
+        if (!$isBlade) {
+            return 'Dynamic';
+        }
+
+        return $layout === 'welcome' || ($this->route_name && Route::has($this->route_name))
+            ? 'Static'
+            : 'Custom Template';
+    }
+
+    /** The real public URL this page is served from (keeps existing frontend URLs). */
+    public function getPublicUrlAttribute(): string
+    {
+        if ($this->layout === 'welcome') {
+            return url('/');
+        }
+        if ($this->layout === 'pages.cennobots.models.index') {
+            return route('cennobots.models');
+        }
+        if ($this->layout === 'pages.cennobots.models.show' && ($first = collect(config('cenobots.models'))->first())) {
+            return route('cennobots.model', ['model' => $first['id']]);
+        }
+        if ($this->route_name && Route::has($this->route_name)) {
+            try {
+                return route($this->route_name);
+            } catch (\Throwable $e) {
+                // route needs parameters – fall through
+            }
         }
 
         return url('pages/' . $this->slug);

@@ -12,6 +12,10 @@
     $seoCanonical = trim((string) ($seoPage?->setting('canonical_url') ?? ''));
     $seoOgImage = trim((string) ($seoPage?->setting('og_image') ?? ''));
     $seoNoIndex = $seoPage && $seoPage->setting('robots_index', true) === false;
+    $seoNoFollow = $seoPage && $seoPage->setting('robots_follow', true) === false;
+    $seoOgTitle = trim((string) ($seoPage?->setting('og_title') ?? ''));
+    $seoOgDesc = trim((string) ($seoPage?->setting('og_description') ?? ''));
+    $seoKeywords = trim((string) ($seoPage?->setting('meta_keywords') ?? ''));
 @endphp
 @section('title', $seoTitleValue)
 @section('meta_description', $seoDescValue)
@@ -24,4 +28,15 @@
 @endif
 @if ($seoNoIndex || ($seoPage && !$seoPage->published))
     @section('robots_content', 'noindex,nofollow')
+@elseif ($seoNoFollow)
+    @section('robots_content', 'index,nofollow')
+@endif
+@if ($seoOgTitle !== '')
+    @section('og_title', $seoOgTitle)
+@endif
+@if ($seoOgDesc !== '')
+    @section('og_description', $seoOgDesc)
+@endif
+@if ($seoKeywords !== '')
+    @section('meta_keywords', $seoKeywords)
 @endif

@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(parseJsonSafe)
         .then(function(data) {
             if (data.success) {
-                ids.forEach(function(id) {
+                (data.deleted_ids || ids).forEach(function(id) {
                     const el = document.querySelector('.media-item[data-id="' + id + '"]');
                     if (el) el.remove();
                     const row = document.querySelector('.media-list-row[data-id="' + id + '"]');
@@ -738,6 +738,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Parse a fetch response as JSON, surfacing real errors for non-JSON (e.g. HTML error pages)
+        // Deleting a file that is still used somewhere asks for explicit confirmation (server answers 409 + usage list).
+    function mediaDeleteRequest(id, formData) {
+        var url = '/admin/media/' + id;
+        return fetch(url, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } }).then(function(res) {
+            if (res.status !== 409) return res;
+            return res.clone().json().then(function(d) {
+                var list = (d.usage || []).map(function(u) { return '\u2022 ' + u.label; }).join('\n');
+                if (!confirm('This file is still in use:\n' + list + '\n\nDelete it anyway? Those places will show their original images again.')) return res;
+                formData.append('force', '1');
+                return fetch(url, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+            });
+        });
+    }
+
     function parseJsonSafe(res) {
         return res.text().then(function(text) {
             try {
@@ -790,10 +804,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('_token', csrfToken);
             formData.append('_method', 'DELETE');
 
-            fetch('/admin/media/' + id, {
-                method: 'POST',
-                body: formData
-            })
+            mediaDeleteRequest(id, formData)
             .then(parseJsonSafe)
             .then(function(data) {
                 if (data.success) {
@@ -1023,10 +1034,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('_token', csrfToken);
         formData.append('_method', 'DELETE');
 
-        fetch('/admin/media/' + id, {
-            method: 'POST',
-            body: formData
-        })
+        mediaDeleteRequest(id, formData)
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if (data.success) {

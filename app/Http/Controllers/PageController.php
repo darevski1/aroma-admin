@@ -21,9 +21,21 @@ class PageController extends Controller
     {
         $this->syncManualBladePages();
 
-        $pages = Page::withCount('navigations')->orderByDesc('id')->get();
+        $showRemoved = request()->boolean('removed');
+        $query = Page::withCount('navigations')->orderByDesc('id');
+        $pages = ($showRemoved ? $query->onlyTrashed() : $query)->get();
+        $removedCount = Page::onlyTrashed()->count();
 
-        return view('admin_pages.pages.index', compact('pages'));
+        return view('admin_pages.pages.index', compact('pages', 'showRemoved', 'removedCount'));
+    }
+
+    /** Bring a removed page back with its original content, slug and template. */
+    public function restore(int $id)
+    {
+        $page = Page::onlyTrashed()->findOrFail($id);
+        $page->restore();
+
+        return redirect()->route('pages.index')->with('success', "\"{$page->title}\" restored.");
     }
 
     /**
@@ -589,6 +601,43 @@ class PageController extends Controller
         $previewUrl = $this->buildPageUrl($page);
 
         return view('admin_pages.pages.editor', compact('page', 'editorUrl', 'previewUrl'));
+    }
+
+    /** Dedicated SEO form – independent from the visual content. */
+    public function seo(Page $page)
+    {
+        return view('admin_pages.pages.seo', ['page' => $page, 'publicUrl' => $page->public_url]);
+    }
+
+    public function updateSeo(Request $request, Page $page)
+    {
+        $data = $request->validate([
+            'meta_title'       => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords'    => 'nullable|string|max:500',
+            'canonical_url'    => 'nullable|url|max:2048',
+            'og_title'         => 'nullable|string|max:255',
+            'og_description'   => 'nullable|string|max:500',
+            'og_image'         => ['nullable', 'string', 'max:500', 'regex:~^(https?://|/)[^\s<>"\']+$~i'],
+            'robots_index'     => 'required|in:index,noindex',
+            'robots_follow'    => 'required|in:follow,nofollow',
+        ]);
+
+        // Only SEO keys are touched: slug, content and inline edits stay as they are.
+        $settings = $page->settings ?? [];
+        foreach (['meta_keywords', 'canonical_url', 'og_title', 'og_description', 'og_image'] as $key) {
+            $settings[$key] = $data[$key] ?? null;
+        }
+        $settings['robots_index'] = $data['robots_index'] === 'index';
+        $settings['robots_follow'] = $data['robots_follow'] === 'follow';
+
+        $page->forceFill([
+            'meta_title' => $data['meta_title'] ?? null,
+            'meta_description' => $data['meta_description'] ?? null,
+            'settings' => $settings,
+        ])->save();
+
+        return redirect()->route('pages.seo', $page)->with('success', 'SEO settings saved.');
     }
 
     /**

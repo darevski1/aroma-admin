@@ -55,7 +55,7 @@
 
   {{-- ── Visual editor mode (admin iframe / ?editor=1) ── --}}
   @if (request('editor') && auth()->check() && auth()->user()->isAdmin())
-    <div id="ie-config" data-mode="edits"
+    <div id="ie-config" data-mode="edits" data-style-root="body"
       data-page-id="{{ isset($page) && $page instanceof \App\Models\Page ? $page->id : '' }}"
       data-csrf="{{ csrf_token() }}" hidden></div>
     <script type="module" src="{{ Vite::asset('resources/js/page-editor.js') }}"></script>

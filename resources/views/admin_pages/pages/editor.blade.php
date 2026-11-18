@@ -4,7 +4,7 @@
 <div class="page-editor-wrapper" style="margin: -0.5rem -0.5rem 0 -0.5rem; display: flex; flex-direction: column; height: calc(100vh - 80px);">
   {{-- Editor Toolbar --}}
   <div id="editor-toolbar" style="background: #fff; border-bottom: 1px solid #e5e7eb; padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; z-index: 100;">
-    <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-secondary" title="Back to Edit Page">
+    <a href="{{ route('pages.index') }}" class="btn btn-sm btn-outline-secondary" title="Back to Pages">
       <i class="material-symbols-rounded" style="font-size:16px;">arrow_back</i>
       Back
     </a>
@@ -33,7 +33,7 @@
         <span id="btn-save-label">Save Changes</span>
       </button>
 
-      <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-secondary" id="btn-cancel" title="Cancel editing">
+      <a href="{{ route('pages.index') }}" class="btn btn-sm btn-outline-secondary" id="btn-cancel" title="Cancel editing">
         <i class="material-symbols-rounded" style="font-size:16px;">close</i>
         Cancel
       </a>

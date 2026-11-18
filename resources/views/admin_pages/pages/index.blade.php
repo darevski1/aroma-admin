@@ -41,106 +41,82 @@
         <div class="col-lg-12 mb-4">
             <div class="card">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">All Pages</h6>
+                    <h6 class="mb-0">{{ $showRemoved ? 'Removed Pages' : 'All Pages' }}</h6>
+                    <div class="ms-auto me-3">
+                        @if ($showRemoved)
+                            <a href="{{ route('pages.index') }}" class="btn btn-sm btn-outline-secondary mb-0">Back to active pages</a>
+                        @elseif ($removedCount > 0)
+                            <a href="{{ route('pages.index', ['removed' => 1]) }}" class="btn btn-sm btn-outline-secondary mb-0">Removed pages ({{ $removedCount }})</a>
+                        @endif
+                    </div>
                     <a href="{{ route('pages.create') }}" class="btn btn-sm bg-gradient-dark mb-0">
                         <i class="material-symbols-rounded me-1" style="font-size: 16px;">add_page</i>
                         Add Page
                     </a>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="table-responsive">
-                        <table class="table align-items-center mb-0">
-                            <thead>
+                    <style>
+                        .pages-table { table-layout: fixed; width: 100%; }
+                        .pages-table th, .pages-table td { padding: .5rem .75rem; vertical-align: middle; }
+                        .pages-table .col-url { width: 32%; }
+                        .pages-table .col-status { width: 110px; }
+                        .pages-table .col-actions { width: 150px; }
+                        .pages-table .cell-trunc { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+                        @media (max-width: 767.98px) {
+                            .pages-table .col-url { display: none; }
+                            .pages-table .col-status { width: 90px; }
+                            .pages-table .col-actions { width: 130px; }
+                        }
+                    </style>
+                    <table class="table align-items-center mb-0 pages-table">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Page Title</th>
+                                <th class="col-url text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">URL</th>
+                                <th class="col-status text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                <th class="col-actions text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($pages as $page)
+                                @php $urlPath = parse_url($page->public_url, PHP_URL_PATH) ?: '/'; @endphp
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Title</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Slug</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Route</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Template</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">In Navigation</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Actions</th>
+                                    <td>
+                                        <span class="cell-trunc text-sm font-weight-bold" title="{{ $page->title }}">{{ $page->title }}</span>
+                                    </td>
+                                    <td class="col-url">
+                                        <a href="{{ $page->public_url }}" target="_blank" class="cell-trunc text-xs" title="{{ $page->public_url }}"><code>{{ $urlPath }}</code></a>
+                                    </td>
+                                    <td class="col-status">
+                                        @if ($page->published)
+                                            <span class="badge bg-gradient-success">Published</span>
+                                        @else
+                                            <span class="badge bg-gradient-secondary">Draft</span>
+                                        @endif
+                                    </td>
+                                    <td class="col-actions text-center text-nowrap">
+                                        @if ($page->trashed())
+                                            <form action="{{ route('pages.restore', $page->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-success mb-0" title="Restore"><i class="material-symbols-rounded" style="font-size: 16px;">restore_from_trash</i></button>
+                                            </form>
+                                        @else
+                                            <a href="{{ route('pages.editor', $page->id) }}" class="btn btn-sm btn-outline-primary mb-0 me-1" title="Edit Page" data-bs-toggle="tooltip">
+                                                <i class="material-symbols-rounded" style="font-size: 16px;">draw</i>
+                                            </a>
+                                            <a href="{{ route('pages.seo', $page->id) }}" class="btn btn-sm btn-outline-secondary mb-0" title="Edit SEO" data-bs-toggle="tooltip">
+                                                <i class="material-symbols-rounded" style="font-size: 16px;">travel_explore</i>
+                                            </a>
+                                        @endif
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($pages as $page)
-                                    <tr>
-                                        <td class="align-middle">
-                                            <span class="text-xs font-weight-bold">{{ $page->id }}</span>
-                                        </td>
-                                        <td class="align-middle ps-2">
-                                            <span class="text-xs font-weight-bold">{{ $page->title }}</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            <code class="text-xs">{{ $page->slug }}</code>
-                                        </td>
-                                        <td class="align-middle">
-                                            <code class="text-xs">{{ $page->route_name ?: '—' }}</code>
-                                        </td>
-                                        <td class="align-middle">
-                                            <span class="badge bg-gradient-secondary">{{ \App\Support\PageTemplateConfig::getLayouts()[$page->layout] ?? $page->layout }}</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            @if ($page->navigations_count > 0)
-                                                <span class="badge bg-gradient-success">
-                                                    {{ $page->navigations_count }} nav item(s)
-                                                </span>
-                                            @else
-                                                <span class="text-muted text-xs">Not linked</span>
-                                            @endif
-                                        </td>
-                                        <td class="align-middle">
-                                            @if ($page->published)
-                                                <span class="badge bg-gradient-success">Published</span>
-                                            @else
-                                                <span class="badge bg-gradient-secondary">Draft</span>
-                                            @endif
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            {{-- Toggle Publish --}}
-                                            <form action="{{ route('pages.toggle', $page->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-sm {{ $page->published ? 'btn-outline-success' : 'btn-outline-secondary' }} me-1" title="{{ $page->published ? 'Unpublish' : 'Publish' }}">
-                                                    <i class="material-symbols-rounded" style="font-size: 16px;">{{ $page->published ? 'visibility' : 'visibility_off' }}</i>
-                                                </button>
-                                            </form>
-
-                                            {{-- Every page opens in the settings/editor hub. --}}
-                                            <a href="{{ route('pages.edit-content', $page->id) }}" class="btn btn-sm btn-outline-info me-1" title="Edit">
-                                                <i class="material-symbols-rounded" style="font-size: 16px;">edit</i>
-                                            </a>
-
-                                            {{-- Settings (for template pages – access general/SEO/media tabs) --}}
-                                            <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Page Settings">
-                                                <i class="material-symbols-rounded" style="font-size: 16px;">settings</i>
-                                            </a>
-
-                                            {{-- View (if published) --}}
-                                            @if ($page->published)
-                                                <a href="{{ url('pages/' . $page->slug) }}" target="_blank" class="btn btn-sm btn-outline-dark me-1" title="View on site">
-                                                    <i class="material-symbols-rounded" style="font-size: 16px;">open_in_new</i>
-                                                </a>
-                                            @endif
-
-                                            {{-- Delete --}}
-                                            <form action="{{ route('pages.destroy', $page->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this page? This will unlink it from navigation.');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                                    <i class="material-symbols-rounded" style="font-size: 16px;">delete</i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4 text-muted">No pages found. Create your first page to get started.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">No pages found. Create your first page to get started.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -28,6 +28,9 @@ class InlineEdits
     /** Containers that are never editable. */
     public const SKIP_ANCESTORS = ['header', 'nav', 'footer', 'script', 'style', 'svg', 'form', 'select', 'textarea'];
 
+    private const BG_URL = '~url\(\s*([\'"]?)(.*?)\1\s*\)~i';
+    private const IMG_EXT = '~\.(?:jpe?g|png|webp|gif|svg|avif)(?:\?[^\'")]*)?$~i';
+
     /** Tags (and attributes) kept when a user's edited HTML is stored. */
     private const ALLOWED_TAGS = ['br', 'strong', 'b', 'em', 'i', 'u', 'span', 'a'];
     private const ALLOWED_ATTRS = ['href', 'class', 'target', 'rel', 'title'];
@@ -63,6 +66,19 @@ class InlineEdits
             return $html;
         }
 
+        // Style edits ("sty:<child index path>|<tag>") are addressed on the untouched
+        // document, before any other job can change the structure.
+        $styJobs = [];
+        foreach ($lookup as $lk => $json) {
+            if (!str_starts_with($lk, 'sty:')) {
+                continue;
+            }
+            $spec = explode("\0", $lk, 2)[0];
+            if ($el = $this->elementByPath($root, substr($spec, 4))) {
+                $styJobs[] = [$el, $json];
+            }
+        }
+
         $seen = [];
         $changed = false;
         $imgJobs = [];
@@ -76,6 +92,21 @@ class InlineEdits
             $key = 'img:' . $src . "\0" . $n;
             if (isset($lookup[$key])) {
                 $imgJobs[] = [$img, $lookup[$key], $key];
+            }
+        }
+        // CSS background images (inline style="background-image:url(...)"), keyed "bg:<original url>".
+        $bgJobs = [];
+        $bgSeen = [];
+        foreach ($root->querySelectorAll('[style*="url("]') as $el) {
+            if ($this->insideSkipped($el, $root) || !preg_match(self::BG_URL, (string) $el->getAttribute('style'), $m)
+                || !preg_match(self::IMG_EXT, $m[2])) {
+                continue;
+            }
+            $src = preg_replace('#^https?://[^/]+#i', '', $m[2]);
+            $n = $bgSeen[$src] = ($bgSeen[$src] ?? -1) + 1;
+            $key = 'bg:' . $src . "\0" . $n;
+            if (isset($lookup[$key])) {
+                $bgJobs[] = [$el, $lookup[$key], $key];
             }
         }
         // Keys are read from the untouched document first, replaced after.
@@ -112,6 +143,18 @@ class InlineEdits
             }
             $changed = true;
         }
+        foreach ($bgJobs as [$el, $json, $key]) {
+            $d = json_decode($json, true);
+            if (!is_array($d) || empty($d['src'])) {
+                continue;
+            }
+            $url = str_replace(["'", '"', '(', ')', '\\'], '', $d['src']);
+            $el->setAttribute('style', preg_replace_callback(self::BG_URL, fn () => "url('" . $url . "')", (string) $el->getAttribute('style'), 1));
+            if ($mark) {
+                $el->setAttribute('data-ie-key', base64_encode($key));
+            }
+            $changed = true;
+        }
         foreach ($jobs as [$el, $new, $key]) {
             $el->innerHTML = $new;
             if ($mark) {
@@ -120,7 +163,89 @@ class InlineEdits
             $changed = true;
         }
 
+        foreach ($styJobs as [$el, $json]) {
+            $changed = $this->applyStyle($el, $json, $mark) || $changed;
+        }
+
         return $changed ? $root->innerHTML : $html;
+    }
+
+    /** Resolve "0.2.1|section" (child indexes from $root, then the expected tag). */
+    private function elementByPath(Element $root, string $spec): ?Element
+    {
+        [$path, $tag] = array_pad(explode('|', $spec, 2), 2, '');
+        $node = $root;
+        foreach (explode('.', $path) as $i) {
+            if (!ctype_digit($i) || !($node = $node->children->item((int) $i))) {
+                return null;
+            }
+        }
+
+        return $node !== $root && strtolower($node->localName) === strtolower($tag) ? $node : null;
+    }
+
+    /** Apply a stored {color, bg, ng, w, h, lock} style edit; unsafe values are ignored. */
+    private function applyStyle(Element $el, string $json, bool $mark): bool
+    {
+        $d = json_decode($json, true);
+        if (!is_array($d)) {
+            return false;
+        }
+        $props = [];
+        if ($c = self::hex($d['color'] ?? null)) {
+            $props['color'] = $c;
+        }
+        if ($b = self::hex($d['bg'] ?? null)) {
+            $props['background-color'] = $b;
+            if (!empty($d['ng'])) {
+                $props['background-image'] = 'none';
+            }
+        }
+        $w = (int) ($d['w'] ?? 0);
+        $h = (int) ($d['h'] ?? 0);
+        if ($w >= 8 && $w <= 5000) {
+            $props['width'] = $w . 'px';
+            $props['max-width'] = '100%';
+            $props['height'] = 'auto';
+            if (($d['lock'] ?? true) === false && $h >= 8 && $h <= 5000) {
+                $props['aspect-ratio'] = $w . ' / ' . $h;
+                $props['object-fit'] = 'fill';
+            }
+        }
+        if (!$props) {
+            return false;
+        }
+
+        $orig = (string) $el->getAttribute('style');
+        $el->setAttribute('style', $this->mergeStyle($orig, $props));
+        if ($mark) {
+            // The editor needs the template's own inline style to support "reset".
+            $el->setAttribute('data-ie-os', base64_encode($orig));
+        }
+
+        return true;
+    }
+
+    public static function hex(mixed $v): ?string
+    {
+        return is_string($v) && preg_match('/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i', $v) ? strtolower($v) : null;
+    }
+
+    /** Replace/append CSS declarations in an inline style string. */
+    private function mergeStyle(string $style, array $props): string
+    {
+        preg_match_all('/\s*([a-z-]+)\s*:\s*((?:[^;()]|\([^)]*\))*)/i', $style, $m, PREG_SET_ORDER);
+        $out = [];
+        foreach ($m as $decl) {
+            if (!array_key_exists(strtolower($decl[1]), $props)) {
+                $out[] = $decl[1] . ': ' . trim($decl[2]);
+            }
+        }
+        foreach ($props as $name => $value) {
+            $out[] = $name . ': ' . $value;
+        }
+
+        return implode('; ', $out) . ';';
     }
 
     private function insideSkipped(Element $el, Element $root): bool
@@ -210,7 +335,10 @@ class InlineEdits
             foreach (iterator_to_array($child->attributes) as $attr) {
                 $name = strtolower($attr->name);
                 $val = trim((string) $attr->value);
-                if (!in_array($name, self::ALLOWED_ATTRS, true)
+                // Only a plain text colour may survive on <span style="color: …"> (selected-text colour).
+                $colorOnly = $name === 'style' && $tag === 'span'
+                    && preg_match('/^color\s*:\s*(#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\))\s*;?$/i', $val);
+                if ((!in_array($name, self::ALLOWED_ATTRS, true) && !$colorOnly)
                     || ($name === 'href' && preg_match('/^\s*(javascript|data|vbscript):/i', $val))) {
                     $child->removeAttribute($attr->name);
                 }
@@ -227,7 +355,40 @@ class InlineEdits
         }
         foreach ($incoming as $e) {
             $rawK = (string) ($e['k'] ?? '');
-            if (str_starts_with($rawK, 'img:')) {
+            if (str_starts_with($rawK, 'sty:')) {
+                $mapKey = $rawK . "\0" . 0;
+                if (!preg_match('/^sty:\d+(?:\.\d+)*\|[a-z][a-z0-9]*$/i', $rawK)) {
+                    continue;
+                }
+                $d = json_decode((string) ($e['html'] ?? ''), true);
+                $d = is_array($d) ? $d : [];
+                $clean = [];
+                if ($c = self::hex($d['color'] ?? null)) {
+                    $clean['color'] = $c;
+                }
+                if ($b = self::hex($d['bg'] ?? null)) {
+                    $clean['bg'] = $b;
+                    if (!empty($d['ng'])) {
+                        $clean['ng'] = true;
+                    }
+                }
+                $w = (int) ($d['w'] ?? 0);
+                $h = (int) ($d['h'] ?? 0);
+                if ($w >= 8 && $w <= 5000) {
+                    $clean['w'] = $w;
+                    $clean['lock'] = ($d['lock'] ?? true) !== false;
+                    if (!$clean['lock'] && $h >= 8 && $h <= 5000) {
+                        $clean['h'] = $h;
+                    }
+                }
+                if ($clean) {
+                    $map[$mapKey] = ['k' => $rawK, 'n' => 0, 'html' => json_encode($clean)];
+                } else {
+                    unset($map[$mapKey]); // everything reset to the template's original
+                }
+                continue;
+            }
+            if (str_starts_with($rawK, 'img:') || str_starts_with($rawK, 'bg:')) {
                 $d = json_decode((string) ($e['html'] ?? ''), true);
                 $src = is_array($d) ? trim((string) ($d['src'] ?? '')) : '';
                 if ($src === '' || preg_match('/^\s*(javascript|data|vbscript):/i', $src)) {

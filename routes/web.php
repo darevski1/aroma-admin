@@ -56,10 +56,13 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::get('/pages/manual-blades', [PageController::class, 'manualBlades'])->name('pages.manual-blades');
     Route::post('/pages/add-existing', [PageController::class, 'addExisting'])->name('pages.add-existing');
     Route::post('/pages/add-existing-selected', [PageController::class, 'addExistingSelected'])->name('pages.add-existing-selected');
+    Route::post('/pages/{id}/restore', [PageController::class, 'restore'])->whereNumber('id')->name('pages.restore');
     Route::post('/pages/remove-existing', [PageController::class, 'removeExisting'])->name('pages.remove-existing');
     Route::post('/pages/remove-all-existing', [PageController::class, 'removeAllExisting'])->name('pages.remove-all-existing');
 
     // Page Editor (must be before {page} wildcard routes)
+    Route::get('/pages/{page}/seo', [PageController::class, 'seo'])->name('pages.seo');
+    Route::patch('/pages/{page}/seo', [PageController::class, 'updateSeo'])->name('pages.seo.update');
     Route::get('/pages/{page}/editor', [PageController::class, 'editor'])->name('pages.editor');
     Route::post('/pages/{page}/save-content', [PageController::class, 'saveContent'])->name('pages.save-content');
     Route::post('/pages/{page}/editor-media', [PageController::class, 'uploadEditorMedia'])->name('pages.editor-media');
@@ -98,6 +101,15 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::get('/admin/media-picker', [MediaController::class, 'picker'])->name('media.picker');
     Route::post('/admin/media-picker/upload', [MediaController::class, 'pickerUpload'])->name('media.picker.upload');
 
+    // ─── Site Images (every frontend image, replaceable per page or site-wide) ───
+    Route::prefix('admin/site-images')->name('site-images.')->group(function () {
+        $c = \App\Http\Controllers\Admin\SiteImageController::class;
+        Route::get('/', [$c, 'index'])->name('index');
+        Route::post('/scan', [$c, 'scan'])->name('scan');
+        Route::post('/save', [$c, 'save'])->name('save');
+        Route::post('/reset', [$c, 'reset'])->name('reset');
+    });
+
     // ─── Posts ─────────────────────────────────────────────
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
@@ -112,6 +124,30 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::patch('/admin/cenobots-clients/{client}/toggle', [\App\Http\Controllers\Admin\CenobotsClientController::class, 'toggle'])->name('cenobots-clients.toggle');
     Route::resource('/admin/cenobots-clients', \App\Http\Controllers\Admin\CenobotsClientController::class)
         ->except('show')->parameters(['cenobots-clients' => 'client'])->names('cenobots-clients');
+
+    // ─── Hero Sliders (placed on pages via their [YYYY-N] shortcode) ───
+    Route::prefix('admin/hero-sliders')->name('hero-sliders.')->scopeBindings()->group(function () {
+        $sliders = \App\Http\Controllers\Admin\HeroSliderController::class;
+        $slides = \App\Http\Controllers\Admin\HeroSlideController::class;
+
+        Route::get('/', [$sliders, 'index'])->name('index');
+        Route::get('/create', [$sliders, 'create'])->name('create');
+        Route::post('/', [$sliders, 'store'])->name('store');
+        Route::get('/{heroSlider}/edit', [$sliders, 'edit'])->name('edit');
+        Route::put('/{heroSlider}', [$sliders, 'update'])->name('update');
+        Route::delete('/{heroSlider}', [$sliders, 'destroy'])->name('destroy');
+        Route::patch('/{heroSlider}/toggle', [$sliders, 'toggle'])->name('toggle');
+        Route::post('/{heroSlider}/duplicate', [$sliders, 'duplicate'])->name('duplicate');
+
+        Route::get('/{heroSlider}/slides/create', [$slides, 'create'])->name('slides.create');
+        Route::post('/{heroSlider}/slides', [$slides, 'store'])->name('slides.store');
+        Route::post('/{heroSlider}/slides/reorder', [$slides, 'reorder'])->name('slides.reorder');
+        Route::get('/{heroSlider}/slides/{slide}/edit', [$slides, 'edit'])->name('slides.edit');
+        Route::put('/{heroSlider}/slides/{slide}', [$slides, 'update'])->name('slides.update');
+        Route::delete('/{heroSlider}/slides/{slide}', [$slides, 'destroy'])->name('slides.destroy');
+        Route::patch('/{heroSlider}/slides/{slide}/toggle', [$slides, 'toggle'])->name('slides.toggle');
+        Route::post('/{heroSlider}/slides/{slide}/duplicate', [$slides, 'duplicate'])->name('slides.duplicate');
+    });
 
     // ─── Homepage Sections ──────────────────────────────────
     Route::get('/homepage-sections', [HomepageSectionController::class, 'index'])->name('homepage-sections.index');

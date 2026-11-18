@@ -42,6 +42,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('site-images.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('site-images.index') }}">
+          <i class="material-symbols-rounded opacity-5">image</i>
+          <span class="nav-link-text ms-1">Site Images</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link text-dark" href="{{ route('media.index') }}">
           <i class="material-symbols-rounded opacity-5">perm_media</i>
           <span class="nav-link-text ms-1">Media Library</span>
@@ -60,6 +66,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('hero-sliders.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('hero-sliders.index') }}">
+          <i class="material-symbols-rounded opacity-5">view_carousel</i>
+          <span class="nav-link-text ms-1">Hero Sliders</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('analytics.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('analytics.index') }}">
           <i class="material-symbols-rounded opacity-5">analytics</i>
           <span class="nav-link-text ms-1">Analytics</span>
@@ -72,22 +84,25 @@
           .chatbot-menu-toggle::after { display: none !important; }
           .chatbot-menu-toggle .chatbot-chevron { font-size: 18px; transition: transform .2s ease; }
           .chatbot-menu-toggle[aria-expanded="true"] .chatbot-chevron { transform: rotate(180deg); }
+          #chatbot-submenu { display: none !important; }
+          #chatbot-submenu.is-open { display: block !important; }
         </style>
-        {{-- No data-bs-toggle: the admin layout loads Bootstrap twice, and two
-             collapse handlers make the menu reopen right after it closes.
-             The script below drives a single Collapse instance instead.
-             On Chatbot pages the submenu always stays open and "Chatbot"
-             is a plain link to the Chatbot dashboard. --}}
+        {{-- The submenu deliberately does not use Bootstrap's .collapse: the
+             admin loads Bootstrap twice plus Preline/Flowbite, and the menu
+             was being closed again right after opening. A small script below
+             owns the open state on its own and remembers it across pages.
+             On Chatbot pages the submenu is always open and "Chatbot" links
+             to the Chatbot dashboard. --}}
         @if ($chatbotOpen)
-        <a class="nav-link chatbot-menu-toggle active bg-gradient-dark text-white" href="{{ route('chatbot.admin.dashboard') }}" aria-expanded="true" aria-controls="chatbotMenu">
+        <a class="nav-link chatbot-menu-toggle active bg-gradient-dark text-white" href="{{ route('chatbot.admin.dashboard') }}" aria-expanded="true" aria-controls="chatbot-submenu">
         @else
-        <a class="nav-link chatbot-menu-toggle text-dark" href="#chatbotMenu" role="button" data-chatbot-toggle aria-expanded="false" aria-controls="chatbotMenu">
+        <a class="nav-link chatbot-menu-toggle text-dark" href="{{ route('chatbot.admin.dashboard') }}" role="button" data-chatbot-toggle aria-expanded="false" aria-controls="chatbot-submenu">
         @endif
           <i class="material-symbols-rounded opacity-5">smart_toy</i>
           <span class="nav-link-text ms-1">Chatbot</span>
           <i class="material-symbols-rounded chatbot-chevron ms-auto opacity-7" aria-hidden="true">expand_more</i>
         </a>
-        <div class="collapse {{ $chatbotOpen ? 'show' : '' }}" id="chatbotMenu">
+        <div class="{{ $chatbotOpen ? 'is-open' : '' }}" id="chatbot-submenu">
           <ul class="nav flex-column ms-4 ps-1">
             @foreach ([
               'chatbot.admin.dashboard' => 'Dashboard',
@@ -109,22 +124,30 @@
           </ul>
         </div>
         <script>
-          document.addEventListener('DOMContentLoaded', function () {
+          // Runs right away (not on DOMContentLoaded) so it is bound before
+          // slow dev-server modules load, and the remembered state is applied
+          // before the sidebar is painted.
+          (function () {
             var toggle = document.querySelector('[data-chatbot-toggle]');
-            var menu = document.getElementById('chatbotMenu');
-            if (!toggle || !menu) return;
-            var sync = function (open) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); };
-            menu.addEventListener('show.bs.collapse', function () { sync(true); });
-            menu.addEventListener('hide.bs.collapse', function () { sync(false); });
+            var menu = document.getElementById('chatbot-submenu');
+            var KEY = 'admin.chatbotMenuOpen';
+            var read = function () { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
+            var save = function (open) { try { localStorage.setItem(KEY, open ? '1' : '0'); } catch (e) {} };
+            if (!menu) return;
+            if (!toggle) { save(true); return; } // Chatbot pages: always open, plain link
+            var set = function (open) {
+              menu.classList.toggle('is-open', open);
+              toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            };
+            set(read());
             toggle.addEventListener('click', function (e) {
               e.preventDefault();
-              if (window.bootstrap && window.bootstrap.Collapse) {
-                window.bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }).toggle();
-              } else {
-                sync(menu.classList.toggle('show'));
-              }
+              e.stopPropagation(); // keep page-wide click handlers out of it
+              var open = !menu.classList.contains('is-open');
+              set(open);
+              save(open);
             });
-          });
+          })();
         </script>
       </li>
       <li class="nav-item">

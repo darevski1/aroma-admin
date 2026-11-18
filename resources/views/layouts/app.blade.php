@@ -55,7 +55,7 @@
             $__ieTemplate = isset($page) && $page instanceof \App\Models\Page
                 && $page->layout && $page->layout !== 'welcome' && $page->layout !== 'pages.dynamic' && view()->exists($page->layout);
         @endphp
-        <div id="ie-config" data-mode="{{ $__ieTemplate ? 'edits' : 'content' }}"
+        <div id="ie-config" data-mode="{{ $__ieTemplate ? 'edits' : 'content' }}" data-style-root="main"
              data-page-id="{{ isset($page) && $page instanceof \App\Models\Page ? $page->id : '' }}"
              data-csrf="{{ auth()->check() && auth()->user()->isAdmin() ? csrf_token() : '' }}" hidden></div>
         <script type="module" src="{{ Vite::asset('resources/js/page-editor.js') }}"></script>

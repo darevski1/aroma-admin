@@ -39,6 +39,9 @@
     body[data-editor-active="true"] [data-editor-editable="true"][data-editor-dirty="true"] { outline-color: rgba(245,158,11,.8); }
     body[data-editor-active="true"] main img { cursor: pointer; outline: 2px dashed rgba(16,185,129,.6); outline-offset: 2px; }
     body[data-editor-active="true"] main img:hover { outline-color: rgba(16,185,129,1); }
+    .ie-bg-btn { position: absolute; white-space: nowrap; width: max-content; line-height: 1; z-index: 2147482000; display: none; align-items: center; gap: 6px; padding: 6px 10px; border: 0; border-radius: 999px; background: #059669; color: #fff; font: 600 12px/1 system-ui, sans-serif; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+    .ie-bg-btn:hover { background: #047857; }
+    body[data-editor-active="true"] .ie-bg-btn { display: inline-flex; }
     #ie-format { position: absolute; z-index: 2147483000; display: none; gap: 2px; padding: 4px; border-radius: 8px; background: #111827; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
     #ie-format button { all: unset; box-sizing: border-box; min-width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; color: #fff; font: 600 14px/1 system-ui, sans-serif; cursor: pointer; }
     #ie-format button:hover { background: rgba(255,255,255,.18); }
@@ -91,6 +94,7 @@
     editables = collect(root(), []);
     assignKeys(editables);
     assignImageKeys();
+    setupBackgroundImages();
     editables.forEach(function (el) {
       el.setAttribute('contenteditable', 'true');
       el.setAttribute('data-editor-editable', 'true');
@@ -163,6 +167,55 @@
     });
   }
   function imgState(img) { return img.getAttribute('src') + '|' + (img.getAttribute('alt') || '') + '|' + (img.getAttribute('title') || ''); }
+
+  // ── CSS background images (inline style="background-image:url(...)") ──
+  // Keyed like <img>: ORIGINAL url + occurrence, stored as "bg:<url>" (see InlineEdits.php).
+  let bgs = [];
+  const BG_URL = /url\(\s*(['"]?)(.*?)\1\s*\)/i;
+  const IMG_EXT = /\.(jpe?g|png|webp|gif|svg|avif)(\?[^'")]*)?$/i;
+  function bgUrl(el) { const m = (el.getAttribute('style') || '').match(BG_URL); return m ? m[2] : null; }
+  function setBgUrl(el, url) {
+    el.setAttribute('style', (el.getAttribute('style') || '').replace(BG_URL, function () { return "url('" + url + "')"; }));
+  }
+  function setupBackgroundImages() {
+    const seen = {};
+    bgs = Array.prototype.filter.call(root().querySelectorAll('[style*="url("]'), function (el) {
+      const u = bgUrl(el);
+      return u && IMG_EXT.test(u) && !el.closest(SKIP);
+    });
+    bgs.forEach(function (el) {
+      let k = bgUrl(el).replace(/^https?:\/\/[^\/]+/i, '');
+      const stored = el.getAttribute('data-ie-key');
+      if (stored) { try { const d = atob(stored).split('\0')[0]; if (d.indexOf('bg:') === 0) k = d.slice(3); } catch (e) { /* keep url */ } }
+      el._ieKey = k;
+      el._ieN = seen[k] = (seen[k] === undefined ? 0 : seen[k] + 1);
+      el._ieOrig = bgUrl(el);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ie-bg-btn';
+      btn.innerHTML = '&#128247; Change background image';
+      btn.addEventListener('click', function (ev) {
+        ev.preventDefault(); ev.stopPropagation();
+        if (previewing) return;
+        activeImage = el;
+        notifyParent({ type: 'editor:image-select', src: new URL(bgUrl(el), window.location.href).href, alt: '', title: '', background: true });
+      });
+      document.body.appendChild(btn);
+      el._ieBtn = btn;
+    });
+    placeBgButtons();
+    window.addEventListener('resize', placeBgButtons);
+    window.addEventListener('load', placeBgButtons);
+    if (window.ResizeObserver) new ResizeObserver(placeBgButtons).observe(document.body);
+    setInterval(placeBgButtons, 1500);
+  }
+  function placeBgButtons() {
+    bgs.forEach(function (el) {
+      const r = el.getBoundingClientRect();
+      el._ieBtn.style.top = (r.top + window.scrollY + 10) + 'px';
+      el._ieBtn.style.left = (r.left + window.scrollX + 10) + 'px';
+    });
+  }
 
   // ── Floating format bar (bold / italic / link) ─────────────────
   function setupFormatBar() {
@@ -265,6 +318,12 @@
     const img = activeImage;
     activeImage = null;
     if (!img || !data.url) return;
+    if (img._ieBtn) { // background image element
+      setBgUrl(img, data.url);
+      img.setAttribute('data-editor-dirty', 'true');
+      markDirty();
+      return;
+    }
     img.setAttribute('src', data.url);
     ['srcset', 'sizes', 'data-src', 'data-srcset'].forEach(function (a) { img.removeAttribute(a); });
     if (img.parentElement && img.parentElement.tagName === 'PICTURE') {
@@ -312,6 +371,11 @@
         k: 'img:' + img._ieKey, n: img._ieN,
         html: JSON.stringify({ src: img.getAttribute('src'), alt: img.getAttribute('alt') || '', title: img.getAttribute('title') || '' }),
       });
+    });
+    bgs.forEach(function (el) {
+      const u = bgUrl(el);
+      if (u === el._ieOrig) return;
+      out.push({ k: 'bg:' + el._ieKey, n: el._ieN, html: JSON.stringify({ src: u, alt: '', title: '' }) });
     });
     return out;
   }
@@ -361,6 +425,7 @@
           // Saved text becomes the new baseline for the next save in this session.
           editables.forEach(function (el) { el._ieOrig = cleanInner(el); });
           images.forEach(function (img) { img._ieOrig = imgState(img); img.removeAttribute('data-editor-dirty'); });
+          bgs.forEach(function (el) { el._ieOrig = bgUrl(el); el.removeAttribute('data-editor-dirty'); });
           markClean();
         }
         return data;

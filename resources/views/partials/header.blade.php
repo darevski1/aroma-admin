@@ -13,8 +13,11 @@
     $__seoCanonical = trim($__env->yieldContent('canonical_url')) ?: url()->current();
 @endphp
 <meta name="description" content="{{ $pageDescription ?? 'ITPlus нуди професионални ИТ решенија, мрежна инфраструктура, видео надзор, сервис, принтери и техничка поддршка.' }}">
-<meta property="og:title" content="{{ $pageTitle ?? 'ITPlus | Комплетни ИТ решенија' }}">
-<meta property="og:description" content="{{ $pageDescription ?? 'ITPlus нуди професионални ИТ решенија, мрежна инфраструктура, видео надзор, сервис, принтери и техничка поддршка.' }}">
+<meta property="og:title" content="{{ trim($__env->yieldContent('og_title')) ?: ($pageTitle ?? 'ITPlus | Комплетни ИТ решенија') }}">
+<meta property="og:description" content="{{ trim($__env->yieldContent('og_description')) ?: ($pageDescription ?? 'ITPlus нуди професионални ИТ решенија, мрежна инфраструктура, видео надзор, сервис, принтери и техничка поддршка.') }}">
+@if(trim($__env->yieldContent('meta_keywords')) !== '')
+<meta name="keywords" content="{{ trim($__env->yieldContent('meta_keywords')) }}">
+@endif
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ITPlus">
 <meta property="og:url" content="{{ url()->current() }}">

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\SiteImages\MediaOptimizer;
+use App\Services\SiteImages\MediaUsage;
+use App\Services\SiteImages\SiteImages;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaController extends Controller
@@ -79,6 +82,9 @@ class MediaController extends Controller
                 'url' => $media->getUrl(),
                 'collection_name' => $media->collection_name,
                 'custom_properties' => $media->custom_properties,
+                'width' => $media->custom_properties['width'] ?? null,
+                'height' => $media->custom_properties['height'] ?? null,
+                'usage' => app(MediaUsage::class)->for($media),
                 'created_at' => $media->created_at?->toISOString(),
                 'updated_at' => $media->updated_at?->toISOString(),
                 'model_type' => $media->model_type,
@@ -148,39 +154,8 @@ class MediaController extends Controller
                 ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
                 ->toMediaCollection($collection);
         } else {
-            // Global media (not attached to a model yet)
-            $disk = config('media-library.disk_name', 'public');
-            $fileName = $file->getClientOriginalName();
-
-            // Create the media record first to get the ID (needed for path generation)
-            $mediaItem = Media::create([
-                'model_type' => null,
-                'model_id' => null,
-                'collection_name' => $collection,
-                'name' => pathinfo($fileName, PATHINFO_FILENAME),
-                'file_name' => $fileName,
-                'mime_type' => $file->getMimeType(),
-                'disk' => $disk,
-                'conversions_disk' => config('media-library.conversions_disk_name') ?? $disk,
-                'size' => $file->getSize(),
-                'manipulations' => [],
-                'custom_properties' => [],
-                'generated_conversions' => [],
-                'responsive_images' => [],
-            ]);
-
-            // Store the file at {id}/{filename} to match OrganizedPathGenerator
-            $file->storeAs((string) $mediaItem->id, $fileName, $disk);
-
-            $mediaItem->file_name = $fileName;
-            $mediaItem->save();
-
-            // Generate conversions (e.g. thumbnails) synchronously where possible
-            try {
-                $mediaItem->generateConversions();
-            } catch (\Exception $e) {
-                // Don't let conversion failures break the upload
-            }
+            // Global media (not attached to a model yet): de-duplicated, optimised, SVG-sanitised.
+            $mediaItem = app(MediaOptimizer::class)->ingest($file, $collection);
         }
 
         return response()->json([
@@ -238,8 +213,20 @@ class MediaController extends Controller
     /**
      * Delete a single media item: physical files + conversions, then DB row.
      */
-    public function destroy(Media $media)
+    public function destroy(Request $request, Media $media)
     {
+        // Never delete an image that is still shown somewhere without an explicit confirmation.
+        $usage = app(MediaUsage::class)->for($media);
+        if ($usage && !$request->boolean('force')) {
+            return response()->json([
+                'success' => false,
+                'in_use' => true,
+                'usage' => $usage,
+                'message' => 'This file is still in use (' . count($usage) . '). Delete it anyway?',
+            ], 409);
+        }
+        $this->forgetOverrides($media);
+
         $disk = $media->disk;
         $conversionsDisk = $media->conversions_disk ?? $disk;
 
@@ -271,15 +258,23 @@ class MediaController extends Controller
         $ids = $request->input('ids');
         $deleted = 0;
         $errors  = [];
+        $deletedIds = [];
+        $usage = app(MediaUsage::class);
 
         foreach ($ids as $id) {
             try {
                 $media = Media::findOrFail($id);
+                if (!$request->boolean('force') && $usage->for($media)) {
+                    $errors[] = "ID {$id}: still in use";
+                    continue;
+                }
+                $this->forgetOverrides($media);
                 $disk  = $media->disk;
                 $conversionsDisk = $media->conversions_disk ?? $disk;
 
                 $this->removeFilesFromDisk($media, $disk, $conversionsDisk);
                 $media->delete();
+                $deletedIds[] = $id;
                 $deleted++;
             } catch (\Exception $e) {
                 $errors[] = "ID {$id}: " . $e->getMessage();
@@ -293,8 +288,25 @@ class MediaController extends Controller
 
         return response()->json([
             'success' => $deleted > 0,
+            'deleted_ids' => $deletedIds,
             'message' => $message,
         ]);
+    }
+
+    /** A file forced out of the library also drops the site-image replacements pointing at it (the original images show again). */
+    private function forgetOverrides(Media $media): void
+    {
+        \App\Models\SiteImageOverride::where('media_id', $media->id)->delete();
+        \App\Models\SiteImageOverride::where('mobile_media_id', $media->id)->update(['mobile_media_id' => null]);
+        SiteImages::bump();
+    }
+
+    /** Images only (JPG, PNG, WebP, AVIF, GIF, SVG); the MIME type is detected from the file contents. */
+    private function assertAllowedImage(\Illuminate\Http\UploadedFile $file): void
+    {
+        if (!in_array($file->getMimeType(), MediaOptimizer::ALLOWED, true)) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['file' => 'Only JPG, PNG, WebP, AVIF, GIF and SVG images are allowed.']);
+        }
     }
 
     /**
@@ -345,28 +357,8 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('file');
-        $fileName = $file->getClientOriginalName();
-
-        // Update metadata
-        $media->update([
-            'name' => pathinfo($fileName, PATHINFO_FILENAME),
-            'file_name' => $fileName,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-        ]);
-
-        // Store the new file at {id}/{filename} to match the path generator
-        $file->storeAs((string) $media->id, $fileName, $media->disk);
-
-        $media->file_name = $fileName;
-        $media->save();
-
-        // Regenerate conversions
-        try {
-            $media->generateConversions();
-        } catch (\Exception $e) {
-            // Don't let conversion failures break the replace
-        }
+        $this->assertAllowedImage($file);
+        app(MediaOptimizer::class)->replaceFile($media, $file);
 
         return response()->json([
             'success' => true,
@@ -410,6 +402,8 @@ class MediaController extends Controller
                 'thumb_url' => $item->model_type ? $item->getUrl('thumb') : $item->getUrl(),
                 'collection_name' => $item->collection_name,
                 'custom_properties' => $item->custom_properties,
+                'width' => $item->custom_properties['width'] ?? null,
+                'height' => $item->custom_properties['height'] ?? null,
                 'created_at' => $item->created_at->toISOString(),
                 'model_type' => $item->model_type,
                 'model_id' => $item->model_id,
@@ -436,39 +430,8 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('file');
-        $collection = $request->input('collection', 'default');
-        $disk = config('media-library.disk_name', 'public');
-        $fileName = $file->getClientOriginalName();
-
-        // Create the media record first to get the ID
-        $mediaItem = Media::create([
-            'model_type' => null,
-            'model_id' => null,
-            'collection_name' => $collection,
-            'name' => pathinfo($fileName, PATHINFO_FILENAME),
-            'file_name' => $fileName,
-            'mime_type' => $file->getMimeType(),
-            'disk' => $disk,
-            'conversions_disk' => config('media-library.conversions_disk_name') ?? $disk,
-            'size' => $file->getSize(),
-            'manipulations' => [],
-            'custom_properties' => [],
-            'generated_conversions' => [],
-            'responsive_images' => [],
-        ]);
-
-        // Store the file at {id}/{filename} to match OrganizedPathGenerator
-        $file->storeAs((string) $mediaItem->id, $fileName, $disk);
-
-        $mediaItem->file_name = $fileName;
-        $mediaItem->save();
-
-        // Generate conversions
-        try {
-            $mediaItem->generateConversions();
-        } catch (\Exception $e) {
-            // Don't let conversion failures break the upload
-        }
+        $this->assertAllowedImage($file);
+        $mediaItem = app(MediaOptimizer::class)->ingest($file, $request->input('collection', 'default'));
 
         return response()->json([
             'id' => $mediaItem->id,
@@ -507,6 +470,9 @@ class MediaController extends Controller
             'url' => $media->getUrl(),
             'collection_name' => $media->collection_name,
             'custom_properties' => $media->custom_properties,
+            'width' => $media->custom_properties['width'] ?? null,
+            'height' => $media->custom_properties['height'] ?? null,
+            'usage' => app(MediaUsage::class)->for($media),
             'created_at' => $media->created_at->toISOString(),
             'conversions' => collect($media->getGeneratedConversions()->keys())->mapWithKeys(fn ($name) => [$name => $media->getUrl($name)]),
             'model_type' => $media->model_type,

@@ -316,6 +316,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+        // Deleting a file that is still used somewhere asks for explicit confirmation (server answers 409 + usage list).
+    function mediaDeleteRequest(id, formData) {
+        var url = '/admin/media/' + id;
+        return fetch(url, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } }).then(function(res) {
+            if (res.status !== 409) return res;
+            return res.clone().json().then(function(d) {
+                var list = (d.usage || []).map(function(u) { return '\u2022 ' + u.label; }).join('\n');
+                if (!confirm('This file is still in use:\n' + list + '\n\nDelete it anyway? Those places will show their original images again.')) return res;
+                formData.append('force', '1');
+                return fetch(url, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+            });
+        });
+    }
+
     // ─── Delete ──────────────────────────────────────────────────
     document.getElementById('deleteBtn').addEventListener('click', function() {
         if (!confirm('Are you sure you want to delete this file? This action cannot be undone.')) return;
@@ -324,10 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('_token', csrfToken);
         formData.append('_method', 'DELETE');
 
-        fetch('/admin/media/' + mediaId, {
-            method: 'POST',
-            body: formData
-        })
+        mediaDeleteRequest(mediaId, formData)
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if (data.success) {
