@@ -125,30 +125,6 @@ Route::group(['middleware' => ['auth', 'verified', 'admin']], function () {
     Route::resource('/admin/cenobots-clients', \App\Http\Controllers\Admin\CenobotsClientController::class)
         ->except('show')->parameters(['cenobots-clients' => 'client'])->names('cenobots-clients');
 
-    // ─── Hero Sliders (placed on pages via their [YYYY-N] shortcode) ───
-    Route::prefix('admin/hero-sliders')->name('hero-sliders.')->scopeBindings()->group(function () {
-        $sliders = \App\Http\Controllers\Admin\HeroSliderController::class;
-        $slides = \App\Http\Controllers\Admin\HeroSlideController::class;
-
-        Route::get('/', [$sliders, 'index'])->name('index');
-        Route::get('/create', [$sliders, 'create'])->name('create');
-        Route::post('/', [$sliders, 'store'])->name('store');
-        Route::get('/{heroSlider}/edit', [$sliders, 'edit'])->name('edit');
-        Route::put('/{heroSlider}', [$sliders, 'update'])->name('update');
-        Route::delete('/{heroSlider}', [$sliders, 'destroy'])->name('destroy');
-        Route::patch('/{heroSlider}/toggle', [$sliders, 'toggle'])->name('toggle');
-        Route::post('/{heroSlider}/duplicate', [$sliders, 'duplicate'])->name('duplicate');
-
-        Route::get('/{heroSlider}/slides/create', [$slides, 'create'])->name('slides.create');
-        Route::post('/{heroSlider}/slides', [$slides, 'store'])->name('slides.store');
-        Route::post('/{heroSlider}/slides/reorder', [$slides, 'reorder'])->name('slides.reorder');
-        Route::get('/{heroSlider}/slides/{slide}/edit', [$slides, 'edit'])->name('slides.edit');
-        Route::put('/{heroSlider}/slides/{slide}', [$slides, 'update'])->name('slides.update');
-        Route::delete('/{heroSlider}/slides/{slide}', [$slides, 'destroy'])->name('slides.destroy');
-        Route::patch('/{heroSlider}/slides/{slide}/toggle', [$slides, 'toggle'])->name('slides.toggle');
-        Route::post('/{heroSlider}/slides/{slide}/duplicate', [$slides, 'duplicate'])->name('slides.duplicate');
-    });
-
     // ─── Homepage Sections ──────────────────────────────────
     Route::get('/homepage-sections', [HomepageSectionController::class, 'index'])->name('homepage-sections.index');
     Route::get('/homepage-sections/create', [HomepageSectionController::class, 'create'])->name('homepage-sections.create');

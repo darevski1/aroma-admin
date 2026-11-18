@@ -15,7 +15,6 @@ class MediaUsage
         'pages' => ['Page', ['content', 'settings', 'featured_image']],
         'posts' => ['Post', ['content', 'excerpt']],
         'homepage_sections' => ['Homepage section', ['content']],
-        'hero_slides' => ['Hero slide', ['desktop_image', 'mobile_image']],
     ];
 
     /** @return array<int,array{type:string,label:string}> */

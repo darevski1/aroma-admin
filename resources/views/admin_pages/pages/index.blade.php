@@ -60,13 +60,29 @@
                         .pages-table th, .pages-table td { padding: .5rem .75rem; vertical-align: middle; }
                         .pages-table .col-url { width: 32%; }
                         .pages-table .col-status { width: 110px; }
-                        .pages-table .col-actions { width: 150px; }
+                        .pages-table .col-actions { width: 230px; }
                         .pages-table .cell-trunc { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
                         @media (max-width: 767.98px) {
                             .pages-table .col-url { display: none; }
                             .pages-table .col-status { width: 90px; }
-                            .pages-table .col-actions { width: 130px; }
+                            .pages-table .col-actions { width: 150px; }
+                            .pages-table .fi-actions { flex-wrap: wrap; }
                         }
+                        /* Filament-style soft icon buttons */
+                        .fi-actions { display: inline-flex; gap: .3rem; align-items: center; justify-content: center; }
+                        .fi-actions form { margin: 0; display: inline-flex; }
+                        .fi-act { --c: 107 114 128; --bg: 243 244 246; display: inline-flex; align-items: center; justify-content: center;
+                            width: 2rem; height: 2rem; padding: 0; border: 0; border-radius: .5rem; cursor: pointer;
+                            color: rgb(var(--c)); background: rgb(var(--bg)); box-shadow: inset 0 0 0 1px rgb(var(--c) / .25);
+                            transition: background-color .15s, color .15s, box-shadow .15s; }
+                        .fi-act:hover { background: rgb(var(--c)); color: #fff; box-shadow: none; }
+                        .fi-act .material-symbols-rounded { font-size: 18px; }
+                        .fi-act.success { --c: 22 163 74;  --bg: 240 253 244; }
+                        .fi-act.warning { --c: 217 119 6;  --bg: 255 251 235; }
+                        .fi-act.info    { --c: 2 132 199;  --bg: 240 249 255; }
+                        .fi-act.primary { --c: 124 58 237; --bg: 245 243 255; }
+                        .fi-act.danger  { --c: 220 38 38;  --bg: 254 242 242; }
+                        .fi-act.gray    { --c: 75 85 99;   --bg: 243 244 246; }
                     </style>
                     <table class="table align-items-center mb-0 pages-table">
                         <thead>
@@ -94,19 +110,31 @@
                                             <span class="badge bg-gradient-secondary">Draft</span>
                                         @endif
                                     </td>
-                                    <td class="col-actions text-center text-nowrap">
+                                    <td class="col-actions text-center">
                                         @if ($page->trashed())
                                             <form action="{{ route('pages.restore', $page->id) }}" method="POST" class="d-inline">
                                                 @csrf
-                                                <button type="submit" class="btn btn-sm btn-outline-success mb-0" title="Restore"><i class="material-symbols-rounded" style="font-size: 16px;">restore_from_trash</i></button>
+                                                <button type="submit" class="fi-act success" title="Restore"><i class="material-symbols-rounded">restore_from_trash</i></button>
                                             </form>
                                         @else
-                                            <a href="{{ route('pages.editor', $page->id) }}" class="btn btn-sm btn-outline-primary mb-0 me-1" title="Edit Page" data-bs-toggle="tooltip">
-                                                <i class="material-symbols-rounded" style="font-size: 16px;">draw</i>
-                                            </a>
-                                            <a href="{{ route('pages.seo', $page->id) }}" class="btn btn-sm btn-outline-secondary mb-0" title="Edit SEO" data-bs-toggle="tooltip">
-                                                <i class="material-symbols-rounded" style="font-size: 16px;">travel_explore</i>
-                                            </a>
+                                            <div class="fi-actions">
+                                                <form action="{{ route('pages.toggle', $page->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="fi-act {{ $page->published ? 'success' : 'gray' }}" title="{{ $page->published ? 'Disable (unpublish)' : 'Enable (publish)' }}">
+                                                        <i class="material-symbols-rounded">{{ $page->published ? 'toggle_on' : 'toggle_off' }}</i>
+                                                    </button>
+                                                </form>
+                                                <a href="{{ route('pages.editor', $page->id) }}" class="fi-act warning" title="Visual Editor"><i class="material-symbols-rounded">draw</i></a>
+                                                <a href="{{ route('pages.seo', $page->id) }}" class="fi-act primary" title="Edit SEO"><i class="material-symbols-rounded">travel_explore</i></a>
+                                                <a href="{{ route('pages.edit', $page->id) }}" class="fi-act gray" title="Page settings"><i class="material-symbols-rounded">settings</i></a>
+                                                <a href="{{ $page->public_url }}" target="_blank" class="fi-act gray" title="Preview frontend"><i class="material-symbols-rounded">open_in_new</i></a>
+                                                <form action="{{ route('pages.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this page? This will unlink it from navigation.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="fi-act danger" title="Delete"><i class="material-symbols-rounded">delete</i></button>
+                                                </form>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>

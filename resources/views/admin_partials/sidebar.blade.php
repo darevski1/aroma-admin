@@ -66,12 +66,6 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('hero-sliders.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('hero-sliders.index') }}">
-          <i class="material-symbols-rounded opacity-5">view_carousel</i>
-          <span class="nav-link-text ms-1">Hero Sliders</span>
-        </a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('analytics.*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('analytics.index') }}">
           <i class="material-symbols-rounded opacity-5">analytics</i>
           <span class="nav-link-text ms-1">Analytics</span>

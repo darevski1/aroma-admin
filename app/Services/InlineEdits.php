@@ -201,6 +201,12 @@ class InlineEdits
                 $props['background-image'] = 'none';
             }
         }
+        if ($bi = self::safeImageUrl($d['bgimg'] ?? null)) {
+            $props['background-image'] = "url('" . $bi . "')";
+            $props['background-size'] = 'cover';
+            $props['background-position'] = 'center';
+            $props['background-repeat'] = 'no-repeat';
+        }
         $w = (int) ($d['w'] ?? 0);
         $h = (int) ($d['h'] ?? 0);
         if ($w >= 8 && $w <= 5000) {
@@ -224,6 +230,12 @@ class InlineEdits
         }
 
         return true;
+    }
+
+    /** Local path or http(s) URL of an image, safe to place inside url('...'). */
+    public static function safeImageUrl(mixed $v): ?string
+    {
+        return is_string($v) && preg_match('#^(?:/(?!/)|https?://)[^\s\'"()<>\\\\]{1,500}$#i', $v) ? $v : null;
     }
 
     public static function hex(mixed $v): ?string
@@ -371,6 +383,9 @@ class InlineEdits
                     if (!empty($d['ng'])) {
                         $clean['ng'] = true;
                     }
+                }
+                if ($bi = self::safeImageUrl($d['bgimg'] ?? null)) {
+                    $clean['bgimg'] = $bi;
                 }
                 $w = (int) ($d['w'] ?? 0);
                 $h = (int) ($d['h'] ?? 0);

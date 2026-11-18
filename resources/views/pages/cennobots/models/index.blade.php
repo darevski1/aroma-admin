@@ -63,7 +63,7 @@
     <section class="mh-hero" id="mh-hero" aria-roledescription="carousel" aria-label="CenoBots модели">
         @foreach ($mhSlides as $slide)
             <div class="mh-hero__slide {{ $loop->first ? 'is-active' : '' }}" aria-hidden="{{ $loop->first ? 'false' : 'true' }}">
-                <img src="{{ asset($slide['src']) }}" alt="{{ $slide['alt'] }}" style="object-position: {{ $slide['pos'] }}"
+                <img src="{{ asset($slide['src']) }}" alt="{{ $slide['alt'] }}" style="object-position: {{ $slide['pos'] }}" onerror="this.style.visibility='hidden'"
                     @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif>
             </div>
         @endforeach

@@ -15,8 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'page.active' => \App\Http\Middleware\EnsurePageIsActive::class,
         ]);
-        // [YYYY-N] hero slider shortcodes on public pages (see Admin → Hero Sliders).
-        $middleware->appendToGroup('web', \App\Http\Middleware\RenderHeroSliderShortcodes::class);
         // Admin → Site Images: apply image replacements + keep the per-page image inventory.
         $middleware->appendToGroup('web', \App\Http\Middleware\ApplySiteImages::class);
     })

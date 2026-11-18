@@ -31,9 +31,8 @@ class AdminPagesListTest extends TestCase
         $this->assertSame(url('/kontakt'), $page->public_url);
         $this->get(route('pages.index'))
             ->assertSee(route('pages.editor', $page->id), false)
-            ->assertSee(route('pages.edit', $page->id), false)
-            ->assertSee('Edit SEO')
-            ->assertDontSee('Preview frontend');
+            ->assertSee(route('pages.seo', $page->id), false)
+            ->assertSee('Edit SEO');
     }
 
     public function test_removed_pages_can_be_listed_and_restored_without_duplicating(): void

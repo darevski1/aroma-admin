@@ -36,8 +36,8 @@
     {{-- Tabs --}}
     <ul class="nav nav-tabs mb-4" id="pageEditTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link" href="{{ route('pages.edit-content', $page->id) }}">
-                <i class="material-symbols-rounded me-1" style="font-size:16px;">edit</i>Visual Editor
+            <a class="nav-link" href="{{ route('pages.editor', $page->id) }}">
+                <i class="material-symbols-rounded me-1" style="font-size:16px;">draw</i>Visual Editor
             </a>
         </li>
         <li class="nav-item" role="presentation">
